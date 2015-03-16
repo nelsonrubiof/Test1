@@ -1,0 +1,223 @@
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="js/jquery.js"></script>
+        <script src="js/jquery.getUrlParam.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+        <link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.css"/>
+        <link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.min.css"/>
+        <link rel="stylesheet" href="css/main.css"/>
+        <link rel="stylesheet" href="css/bootstrap.css"/>
+        <link rel="stylesheet" href="css/bootstrap.css"/>
+
+        <title>Business Services</title>
+    </head>
+    <body> 
+        <div class="loading tabla" > </div>
+        <div style="width:70%; padding-left:50px" >
+            <ul class="nav nav-pills pull-right">
+                <li><a href="regionserver.html">Back</a></li>
+                <li><a href="/business-services">Home</a></li>
+            </ul>
+            <h2 class="text-muted">Region Servers Editor</h2>
+        </div>
+        </br>
+        </br>
+        <div style="width:70%; padding-left:50px" >
+            <h3>Region Server</h3>
+        </div>
+        </br>
+        </br>
+        <table>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="codeName" >Code Name</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+                    <input type="text" class="form-control" id="codeName" name="codeName">
+                </td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="sFTPIp" >SFTP IP</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+                    <input type="text" class="form-control" id="sFTPIp" name="sFTPIp">
+                </td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="sFTPUser" >SFTP User</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+                    <input type="text" class="form-control" id="sFTPUser" name="sFTPUser">
+                </td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="sFTPPassword" >SFTP Password</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+                    <input type="password" class="form-control" id="sFTPPassword" name="sFTPPassword">
+                </td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="sFTPPath" >SFTP Path</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+                    <input type="text" class="form-control" id="sFTPPath" name="sFTPPath">
+                </td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="serverIp" >Server IP</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+                    <input type="text" class="form-control" id="serverIp" name="serverIp">
+                </td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px; padding-bottom: 20px;" > 
+                    <label for="active" >Active</label>
+                </td>
+                <td style="padding-right:70px; padding-bottom: 20px;">
+
+                    <input type="checkbox" class="form-control" id="active"  name="active" value="">
+                </td>
+            </tr>
+        </table>
+        <div style="width:50%; padding-top: 20px; padding-left: 150px;" >
+            <button type="button" onclick="saveChanges(false);" class="btn btn-default">Save Changes</button>
+        </div>
+    </body>
+</html>
+<script type="text/javascript">
+                var login = '11111';
+                var editId = $(document).getUrlParam('id');
+                var noExpectedError = 'An unexpected error ocurred ...';
+                if (editId != null) {
+                    $(function() {
+                        $.ajax({
+                            url: '/business-services/spring/services/rest/regionserver/getRegionServerById/' + editId + '/' + login,
+                            type: 'post',
+                            crossDomain: true,
+                            dataType: 'json',
+                            success: function(response) {
+                                var data = response.RegionServerFrontendContainerDTO.regionServers;
+                                $('#codeName').val(data.codeName);
+                                $('#sFTPIp').val(data.sFTPIp);
+                                $('#sFTPUser').val(data.sFTPUser);
+                                $('#sFTPPassword').val('XXXXXXXX');
+                                $('#sFTPPath').val(data.sFTPPath);
+                                $('#serverIp').val(data.serverIp);
+                                $('#active').prop('checked', data.active);
+                            },
+                            error: function(request, status, error) {
+                                console.error(request.responseText);
+                                console.log(status);
+                                console.error(error);
+                            }
+                        });
+                    });
+                }
+                $('.loading.tabla').fadeOut(500);
+                function saveChanges() {
+                    var isRequired = 'is required';
+                    var codeNameTitle = 'Code Name';
+                    var sFTPIpTitle = 'SFTP IP';
+                    var sFTPUserTitle = 'SFTP User';
+                    var sFTPPasswordTitle = 'SFTP Password';
+                    var sFTPPathTitle = 'SFTP Path';
+                    var serverIpTitle = 'Server Ip';
+                    var codeName = $('#codeName').val();
+                    var sFTPIp = $('#sFTPIp').val();
+                    var sFTPUser = $('#sFTPUser').val();
+                    var sFTPPassword = $('#sFTPPassword').val();
+                    var sFTPPath = $('#sFTPPath').val();
+                    var serverIp = $('#serverIp').val();
+                    var active = $('#active').prop('checked');
+                    var cont = true;
+                    var message = '';
+
+                    if (codeName == '') {
+                        message += codeNameTitle + ' ' + isRequired + '\n';
+                        cont = false;
+                    }
+                    if (sFTPIp == '') {
+                        message += sFTPIpTitle + ' ' + isRequired + '\n';
+                        cont = false;
+                    }
+                    if (sFTPUser == '') {
+                        message += sFTPUserTitle + ' ' + isRequired + '\n';
+                        cont = false;
+                    }
+                    var restEditId = '';
+                    var restPassword = '';
+                    if (editId == null) {
+                        if (sFTPPassword == '') {
+                            message += sFTPPasswordTitle + ' ' + isRequired + '\n';
+                            cont = false;
+                        } else {
+                            restPassword = '"sFTPPassword":"' + sFTPPassword + '"';
+                        }
+                    } else {
+                        restEditId = '"id":' + editId + ', ';
+                        if (sFTPPassword != 'XXXXXXXX') {
+                            restPassword = '"sFTPPassword":"' + sFTPPassword + '"';
+                        }
+                    }
+                    if (sFTPPath == '') {
+                        message += sFTPPathTitle + ' ' + isRequired + '\n';
+                        cont = false;
+                    }
+                    if (serverIp == '') {
+                        message += serverIpTitle + ' ' + isRequired + '\n';
+                        cont = false;
+                    }
+
+                    if (!cont) {
+                        alert(message);
+                    } else {
+                        $('.loading.tabla').show();
+                        $.ajax({
+                            url: '/business-services/spring/services/rest/regionserver/saveOrUpdateRegionServer/' + login,
+                            type: 'post',
+                            data: '{"RegionServerFrontEndDTO":{' +
+                                    restEditId +
+                                    '"active":' + active + ',' +
+                                    '"codeName":"' + codeName + '",' +
+                                    '"serverIp":"' + serverIp + '",' +
+                                    '"sFTPIp":"' + sFTPIp + '",' +
+                                    '"sFTPPath":"' + sFTPPath + '",' +
+                                    '"sFTPUser":"' + sFTPUser + '",' +
+                                    restPassword +
+                                    '}' +
+                                    '}',
+                            contentType: 'application/json; charset=UTF-8',
+                            crossDomain: true,
+                            dataType: 'json',
+                            success: function(response) {
+                                console.log(response);
+                                var errorsFound = response.RestResponseDTO.error;
+                                if (!errorsFound) {
+                                    $('.loading.tabla').fadeOut(500);
+                                    window.location.reload();
+                                } else {
+                                    console.log(response);
+                                    $('.loading.tabla').fadeOut(500);
+                                    alert(noExpectedError);
+                                }
+                            }, error: function(request, status, error) {
+                                console.error(request.responseText);
+                                console.log(status);
+                                console.error(error);
+                                $('.loading.tabla').fadeOut(500);
+                            }
+                        });
+                    }
+                }
+
+</script>

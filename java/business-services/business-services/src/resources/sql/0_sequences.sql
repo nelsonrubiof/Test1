@@ -1,0 +1,65 @@
+CREATE SEQUENCE reject_history_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE reject_history_seq OWNER TO periscope;
+
+CREATE SEQUENCE reject_error_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE reject_error_seq OWNER TO periscope;
+COMMENT ON SEQUENCE reject_error_seq IS 'Secuencia para procesos de reject con error';
+
+
+CREATE SEQUENCE evidences_and_proofs_id_seq
+INCREMENT 1
+MINVALUE 1
+MAXVALUE 999999999999
+START 1
+CACHE 1;
+ALTER TABLE evidences_and_proofs_id_seq OWNER TO periscope;
+
+CREATE SEQUENCE reporting_data_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE reporting_data_seq OWNER TO periscope;
+
+CREATE SEQUENCE metric_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE metric_seq OWNER TO periscope;
+
+CREATE SEQUENCE situation_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE situation_seq OWNER TO periscope;
+
+CREATE SEQUENCE evidence_request_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE evidence_request_seq OWNER TO periscope;
+
+CREATE SEQUENCE reporting_data_observed_situation_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE reporting_data_observed_situation_seq OWNER TO periscope;
