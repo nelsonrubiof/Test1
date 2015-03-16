@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<security>
+	<user>
+		<name>admin</name>
+		<password>f8692464653cd95c1dcf1b078bcfc2620719470d3b84a96874764e81af56f68c</password>
+		<sessionId>34598</sessionId>
+		<privileges>
+			<privilege>mount</privilege>
+			<privilege>unmount</privilege>
+			<privilege>format</privilege>
+			<privilege>swap</privilege>
+		</privileges>
+	</user>
+	<user>
+		<name>operator</name>
+		<password>operator</password>
+		<sessionId>24512</sessionId>
+		<privileges>
+			<privilege>mount</privilege>
+			<privilege>unmount</privilege>
+		</privileges>
+	</user>
+</security>
