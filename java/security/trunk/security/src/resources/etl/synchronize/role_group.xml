@@ -1,0 +1,41 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+    <description>
+        Insert o update de usurios en joomla
+    </description>	
+	<connection id="conPostgres" driver="spring" url="dataSource"/>
+
+    <connection id="conSynchronize" driver="${driver}" url="${url}" user="${userDb}" password="${pwdDb}"/>
+
+    <!--Sincronizamos RolesGroup-->
+    <query connection-id="conPostgres">       
+        select id, name, description, deleted
+        from roles_group
+        where id  = ${roleGroupId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_role_group(?id, ?name, ?description, ?deleted);
+        </query>
+    </query>
+
+    <!--Sincronizamos Roles-->
+    <query connection-id="conPostgres">
+        select r.id, r.role_name
+        from role r, rel_roles_group_role rrgr
+        where r.id = rrgr.role_id
+            and rrgr.roles_group_id  = ${roleGroupId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_role(?id, ?role_name);
+        </query>
+    </query>
+
+    <!--Sincronizamos Relacion RoleGroup Role-->
+    <query connection-id="conPostgres">
+        select roles_group_id, role_id
+        from rel_roles_group_role
+        where roles_group_id  = ${roleGroupId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_rel_role_group_role(?roles_group_id, ?role_id);
+        </query>
+    </query>
+
+</etl>

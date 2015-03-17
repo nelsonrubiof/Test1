@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    
+    <package name="default" extends="struts-default" >
+       
+        <interceptors>            
+            <interceptor name="transaction" class="com.scopix.periscope.frameworksfoundation.struts2.TransactionInterceptor" />            
+            <interceptor name="exception" class="com.scopix.periscope.frameworksfoundation.struts2.CustomExceptionHandler"/>
+            <interceptor name="execAndWait" class="com.scopix.periscope.frameworksfoundation.struts2.CustomExecAndWaitInterceptor" />
+            
+            <interceptor-stack name="scopixStack">
+                <interceptor-ref name="defaultStack" />
+                <interceptor-ref name="transaction" />
+                <interceptor-ref name="exception" />
+                <interceptor-ref name="execAndWait">
+                    <param name="delay">0</param>
+                    <param name="delaySleepInterval">0</param>
+                </interceptor-ref>
+            </interceptor-stack>
+            
+            
+        </interceptors>        
+        <default-interceptor-ref name="scopixStack" />
+        
+        <global-results>
+            <result name="error">/WEB-INF/jsp/error.jsp</result>
+            <result name="confirmation">/WEB-INF/jsp/delete.jsp</result>
+            <result name="wait">/WEB-INF/jsp/wait.jsp</result>
+            <result name="login">/WEB-INF/jsp/login.jsp</result>
+        </global-results>
+        
+        <global-exception-mappings>
+            <exception-mapping exception="com.scopix.periscope.periscopefoundation.exception.PeriscopeException" result="error"/>
+            <exception-mapping exception="java.lang.Exception" result="error" />
+            <exception-mapping exception="com.scopix.periscope.periscopefoundation.exception.PeriscopeSecurityExeption" result="login" />  
+        </global-exception-mappings>
+        
+        <action name="*" class="com.scopix.periscope.frameworksfoundation.struts2.BaseAction">
+            <interceptor-ref name="scopixStack" />
+        </action>
+    </package>
+    <constant name="struts.custom.i18n.resources" value="i18n"/>
+    <constant name="struts.devMode" value="false" />
+</struts>
+

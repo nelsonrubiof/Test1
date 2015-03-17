@@ -1,0 +1,131 @@
+package com.scopix.periscope.securitymanagement;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author marko.perich
+ */
+public class CorporateStructureManagerPermissions {
+
+    public static final String GET_CORPORATE_PERMISSION = "GET_CORPORATE_PERMISSION";
+    public static final String ADD_CORPORATE_PERMISSION = "ADD_CORPORATE_PERMISSION";
+    public static final String UPDATE_CORPORATE_PERMISSION = "UPDATE_CORPORATE_PERMISSION";
+    public static final String GET_STORE_PERMISSION = "GET_STORE_PERMISSION";
+    public static final String GET_LIST_STORE_PERMISSION = "GET_LIST_STORE_PERMISSION";
+    public static final String ADD_STORE_PERMISSION = "ADD_STORE_PERMISSION";
+    public static final String UPDATE_STORE_PERMISSION = "UPDATE_STORE_PERMISSION";
+    public static final String REMOVE_STORE_PERMISSION = "REMOVE_STORE_PERMISSION";
+    public static final String GET_AREA_PERMISSION = "GET_AREA_PERMISSION";
+    public static final String GET_LIST_AREA_PERMISSION = "GET_LIST_AREA_PERMISSION";
+    public static final String ADD_AREA_PERMISSION = "ADD_AREA_PERMISSION";
+    public static final String UPDATE_AREA_PERMISSION = "UPDATE_AREA_PERMISSION";
+    public static final String REMOVE_AREA_PERMISSION = "REMOVE_AREA_PERMISSION";
+    public static final String GET_AREATYPE_PERMISSION = "GET_AREATYPE_PERMISSION";
+    public static final String GET_LIST_AREATYPE_PERMISSION = "GET_LIST_AREATYPE_PERMISSION";
+    public static final String ADD_AREATYPE_PERMISSION = "ADD_AREATYPE_PERMISSION";
+    public static final String UPDATE_AREATYPE_PERMISSION = "UPDATE_AREATYPE_PERMISSION";
+    public static final String REMOVE_AREATYPE_PERMISSION = "REMOVE_AREATYPE_PERMISSION";
+    public static final String GET_EVIDENCE_SERVER_PERMISSION = "GET_EVIDENCE_SERVER_PERMISSION";
+    public static final String GET_LIST_EVIDENCE_SERVER_PERMISSION = "GET_LIST_EVIDENCE_SERVER_PERMISSION";
+    public static final String ADD_EVIDENCE_SERVER_PERMISSION = "ADD_EVIDENCE_SERVER_PERMISSION";
+    public static final String UPDATE_EVIDENCE_SERVER_PERMISSION = "UPDATE_EVIDENCE_SERVER_PERMISSION";
+    public static final String REMOVE_EVIDENCE_SERVER_PERMISSION = "REMOVE_EVIDENCE_SERVER_PERMISSION";
+    public static final String GET_EVIDENCE_EXTRACTION_SERVER_PERMISSION = "GET_EVIDENCE_EXTRACTION_SERVER_PERMISSION";
+    public static final String GET_LIST_EVIDENCE_EXTRACTION_SERVER_PERMISSION = "GET_LIST_EVIDENCE_EXTRACTION_SERVER_PERMISSION";
+    public static final String GET_FREE_LIST_EVIDENCE_EXTRACTION_SERVER_PERMISSION =
+            "GET_FREE_LIST_EVIDENCE_EXTRACTION_SERVER_PERMISSION";
+    public static final String ADD_EVIDENCE_EXTRACTION_SERVER_PERMISSION = "ADD_EVIDENCE_EXTRACTION_SERVER_PERMISSION";
+    public static final String UPDATE_EVIDENCE_EXTRACTION_SERVER_PERMISSION = "UPDATE_EVIDENCE_EXTRACTION_SERVER_PERMISSION";
+    public static final String REMOVE_EVIDENCE_EXTRACTION_SERVER_PERMISSION = "REMOVE_EVIDENCE_EXTRACTION_SERVER_PERMISSION";
+    public static final String GET_EVIDENCE_PROVIDER_PERMISSION = "GET_EVIDENCE_PROVIDER_PERMISSION";
+    public static final String GET_LIST_EVIDENCE_PROVIDER_PERMISSION = "GET_LIST_EVIDENCE_PROVIDER_PERMISSION";
+    public static final String ADD_EVIDENCE_PROVIDER_TYPE_PERMISSION = "ADD_EVIDENCE_PROVIDER_TYPE_PERMISSION";
+    public static final String GET_EVIDENCE_PROVIDER_TYPE_PERMISSION = "GET_EVIDENCE_PROVIDER_TYPE_PERMISSION";
+    public static final String GET_LIST_EVIDENCE_PROVIDER_TYPE_PERMISSION = "GET_LIST_EVIDENCE_PROVIDER_TYPE_PERMISSION";
+    public static final String REMOVE_EVIDENCE_PROVIDER_TYPE_PERMISSION = "REMOVE_EVIDENCE_PROVIDER_TYPE_PERMISSION";
+    public static final String ADD_EVIDENCE_PROVIDER_PERMISSION = "ADD_EVIDENCE_PROVIDER_PERMISSION";
+    public static final String UPDATE_EVIDENCE_PROVIDER_PERMISSION = "UPDATE_EVIDENCE_PROVIDER_PERMISSION";
+    public static final String REMOVE_EVIDENCE_PROVIDER_PERMISSION = "REMOVE_EVIDENCE_PROVIDER_PERMISSION";
+    public static final String SEND_EXTRACTION_PLAN = "SEND_EXTRACTION_PLAN";
+    public static final String ADD_REGION_PERMISSION = "ADD_REGION_PERMISSION";
+    public static final String GET_REGION_PERMISSION = "GET_REGION_PERMISSION";
+    public static final String GET_REGION_LIST_PERMISSION = "GET_REGION_LIST_PERMISSION";
+    public static final String UPDATE_REGION_PERMISSION = "UPDATE_REGION_PERMISSION";
+    public static final String REMOVE_REGION_PERMISSION = "REMOVE_REGION_PERMISSION";
+    public static final String ADD_COUNTRY_PERMISSION = "ADD_COUNTRY_PERMISSION";
+    public static final String GET_COUNTRY_PERMISSION = "GET_COUNTRY_PERMISSION";
+    public static final String GET_COUNTRY_LIST_PERMISSION = "GET_COUNTRY_LIST_PERMISSION";
+    public static final String UPDATE_COUNTRY_PERMISSION = "UPDATE_COUNTRY_PERMISSION";
+    public static final String REMOVE_COUNTRY_PERMISSION = "REMOVE_COUNTRY_PERMISSION";
+    public static final String EXTRACTION_PLAN_TO_PAST_PERMISSION = "EXTRACTION_PLAN_TO_PAST_PERMISSION";
+    public static final String GET_SENSOR_PERMISSION = "GET_SENSOR_PERMISSION";
+    public static final String GET_SENSOR_LIST_PERMISSION = "GET_SENSOR_LIST_PERMISSION";
+    public static final String ADD_SENSOR_PERMISSION = "ADD_SENSOR_PERMISSION";
+    public static final String UPDATE_SENSOR_PERMISSION = "UPDATE_SENSOR_PERMISSION";
+    public static final String REMOVE_SENSOR_PERMISSION = "REMOVE_SENSOR_PERMISSION";
+    public static final String UPDATE_RELATION_EVIDENCE_PROVIDER_LOCATION = "UPDATE_RELATION_EVIDENCE_PROVIDER_LOCATION";
+
+    public static List<String> getPermissionsList() {
+        List<String> permissions = new ArrayList<String>();
+        permissions.add(GET_CORPORATE_PERMISSION);
+        permissions.add(ADD_CORPORATE_PERMISSION);
+        permissions.add(UPDATE_CORPORATE_PERMISSION);
+        permissions.add(GET_STORE_PERMISSION);
+        permissions.add(GET_LIST_STORE_PERMISSION);
+        permissions.add(ADD_STORE_PERMISSION);
+        permissions.add(UPDATE_STORE_PERMISSION);
+        permissions.add(REMOVE_STORE_PERMISSION);
+        permissions.add(GET_AREA_PERMISSION);
+        permissions.add(GET_LIST_AREA_PERMISSION);
+        permissions.add(ADD_AREA_PERMISSION);
+        permissions.add(UPDATE_AREA_PERMISSION);
+        permissions.add(REMOVE_AREA_PERMISSION);
+        permissions.add(GET_AREATYPE_PERMISSION);
+        permissions.add(GET_LIST_AREATYPE_PERMISSION);
+        permissions.add(ADD_AREATYPE_PERMISSION);
+        permissions.add(UPDATE_AREATYPE_PERMISSION);
+        permissions.add(REMOVE_AREATYPE_PERMISSION);
+        permissions.add(GET_EVIDENCE_SERVER_PERMISSION);
+        permissions.add(GET_LIST_EVIDENCE_SERVER_PERMISSION);
+        permissions.add(ADD_EVIDENCE_SERVER_PERMISSION);
+        permissions.add(UPDATE_EVIDENCE_SERVER_PERMISSION);
+        permissions.add(REMOVE_EVIDENCE_SERVER_PERMISSION);
+        permissions.add(GET_EVIDENCE_EXTRACTION_SERVER_PERMISSION);
+        permissions.add(GET_LIST_EVIDENCE_EXTRACTION_SERVER_PERMISSION);
+        permissions.add(GET_FREE_LIST_EVIDENCE_EXTRACTION_SERVER_PERMISSION);
+        permissions.add(ADD_EVIDENCE_EXTRACTION_SERVER_PERMISSION);
+        permissions.add(UPDATE_EVIDENCE_EXTRACTION_SERVER_PERMISSION);
+        permissions.add(REMOVE_EVIDENCE_EXTRACTION_SERVER_PERMISSION);
+        permissions.add(GET_EVIDENCE_PROVIDER_PERMISSION);
+        permissions.add(GET_LIST_EVIDENCE_PROVIDER_PERMISSION);
+        permissions.add(ADD_EVIDENCE_PROVIDER_PERMISSION);
+        permissions.add(UPDATE_EVIDENCE_PROVIDER_PERMISSION);
+        permissions.add(REMOVE_EVIDENCE_PROVIDER_PERMISSION);
+        permissions.add(SEND_EXTRACTION_PLAN);
+        permissions.add(ADD_EVIDENCE_PROVIDER_TYPE_PERMISSION);
+        permissions.add(GET_EVIDENCE_PROVIDER_TYPE_PERMISSION);
+        permissions.add(GET_LIST_EVIDENCE_PROVIDER_TYPE_PERMISSION);
+        permissions.add(REMOVE_EVIDENCE_PROVIDER_TYPE_PERMISSION);
+        permissions.add(ADD_REGION_PERMISSION);
+        permissions.add(GET_REGION_PERMISSION);
+        permissions.add(GET_REGION_LIST_PERMISSION);
+        permissions.add(UPDATE_REGION_PERMISSION);
+        permissions.add(REMOVE_REGION_PERMISSION);
+        permissions.add(ADD_COUNTRY_PERMISSION);
+        permissions.add(GET_COUNTRY_PERMISSION);
+        permissions.add(GET_COUNTRY_LIST_PERMISSION);
+        permissions.add(UPDATE_COUNTRY_PERMISSION);
+        permissions.add(REMOVE_COUNTRY_PERMISSION);
+        permissions.add(EXTRACTION_PLAN_TO_PAST_PERMISSION);
+        permissions.add(GET_SENSOR_PERMISSION);
+        permissions.add(GET_SENSOR_LIST_PERMISSION);
+        permissions.add(ADD_SENSOR_PERMISSION);
+        permissions.add(UPDATE_SENSOR_PERMISSION);
+        permissions.add(REMOVE_SENSOR_PERMISSION);
+        permissions.add(UPDATE_RELATION_EVIDENCE_PROVIDER_LOCATION);
+
+        return permissions;
+    }
+}

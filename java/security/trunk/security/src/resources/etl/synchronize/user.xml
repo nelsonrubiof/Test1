@@ -1,0 +1,98 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+    <description>
+        Insert o update de usurios en joomla
+    </description>
+    <connection id="conPostgres" driver="spring" url="dataSource"/>
+
+    <connection id="conSynchronize" driver="${driver}" url="${url}" user="${userDb}" password="${pwdDb}"/>
+    
+    <!--
+    sincronizamos el corporate
+    se deben sacar todos los corporate para el usuario
+    -->
+    <query connection-id="conPostgres">
+        select c.id, c.name, c.description
+        from corporate c, rel_periscope_user_corporate puc
+        where c.id = puc.corporate_id
+        and puc.periscope_user_id  = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_corporate(?id, ?name, ?description);
+        </query>
+    </query>
+
+    <!--Sincronizacion de Usuario-->
+    <query connection-id="conPostgres">
+        select id, name, user_state, start_date, modification_date, password,
+               deleted, email, main_corporate_id, full_name, job_position
+        from periscope_user
+        where id  = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_user(?id, ?name, ?user_state, ?start_date, ?modification_date, ?password, ?deleted, ?email,
+                              ?main_corporate_id, ?full_name, ?job_position);
+        </query>
+    </query>
+
+    <!--Sincronizacion Store-->
+    <query connection-id="conPostgres">
+        select s.id, s.name, s.description, s.corporate_id, s.corporate_store_id
+            from store s, rel_periscope_user_store rpus
+        where s.id = rpus.store_id
+        and rpus.periscope_user_id = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_store(?id, ?name, ?description, ?corporate_id, ?corporate_store_id);
+        </query>
+    </query>
+
+    <!--Sincronizacion Area Type-->
+    <query connection-id="conPostgres">
+        select at.id, at.name, at.description, at.corporate_id, at.corporate_area_type_id
+        from area_type at, rel_periscope_user_area_type rpuat
+        where at.id = rpuat.area_type_id
+        and rpuat.periscope_user_id  = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_area_type(?id, ?name, ?description, ?corporate_id, ?corporate_area_type_id);
+        </query>
+    </query>
+
+    <!--Sincronizacion Relacion User Area Type-->
+    <query connection-id="conPostgres">
+        select periscope_user_id, area_type_id 
+        from rel_periscope_user_area_type
+        where periscope_user_id  = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_rel_user_area_type(?periscope_user_id, ?area_type_id);
+        </query>
+    </query>
+
+    <!--Sincronizacion Relacion User Role_Group-->
+    <query connection-id="conPostgres">
+        select periscope_user_id, roles_group_id 
+        from rel_periscope_user_roles_group
+        where periscope_user_id  = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_rel_user_role_group(?periscope_user_id, ?roles_group_id);
+        </query>
+    </query>
+
+    <!--Sincronizacion Relacion User Store-->
+    <query connection-id="conPostgres">
+        select periscope_user_id, store_id
+        from rel_periscope_user_store
+        where periscope_user_id = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_rel_user_store(?periscope_user_id, ?store_id );
+        </query>
+    </query>
+
+    <!--Sincronizacion Relacion User Corporate-->
+    <query connection-id="conPostgres">
+        select periscope_user_id, corporate_id
+        from rel_periscope_user_corporate
+        where periscope_user_id  = ${userId};
+        <query connection-id="conSynchronize">
+            select synchronize.merge_rel_user_corporate(?periscope_user_id, ?corporate_id);
+        </query>
+    </query>
+
+</etl>

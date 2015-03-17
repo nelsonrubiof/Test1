@@ -1,0 +1,61 @@
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+    <description>
+        Insert o update de usurios en joomla
+    </description>	
+	<connection id="conPostgres" driver="spring" url="dataSource"/>
+    <!--driver="postgresql" url="jdbc:postgresql://localhost:5432/periscope_security_1" user="periscope" password="periscope" 
+    classpath="C:\Users\nelson\Downloads\java\postgresql-8.3-603.jdbc3.jar"/>-->
+
+    <connection id="conMysql" driver="mysql" url="${url}" user="${userDb}" password="${pwdDb}"/>
+    <!--url="jdbc:mysql://localhost:3306/joomla15" classpath="C:\Users\nelson\Downloads\java\mysql-connector-java-5.1.13-bin.jar" />-->
+    
+    <query connection-id="conPostgres">
+       <!--Usuarios del corporate-->
+        select id, name, start_date, email, full_name
+        from periscope_user
+        where (main_corporate_id  = ${corporateId} and user_state = 'ACTIVE')
+               or (id=131072 and main_corporate_id  = 0); <!-- usuario lvera-->
+        <script connection-id="conMysql">
+            insert into jos_users
+            (id, name, username, email, usertype, block, sendEmail, registerDate, params, gid) values (
+            ?id, ?full_name, ?name, ?email, 'Registered', 0, 0, ?start_date, '', 18)
+            on duplicate key
+            update username=?name, name= ?full_name, email = ?email, registerDate = ?start_date, gid=18;
+
+            insert into jos_core_acl_aro (id, section_value, value ,name) values
+            (?id, 'users', ?id, ?name)
+            on duplicate key
+            update name =?name, value =?id;
+
+            insert into jos_core_acl_groups_aro_map (group_id, section_value, aro_id) values
+            (18, '', ?id) on duplicate key update aro_id=?id;
+            <!--include href="joomla/sql/insert_user_joomla.sql" /-->
+        </script>
+    </query>
+
+    <!--usuarios Scopix Manager-->
+    <query connection-id="conPostgres">
+        <!--usuarios Scopix -->
+        select id, name, start_date, email, full_name
+        from periscope_user
+        where user_state = 'ACTIVE' and
+             id in(393216,65536,131073,1015812);
+             <!-- sacamos los usuario necesarios por id marko.perich, gabriel, aschilkrut, casey.adams-->
+        <script connection-id="conMysql">
+            insert into jos_users
+            (id, name, username, email, usertype, block, sendEmail, registerDate, params, gid) values (
+            ?id, ?full_name, ?name, ?email, 'Manager', 0, 0, ?start_date, '', 23)
+            on duplicate key
+            update username=?name, name= ?full_name, email = ?email, registerDate = ?start_date, gid=23;
+
+            insert into jos_core_acl_aro (id, section_value, value ,name) values
+            (?id, 'users', ?id, ?name)
+            on duplicate key
+            update name =?name, value =?id;
+
+            insert into jos_core_acl_groups_aro_map (group_id, section_value, aro_id) values
+            (23, '', ?id) on duplicate key update aro_id=?id;
+        </script>
+    </query>
+</etl>

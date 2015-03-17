@@ -1,0 +1,7 @@
+CREATE SEQUENCE seq_store_areatype
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 110
+  CACHE 1;
+ALTER TABLE seq_store_areatype OWNER TO periscope;

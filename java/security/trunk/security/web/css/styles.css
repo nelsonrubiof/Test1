@@ -1,0 +1,70 @@
+/* 
+    Document   : styles
+    Created on : 07-mar-2008, 14:08:06
+    Author     : Operator2
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+body {
+    background: #E7F1FE;
+}
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+    color: #000066;
+    vertical-align:middle;	
+}
+
+h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+    color: #000066;
+    vertical-align:middle;	
+}
+
+h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+    color: #000066;
+    vertical-align:middle;	
+}
+
+h4 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+    color: #000066;
+    vertical-align:middle;	
+}
+
+.tabs {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+    align: center;
+    font-size:18px;
+}
+
+.tabsSub {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: oblique;
+    align: center;
+    font-size:16px;
+}
+
+.optionTabs {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    align: center;
+    font-size:14px;
+}
+
+
+
