@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+				layout="absolute"
+				creationComplete="init()" 
+				xmlns:ns1="com.scopix.qualitycontrol.view.*"
+				xmlns:ns2="com.scopix.security.view.*"
+				xmlns:components="commons.components.*"
+				horizontalAlign="center" 
+				verticalAlign="middle" 
+				horizontalScrollPolicy="off"
+				verticalScrollPolicy="off"
+				pageTitle="Quality Control">
+	<mx:states>
+		<mx:State name="selectCorporateState">
+			<mx:RemoveChild target="{loginMenu}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+				<ns1:SelectCorporate horizontalCenter="0" verticalCenter="8" id="selectCorporate" />
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="filterViewState" basedOn="selectCorporateState">
+			<mx:RemoveChild target="{selectCorporate}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+				<ns1:FilterView horizontalCenter="0" verticalCenter="8" id="filterView" />
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	<mx:Style source="assets/css/Styles.css"/>
+	<mx:Style source="assets/css/Charts.css"/>
+	<mx:Script>
+		<![CDATA[
+			import com.scopix.global.GlobalParameters;
+			import com.scopix.periscope.webservices.security.SecurityWebServicesClient;
+			import com.scopix.qualitycontrol.model.arrays.ArrayOfCorporateParameter;
+			import com.scopix.qualitycontrol.model.vo.CorporateParameter;
+			import com.scopix.util.KeepAliveTimer;
+			
+			import commons.PopUpUtils;
+			import commons.config.Configuration;
+			
+			import mx.controls.Alert;
+			import mx.events.StateChangeEvent;
+			import mx.resources.ResourceManager;
+			
+			private function init():void {
+				Configuration.getInstance().loadParameterFile("assets/config/parameters.xml","e4x");
+				Configuration.getInstance().addEventListener(Configuration.CONFIGURATION_COMPLETE, startApp);
+				GlobalParameters.getInstance().version = "Version 2.1.0";
+			}
+			
+			private function startApp(evt:Event):void {
+				//verificando modo de ejecución
+				var test:String = Configuration.getInstance().config.Test;
+				if (test == "true") {
+					GlobalParameters.getInstance().test = true;
+					//configurando web service para test
+					//WebServicesClientTest.getInstance().config("test");
+				} else {
+					GlobalParameters.getInstance().test = false;
+				}
+				
+				//load days of week
+				GlobalParameters.getInstance().loadDaysOfWeek();
+				
+				//cargando los corporates con sus url configuradas en el archivo de parametros
+				var xmlCorporateParameterList:XMLList = Configuration.getInstance().config.Webservices.BusinessServices.Corporate;
+				
+				var corporateListParameter:ArrayOfCorporateParameter = new ArrayOfCorporateParameter();
+				var corporateParameter:CorporateParameter = null;
+				for each (var obj:XML in xmlCorporateParameterList) {
+					corporateParameter = new CorporateParameter();
+					
+					corporateParameter.id = obj.id;
+					corporateParameter.description = obj.description;
+					corporateParameter.qualityUrl = obj.qualityUrl;
+					corporateParameter.corporateUrl = obj.corporateUrl;
+					corporateParameter.evidenceProofUrl = obj.evidenceProofUrl;
+					corporateParameter.templateUrl = obj.templateUrl;
+					
+					corporateListParameter.addCorporateParameter(corporateParameter);
+				}
+				
+				GlobalParameters.getInstance().corporateListParameter = corporateListParameter;
+				GlobalParameters.getInstance().getStatusSendEPCInterval = 5;
+				
+				//configurando url de webservice de seguridad.
+				SecurityWebServicesClient.getInstance().config(Configuration.getInstance().config.Webservices.Security);
+				
+				var kat:KeepAliveTimer = new KeepAliveTimer(30);
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:Panel id="panelPrincipal" width="100%" height="100%" layout="absolute" styleName="CustomPanel">
+		<ns1:Header width="100%"/>
+		<ns2:Login horizontalCenter="0" verticalCenter="8"  id="loginMenu" height="192"/>
+		<components:LoadingPopup id="loadingPopUp" visible="false"/>		
+	</mx:Panel>
+</mx:Application>

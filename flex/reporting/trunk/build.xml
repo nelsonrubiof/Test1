@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name='Flex Ant Tasks Build Script'>
+       
+    <property name='application.name' value='Reporting'/>
+    <property name='application.title' value='Reporting Data Uploading'/>
+    <property name='application.zipname' value='reporting.zip'/>
+
+    <import file="${ant.home}/conf/build-cc-flex.xml"/>
+    <property file='${ant.home}/conf/build-flex.properties'/>    
+    <property name='deploypath.dir' value='${basedir}/bin-debug' />        
+    <property name='html.file' value='${deploypath.dir}/${application.name}.html' />
+	<property name='project_sdk.version' value='3.6.0' />
+
+</project>
+

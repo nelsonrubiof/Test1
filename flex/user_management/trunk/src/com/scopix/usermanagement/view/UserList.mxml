@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="956" 
+    height="537" 
+    minWidth="956" 
+    minHeight="470" 
+    cornerRadius="20" 
+    creationComplete="init();" xmlns:view="com.scopix.usermanagement.view.*"
+    backgroundColor="#ffffff">
+    <mx:Script>
+        <![CDATA[
+        	import com.scopix.usermanagement.controller.actions.UserManagementAction;
+        	import com.scopix.usermanagement.model.UserManagementModel;
+            import commons.ResourceLocator;
+            import com.scopix.global.MassiveModificationType;
+            import com.scopix.util.UtilityFunctions;
+            import mx.formatters.DateFormatter;
+            import com.scopix.usermanagement.model.vo.PeriscopeUserVO;
+            import mx.controls.Alert;
+            import com.scopix.enum.UserStatesEnum;
+            import com.scopix.global.GlobalParameters;
+            
+            [Bindable]
+            private var action:UserManagementAction;
+            [Bindable]
+            private var model:UserManagementModel;
+            
+            private function init():void {
+                action = UserManagementAction.getInstance();
+                model = UserManagementModel.getInstance();
+            }
+            
+            private function labelStatus(item:Object):String {
+                return UtilityFunctions.labelStatus("userlistnormal.statusFilterCombo", item);
+            }
+            
+            private function formatDate(item:Object, column:AdvancedDataGridColumn):String {
+                return UtilityFunctions.formatDate(item, column);
+            }
+            
+            private function labelUserStatus(item:Object, column:AdvancedDataGridColumn):String {
+                var pu:PeriscopeUserVO = (item as PeriscopeUserVO);
+                return resourceManager.getString('resources','userlistnormal.userList.status.' + pu.userState.value);
+            }
+            
+            private function filterData(obj:Object):Boolean {
+                //action.periscopeUserList.filterFunction
+                return false;
+            }
+        ]]>
+    </mx:Script>
+    <mx:Panel title="{resourceManager.getString('resources','userlistnormal.title') + ' - ' + model.userListNormalTitle}" 
+        width="100%" height="100%" styleName="scopixPanel">
+        <!--
+        <mx:HBox height="35" verticalAlign="middle" width="100%">
+            <mx:Label id="userNameFilter" text="{resourceManager.getString('resources','userlistnormal.userNameFilter')}"/>
+            <mx:TextInput id="userNameFilterText" borderStyle="inset" />
+            <mx:Spacer width="5" height="100%" />
+            <mx:Label id="emailFilter" text="{resourceManager.getString('resources','userlistnormal.emailFilter')}"/>
+            <mx:TextInput id="emailFilterText" borderStyle="inset" width="172"/>
+            <mx:Spacer width="5" height="100%" />
+            <mx:Label id="jobPositionFilter" text="{resourceManager.getString('resources','userlistnormal.jobPositionFilter')}"/>
+            <mx:TextInput id="jobPositionFilterText" borderStyle="inset" />
+        </mx:HBox>
+        <mx:HBox height="35" verticalAlign="middle" width="100%">
+            <mx:Label id="statusFilter" text="{resourceManager.getString('resources','userlistnormal.statusFilter')}"/>
+            <mx:ComboBox id="statusFilterCombo" width="200" dataProvider="{UserStatesEnum.comboList}" labelFunction="labelStatus" />
+            <mx:Spacer width="5" height="100%" />
+            <mx:Button id="search" label="{resourceManager.getString('resources','userlistnormal.search')}" click="filterData(event);" />
+        </mx:HBox>-->
+        <mx:AdvancedDataGrid id="userList" width="100%" height="100%" dataProvider="{model.periscopeUserList}" 
+        	doubleClickEnabled="true" doubleClick="action.editUserNormalView(userList.selectedItem as PeriscopeUserVO);" 
+        	selectionMode="multipleRows">
+            <mx:columns>
+                <mx:AdvancedDataGridColumn dataField="userName" width="15" headerText="{resourceManager.getString('resources','userlistnormal.userList.userName')}"/>
+                <mx:AdvancedDataGridColumn dataField="fullName" width="20" headerText="{resourceManager.getString('resources','userlistnormal.userList.fullName')}"/>
+                <mx:AdvancedDataGridColumn dataField="jobPosition" width="15" headerText="{resourceManager.getString('resources','userlistnormal.userList.jobPosition')}"/>
+                <mx:AdvancedDataGridColumn dataField="email" width="35" headerText="{resourceManager.getString('resources','userlistnormal.userList.email')}"/>
+                <mx:AdvancedDataGridColumn dataField="userState" width="10" headerText="{resourceManager.getString('resources','userlistnormal.userList.status')}" labelFunction="labelUserStatus"/>
+                <mx:AdvancedDataGridColumn dataField="startDate" width="20" headerText="{resourceManager.getString('resources','userlistnormal.userList.startDate')}" labelFunction="formatDate"/>
+            </mx:columns>
+        </mx:AdvancedDataGrid>
+        <mx:VBox>
+            <mx:HBox height="30" verticalAlign="middle" width="100%" bottom="5">
+                <mx:Button id="addUser" label="{resourceManager.getString('resources','userlistnormal.addUser')}" width="81" height="22" 
+                    click="action.addUserNormalView();"/>
+                <mx:Button id="editUser" label="{resourceManager.getString('resources','userlistnormal.editUser')}" width="81" height="22" 
+                    click="action.editUserNormalView(userList.selectedItem as PeriscopeUserVO);"/>
+                <mx:Button id="deleteUser" label="{resourceManager.getString('resources','userlistnormal.deleteUser')}" width="81" height="22" 
+                    click="action.deleteUsersNormal(userList.selectedItems);"/>
+                <mx:Spacer width="8%" height="100%" />
+                <mx:Button id="cloneUser" label="{resourceManager.getString('resources','userlistnormal.cloneUser')}" width="81" height="22"
+                    click="action.cloneUserNormal(userList.selectedItem as PeriscopeUserVO)" />
+            </mx:HBox>
+            <mx:HBox height="30" verticalAlign="middle" width="100%" bottom="5">
+                <mx:Button id="modifyRoles" label="{resourceManager.getString('resources','userlistnormal.modifyRoles')}" width="130" height="22" 
+                    click="action.massiveModification(MassiveModificationType.ROLES, userList.selectedItems);"/>
+                <mx:Button id="modifyStores" label="{resourceManager.getString('resources','userlistnormal.modifyStores')}" width="130" height="22" 
+                    click="action.massiveModification(MassiveModificationType.STORES, userList.selectedItems);"/>
+                <mx:Button id="modifyAreas" label="{resourceManager.getString('resources','userlistnormal.modifyAreas')}" width="130" height="22" 
+                    click="action.massiveModification(MassiveModificationType.AREATYPE, userList.selectedItems);"/>
+                <mx:Button id="modifyCorporates" label="{resourceManager.getString('resources','userlistnormal.modifyCorporates')}" width="130" height="22" 
+                    click="action.massiveModification(MassiveModificationType.CLIENTS, userList.selectedItems);"
+                    visible="{model.corporateTabPresent}"/>
+            </mx:HBox>
+        </mx:VBox>
+        <mx:HBox horizontalAlign="right" verticalAlign="middle" width="100%" height="30">
+            <mx:Button id="changeClient" label="{resourceManager.getString('resources','userlistnormal.changeCorporate')}" 
+                click="action.changeClient();" right="60" />
+            <mx:Button id="logout" label="{resourceManager.getString('resources','userlistnormal.logout')}" width="81" height="22" right="5" 
+                click="action.logout();"/>
+        </mx:HBox>
+    </mx:Panel>
+</mx:VBox>

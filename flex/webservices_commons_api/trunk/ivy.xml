@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="/ivy-repository/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    
+    <info organisation="scopix-flex"
+          module="webservices_commons_api"
+          revision="2.0.0" >
+    </info>
+    
+    <publications>
+        <artifact name="webservices_commons_api" ext="swc" type="swc" />
+    </publications>
+
+    <dependencies>
+        <dependency name="fiberSwcs/libs/fiber" org="adobe" rev="4.5.0" changing="true"/>
+        <dependency name="fiberSwcs/locale/fiber_rb" org="adobe" rev="4.5.0" changing="true"/>
+        <dependency name="dcradSwcs/libs/serializers" org="adobe" rev="4.5.0" changing="true"/>
+    </dependencies>
+
+</ivy-module>

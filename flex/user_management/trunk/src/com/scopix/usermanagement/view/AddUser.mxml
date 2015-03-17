@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="740" 
+    height="400"
+    title="{model.addUserNormalTitle}" 
+    layout="absolute"
+    styleName="scopixPanel" creationComplete="init();">
+	<mx:Script>
+        <![CDATA[
+        	import mx.events.ScrollEvent;
+        	import com.scopix.usermanagement.controller.actions.UserManagementAction;
+        	import mx.binding.utils.BindingUtils;
+        	import com.scopix.usermanagement.model.vo.CorporateVO;
+        	import mx.events.IndexChangedEvent;
+        	import mx.validators.Validator;
+        	import com.scopix.util.UtilityFunctions;
+        	import commons.PopUpUtils;
+        	import com.scopix.enum.UserStatesEnum;
+        	import com.scopix.usermanagement.model.vo.StoreVO;
+        	import com.scopix.usermanagement.model.vo.RolesGroupVO;
+        	import com.scopix.usermanagement.model.vo.AreaTypeVO;
+        	import com.scopix.usermanagement.model.vo.PeriscopeUserVO;
+        	import com.scopix.usermanagement.model.UserManagementModel;
+            
+            [Bindable]
+            private var action:UserManagementAction;
+            [Bindable]
+            private var model:UserManagementModel;
+            [Bindable]
+            private var validatorArr:Array;
+
+            private function init():void {
+            	action = UserManagementAction.getInstance();
+            	model = UserManagementModel.getInstance();
+                validatorArr = new Array();
+                validatorArr.push(emV);
+                
+                BindingUtils.bindSetter(manageTab, model, "corporateTabPresent");
+            }
+            
+            private function manageTab(obj:Object):void {
+            	if (model.corporateTabPresent) {
+            		tabNavigator.addChildAt(new CorporateTab(), 1);
+            	} else if (tabNavigator.getChildren().length > 3){
+            		tabNavigator.removeChildAt(1);
+            	}
+            	
+            }
+            
+            private function labelStatus(item:Object):String {
+                return UtilityFunctions.labelStatus("addusernormal.statusCombo", item);
+            }
+            
+            private function saveUser():void {
+                if (validarForm()){
+                	var user:PeriscopeUserVO = new PeriscopeUserVO();
+                	
+                    user.userName = userNameText.text;
+                    user.fullName = fullNameText.text;
+                    user.jobPosition = jobPositionText.text;
+                    user.email = emailText.text;
+                    user.password = passwordText.text;
+                    user.userState = statusCombo.selectedItem as UserStatesEnum;
+                    model.confirmPassword = confirmPasswordText.text;
+                    
+                    action.saveUser(user);
+                }
+            }
+            
+            private function validarForm():Boolean {
+                var validatorErrorArray:Array = Validator.validateAll(validatorArr);;
+                var errorMessageArray:Array = new Array();
+
+                for each (var err:Object in validatorErrorArray) {
+                    var errField:String = FormItem(err.currentTarget.source.parent).label
+                    errorMessageArray.push(errField + ": " + err.message);
+                }
+
+                if (userNameText.text.length <= 0) {
+                    errorMessageArray.push(userNameItem.label + ": " + resourceManager.getString('resources','addusernormal.field_required'));
+                }
+                if (fullNameText.text.length <= 0) {
+                    errorMessageArray.push(fullNameItem.label + ": " + resourceManager.getString('resources','addusernormal.field_required'));
+                }
+                if (jobPositionText.text.length <= 0) {
+                    errorMessageArray.push(jobPositionItem.label + ": " + resourceManager.getString('resources','addusernormal.field_required'));
+                }
+                if (emailText.text.length <= 0) {
+                    errorMessageArray.push(emailItem.label + ": " + resourceManager.getString('resources','addusernormal.field_required'));
+                }
+                if (passwordText.text.length <= 0) {
+                    errorMessageArray.push(passwordItem.label + ": " + resourceManager.getString('resources','addusernormal.field_required'));
+                }
+                if (confirmPasswordText.text.length <= 0) {
+                    errorMessageArray.push(confirmPasswordItem.label + ": " + resourceManager.getString('resources','addusernormal.field_required'));
+                }
+                if (errorMessageArray.length!=0) {
+                    PopUpUtils.getInstance().showMessage(errorMessageArray.join("\n\n"), 'commons.invalid.form');
+                }
+                
+                return (errorMessageArray.length==0) ;
+            }
+            
+            private function selectAllRoles():void {
+                for each (var rg:RolesGroupVO in roleList.dataProvider) {
+                    rg.selected = chkRolesGroup.selected;
+                }
+            }
+            
+            private function selectAllStores():void {
+                for each (var st:StoreVO in storeList.dataProvider) {
+                    st.selected = chkStores.selected;
+                }
+            }
+            
+            private function selectAllAreaTypes():void {
+                for each (var at:AreaTypeVO in areaTypesList.dataProvider) {
+                    at.selected = chkAreaTypes.selected;
+                }
+            }
+
+            private function changeOptionsTabNav(evt:IndexChangedEvent):void {
+            	model.tabNavigatorIndex = evt.newIndex;
+            }
+            
+            private function changeRolesScrollPosition(evt:ScrollEvent):void {
+            	model.rolesScrollPosition = evt.position;
+            }
+
+            private function changeStoresScrollPosition(evt:ScrollEvent):void {
+            	model.storesScrollPosition = evt.position;
+            }
+
+            private function changeAreaTypesScrollPosition(evt:ScrollEvent):void {
+            	model.areaTypesScrollPosition = evt.position;
+            }
+        ]]>
+    </mx:Script>
+
+    <mx:HBox width="100%" height="305" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+        <mx:Form id="userData" width="350" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+            <mx:FormItem id="userNameItem" label="{resourceManager.getString('resources','addusernormal.userName')}"
+                required="true">
+                <mx:TextInput id="userNameText" text="{model.userName}" width="150" />
+            </mx:FormItem>
+            <mx:FormItem id="fullNameItem" label="{resourceManager.getString('resources','addusernormal.fullName')}"
+                required="true">
+                <mx:TextInput id="fullNameText" text="{model.fullName}" width="150" />
+            </mx:FormItem>
+            <mx:FormItem id="statusComboItem" label="{resourceManager.getString('resources','addusernormal.status')}" width="100%"
+                required="true">
+                <mx:ComboBox id="statusCombo" dataProvider="{UserStatesEnum.comboList}" labelFunction="labelStatus" width="150" 
+                    prompt="{resourceManager.getString('resources','addusernormal.statusCombo.prompt')}"
+                    selectedIndex="{model.stateIndex}"/>
+            </mx:FormItem>
+            <mx:FormItem id="jobPositionItem" label="{resourceManager.getString('resources','addusernormal.jobPosition')}"
+                required="true">
+                <mx:TextInput id="jobPositionText" text="{model.jobPosition}" width="150" />
+            </mx:FormItem>
+            <mx:FormItem id="emailItem" label="{resourceManager.getString('resources','addusernormal.email')}"
+                required="true">
+                <mx:TextInput id="emailText" text="{model.email}" width="150" validationSubField="kaka" />
+            </mx:FormItem>
+            <mx:FormItem id="passwordItem" label="{resourceManager.getString('resources','addusernormal.password')}"
+                required="true">
+                <mx:TextInput id="passwordText" text="{model.password}" displayAsPassword="true" width="150" />
+            </mx:FormItem>
+            <mx:FormItem id="confirmPasswordItem" label="{resourceManager.getString('resources','addusernormal.confirmPassword')}"
+                required="true">
+                <mx:TextInput id="confirmPasswordText" text="{model.confirmPasswordValue}" displayAsPassword="true" width="150" />
+            </mx:FormItem>
+        </mx:Form>
+        <mx:TabNavigator id="tabNavigator" width="50%" height="100%" creationPolicy="all" 
+        	selectedIndex="{model.tabNavigatorIndex}"
+        	change="changeOptionsTabNav(event)">
+            <mx:Canvas id="rolesPanel" label="{resourceManager.getString('resources','addusernormal.rolesPanel')}" width="100%" height="100%">
+                <mx:CheckBox id="chkRolesGroup" label="{resourceManager.getString('resources','addusernormal.selectAll')}" 
+                	click="selectAllRoles();" 
+                	selected="{model.chkRolesGroupSelected}"/>
+                <mx:List id="roleList" 
+                    dataProvider="{model.roleList}" 
+                    itemRenderer="com.scopix.usermanagement.view.renderer.SelectedRoleGroupRenderer" width="100%" height="90%" 
+                    allowMultipleSelection="true" y="22" labelField="description"
+			    	verticalScrollPosition="{model.rolesScrollPosition}"/>
+            </mx:Canvas>
+            <mx:Canvas id="storesPanel" label="{resourceManager.getString('resources','addusernormal.storesPanel')}" width="100%" height="100%">
+                <mx:CheckBox id="chkStores" label="{resourceManager.getString('resources','addusernormal.selectAll')}" 
+                	click="selectAllStores();" 
+                	selected="{model.chkStoresSelected}"/>
+                <mx:List id="storeList" 
+                    dataProvider="{model.storeList}"
+                    itemRenderer="com.scopix.usermanagement.view.renderer.SelectedStoreRenderer" width="100%" height="90%" 
+                    allowMultipleSelection="true" y="22" labelField="description"
+			    	verticalScrollPosition="{model.storesScrollPosition}"/>
+            </mx:Canvas>
+            <mx:Canvas id="areaTypesPanel" label="{resourceManager.getString('resources','addusernormal.areaTypesPanel')}" width="100%" height="100%">
+                <mx:CheckBox id="chkAreaTypes" label="{resourceManager.getString('resources','addusernormal.selectAll')}" 
+                	click="selectAllAreaTypes();"
+                	selected="{model.chkAreaTypesSelected}"/>
+                <mx:List id="areaTypesList" 
+                    dataProvider="{model.areaTypeList}" 
+                    itemRenderer="com.scopix.usermanagement.view.renderer.SelectedAreaTypeRenderer" width="100%" height="90%" 
+                    allowMultipleSelection="true" y="22" labelField="description"
+			    	verticalScrollPosition="{model.areaTypesScrollPosition}"/>
+            </mx:Canvas>
+        </mx:TabNavigator>
+    </mx:HBox>
+    <mx:Button id="save" label="{resourceManager.getString('resources','addusernormal.save')}" 
+    	width="110" height="25" x="123" y="325" click="saveUser();"/>
+    <mx:Button id="cancel" label="{resourceManager.getString('resources','addusernormal.cancel')}" 
+    	width="110" height="25" x="487" y="325" click="action.backUserListNormal();"/>
+    
+    <mx:EmailValidator id="emV"  source="{emailText}" property="text" />
+</mx:Panel>
+

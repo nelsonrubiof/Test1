@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+         width="400" 
+         height="186" 
+         x="-3" 
+         y="36" borderStyle="none" 
+         creationComplete="init();" 
+         xmlns:view="com.scopix.usermanagement.view.*"
+         horizontalScrollPolicy="off"
+         verticalScrollPolicy="off">
+
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.usermanagement.model.arrays.ArrayOfCorporateVO;
+            import mx.events.DropdownEvent;
+            import mx.binding.utils.BindingUtils;
+            import com.scopix.usermanagement.controller.actions.UserManagementAction;
+            import com.scopix.usermanagement.model.UserManagementModel;
+            import commons.ResourceLocator;
+            import com.scopix.usermanagement.model.vo.CorporateVO;
+            
+            [Bindable]
+            private var action:UserManagementAction;
+            [Bindable]
+            private var model:UserManagementModel;
+            
+            public function init():void {
+                action = UserManagementAction.getInstance();
+                model = UserManagementModel.getInstance();
+            }
+            
+            public function continuar():void {
+                var corporate:CorporateVO = corporateList.selectedItem as CorporateVO;
+                
+                action.userListNormal(corporate);
+            }
+        ]]>
+    </mx:Script>
+    <mx:Panel width="100%" height="178" title="{resourceManager.getString('resources','clientselect.title')}" layout="absolute" 
+              styleName="scopixPanel">
+        <mx:Image width="138" height="56" x="10" y="10" visible="false"/>
+        <mx:Form>
+            <mx:FormItem label="{resourceManager.getString('resources','clientselect.clientList.prompt')}" width="100%">
+                <mx:ComboBox id="corporateList"
+                             dataProvider="{model.clientsFilter}" labelField="description"/>
+            </mx:FormItem>
+        </mx:Form>
+        <mx:Button x="10" y="94" label="{resourceManager.getString('resources','clientselect.logout')}" width="81" height="22" click="action.logout()"/>
+        <mx:Button x="285" y="94" label="{resourceManager.getString('resources','clientselect.continue')}" width="81" height="22" click="continuar();"/>
+    </mx:Panel>
+    
+</mx:VBox>

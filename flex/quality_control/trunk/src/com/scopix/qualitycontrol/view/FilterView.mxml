@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+          width="95%"
+          height="85%"
+          styleName="scopixPanel"
+          layout="absolute"
+          creationComplete="init()"
+          horizontalScrollPolicy="off"
+          verticalScrollPolicy="off"
+          title="{resourceManager.getString('resources','filterView.title')}"
+          xmlns:view="com.scopix.qualitycontrol.view.*">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.global.GlobalParameters;
+            import com.scopix.qualitycontrol.controller.actions.QualityControlAction;
+            import com.scopix.qualitycontrol.model.QualityControlModel;
+            import com.scopix.qualitycontrol.model.vo.AreaVO;
+            import com.scopix.qualitycontrol.model.vo.MetricResultVO;
+            import com.scopix.qualitycontrol.model.vo.ObservedSituationFinishedVO;
+            import com.scopix.qualitycontrol.model.vo.StoreVO;
+            
+            import commons.util.DateUtil;
+            
+            import mx.binding.utils.BindingUtils;
+            import mx.core.IFlexDisplayObject;
+            import mx.effects.Glow;
+            import mx.events.CloseEvent;
+            import mx.events.ListEvent;
+            import mx.managers.PopUpManager;
+            import mx.resources.ResourceManager;
+            import mx.utils.ObjectUtil;
+
+            [Bindable]
+            private var action:QualityControlAction;
+
+            [Bindable]
+            private var model:QualityControlModel;
+
+
+            private var rejectedWindow:Rejected;
+
+            private function init():void {
+                action = QualityControlAction.getInstance();
+                model = QualityControlModel.getInstance();
+                BindingUtils.bindSetter(filterButtonEffect, model, "filterEffect");
+                model.runFilterEffect = false;
+                endHour.hours.value = 23;
+                endHour.minutes.value = 59;
+                var hoy:Date = new Date();
+                var fecha:Date = new Date(hoy.fullYear, hoy.month, hoy.date - 1);
+                date.selectedDate = fecha;
+            }
+
+            private function filterButtonEffect(eff:Glow):void {
+                if (eff != null && model.runFilterEffect) {
+                    eff.play([filterButton], false);
+                    model.runFilterEffect = false;
+                }
+            }
+
+            protected function selectStore(event:ListEvent):void {
+                var store:StoreVO = storesCombo.selectedItem as StoreVO;
+                model.storeIdSelected = store.id;
+                model.areasFilter = store.areas;
+            }
+
+            protected function window_close(evt:CloseEvent):void {
+                PopUpManager.removePopUp(evt.currentTarget as IFlexDisplayObject);
+            }
+
+
+            protected function rejectedEvidence(event:MouseEvent):void {
+                model.clasificaciones = null;
+                model.observaciones = obs.text;
+                obs.text = "";
+                rejectedWindow = new Rejected();
+                rejectedWindow.title = ResourceManager.getInstance().getString('resources', 'filterView.rejected');
+                rejectedWindow.width = 500;
+                rejectedWindow.height = 400;
+                rejectedWindow.showCloseButton = true;
+
+                rejectedWindow.addEventListener(CloseEvent.CLOSE, window_close);
+
+                PopUpManager.addPopUp(rejectedWindow, this, true);
+                PopUpManager.centerPopUp(rejectedWindow);
+            }
+
+
+            protected function filter(event:MouseEvent):void {
+                model.startHourSelected = startHour.hours.value + ":" + startHour.minutes.value;
+                model.endHourSelected = endHour.hours.value + ":" + endHour.minutes.value;
+                var dateFilter:String = DateUtil.format(date.selectedDate, GlobalParameters.DATE_FORMAT);
+                model.dateSelected = dateFilter;
+                model.storeIdSelected = (storesCombo.selectedItem as StoreVO).id;
+                model.areaIdSelected = (areaCombo.selectedItem as AreaVO).id;
+                action.filterData(selectPercent.value, true);
+            }
+
+
+
+            public function getMetricType(item:Object, column:AdvancedDataGridColumn):String {
+                var ret:String = (item as MetricResultVO).metricType.value;
+                return ret;
+            }
+
+            public function getMetricTipType(item:Object):String {
+                if (item == null) {
+                    return "";
+                }
+                var metric:MetricResultVO = (item as MetricResultVO);
+                var ret:String = "";
+                if (metric != null) {
+                    ret = metric.metricType.value;
+                }
+                return ret;
+            }
+
+
+            public function getMetricResultString(item:Object, column:AdvancedDataGridColumn):String {
+                var ret:String = "";
+                var vo:MetricResultVO = (item as MetricResultVO);
+                if (isNaN(vo.metricResult)) {
+                    ret = ResourceManager.getInstance().getString("resources", "metricResult.cantdo");
+                } else {
+                    ret = vo.metricResult.toString();
+                }
+                return ret;
+            }
+
+            public function getMetricResultTipString(item:Object):String {
+                if (item == null) {
+                    return "";
+                }
+                var ret:String = "";
+                var vo:MetricResultVO = (item as MetricResultVO);
+                if (vo != null) {
+                    if (isNaN(vo.metricResult)) {
+                        ret = ResourceManager.getInstance().getString("resources", "metricResult.cantdo");
+                    } else {
+                        ret = vo.metricResult.toString();
+                    }
+                }
+                return ret;
+            }
+
+
+            protected function acceptEvidence(event:MouseEvent):void {
+                model.observaciones = obs.text;
+                obs.text = "";
+                action.acceptSituation();
+            }
+
+
+            protected function logout(event:MouseEvent):void {
+                clearView();
+                action.logout();
+            }
+
+            protected function clearView():void {
+                var hoy:Date = new Date();
+                var fecha:Date = new Date(hoy.fullYear, hoy.month, hoy.date - 1);
+                date.selectedDate = fecha;
+                startHour.hours.value = 0;
+                startHour.minutes.value = 0;
+                endHour.hours.value = 23;
+                endHour.minutes.value = 59;
+                obs.text = "";
+            }
+
+            protected function changeCorporate(event:MouseEvent):void {
+                clearView();
+                action.showCorporateView()
+            }
+
+
+            /* 			protected function viewHideMarks():void {
+                            model.viewMakrs = viewMarks.selected;
+                            action.loadEvidenceByMetric(metricResultList.selectedItem as MetricResultVO);
+                        }
+             */
+
+
+            protected function changeViewMarks(event:MouseEvent):void {
+                if (model.viewMakrs == true) {
+                    btnViewMarks.label = ResourceManager.getInstance().getString('resources', 'filterView.view_marks');
+                } else {
+                    btnViewMarks.label = ResourceManager.getInstance().getString('resources', 'filterView.hide_marks');
+                }
+                model.viewMakrs = !model.viewMakrs;
+                action.loadEvidenceByMetric(metricResultList.selectedItem as MetricResultVO);
+            }
+
+            public function stStyleFunction(data:Object, col:AdvancedDataGridColumn):Object {
+                if ((data as ObservedSituationFinishedVO).selectedBackgroundColor) {
+                    return { rowColor:0xFFE875 };
+                } else {
+					return { rowColor:0xFFFFFF };
+				}
+                return null;
+            }
+            
+            private function metricValueSortCompareFunction(itemA:Object, itemB:Object):int {
+                return ObjectUtil.stringCompare(itemA.metricResult, itemB.metricResult);
+            }
+        ]]>
+    </mx:Script>
+    <mx:VBox height="100%"
+             width="100%">
+        <mx:Spacer height="2%"/>
+        <mx:HBox width="100%">
+            <!--Filtros-->
+
+            <mx:Label text="{resourceManager.getString('resources','filterView.storeFilter')}"/>
+            <mx:ComboBox id="storesCombo"
+                         dataProvider="{model.storesFilter}"
+                         labelField="description"
+                         change="selectStore(event)"/>
+            <mx:Label text="{resourceManager.getString('resources','filterView.areaFilter')}"/>
+            <mx:ComboBox id="areaCombo"
+                         labelField="description"
+                         dataProvider="{model.areasFilter}"/>
+
+        </mx:HBox>
+        <mx:HBox width="100%">
+            <mx:Label text="{resourceManager.getString('resources','filterView.dateFilter')}"/>
+            <mx:DateField id="date"
+                          text=""
+                          formatString="{resourceManager.getString('resources','date_format')}"/>
+            <mx:Label text="{resourceManager.getString('resources','filterView.hour_ini')}"/>
+            <view:TimePicker id="startHour"/>
+            <mx:Label text="{resourceManager.getString('resources','filterView.hour_end')}"/>
+            <view:TimePicker id="endHour"/>
+            <mx:Label text="{resourceManager.getString('resources','filterView.select')}"/>
+            <mx:NumericStepper id="selectPercent"
+                               width="50"
+                               minimum="0"
+                               maximum="100"
+                               value="{model.percentValue}"/>
+            <mx:Label text="%"/>
+            <mx:Button id="filterButton"
+                       label="{resourceManager.getString('resources','filterView.buttonFilter')}"
+                       width="81"
+                       height="22"
+                       click="filter(event)"/>
+        </mx:HBox>
+
+        <mx:HDividedBox width="100%"
+                        height="90%">
+            <mx:VBox height="100%"
+                     width="650">
+                <!-- Listados -->
+                <mx:AdvancedDataGrid width="100%"
+                                     height="50%"
+                                     id="situationList"
+                                     sortableColumns="true"
+                                     doubleClickEnabled="false"
+                                     dataProvider="{model.observedSituationFinishedList}"
+                                     click="action.getMetricResultByOS(situationList.selectedItem as ObservedSituationFinishedVO)"
+                                     itemRenderer="com.scopix.qualitycontrol.view.render.ADGItemRendererEx"
+                                     styleFunction="stStyleFunction">
+                    <mx:columns>
+                        <mx:AdvancedDataGridColumn sortable="false"
+                                                   headerRenderer="com.scopix.qualitycontrol.view.render.chkHeaderObservedSituationRenderer"
+                                                   itemRenderer="com.scopix.qualitycontrol.view.render.chkObservedSituationRenderer"
+                                                   width="20"/>
+                        <mx:AdvancedDataGridColumn headerText="{resourceManager.getString('resources','filterView.situation')}"
+                                                   dataField="situationTemplateName"
+                                                   dataTipField="situationTemplateName"
+                                                   showDataTips="true"/>
+                        <mx:AdvancedDataGridColumn headerText="{resourceManager.getString('resources','filterView.product')}"
+                                                   dataField="product"
+                                                   dataTipField="product"
+                                                   showDataTips="true"/>
+                        <mx:AdvancedDataGridColumn width="50"
+                                                   headerText="{resourceManager.getString('resources','filterView.hour')}"
+                                                   dataField="evidenceDate"
+                                                   dataTipField="evidenceDate"
+                                                   showDataTips="true"/>
+                        <mx:AdvancedDataGridColumn width="100"
+                                                   headerText="{resourceManager.getString('resources','filterView.user')}"
+                                                   dataField="evaluationUser"
+                                                   dataTipField="evaluationUser"
+                                                   showDataTips="true"/>
+                    </mx:columns>
+                </mx:AdvancedDataGrid>
+                <mx:AdvancedDataGrid width="100%"
+                                     height="50%"
+                                     id="metricResultList"
+                                     sortableColumns="true"
+                                     dataProvider="{model.metricResultList}"
+                                     doubleClickEnabled="false"
+                                     click="action.loadEvidenceByMetric(metricResultList.selectedItem as MetricResultVO)">
+                    <mx:columns>
+                        <mx:AdvancedDataGridColumn headerText="{resourceManager.getString('resources','filterView.metric_name')}"
+                                                   dataField="metricName"
+                                                   dataTipField="metricName"
+                                                   showDataTips="true"/>
+                        <mx:AdvancedDataGridColumn headerText="{resourceManager.getString('resources','filterView.operator_descriptor')}"
+                                                   dataField="descriptionOperator"
+                                                   dataTipField="descriptionOperator"
+                                                   showDataTips="true"/>
+                        <mx:AdvancedDataGridColumn headerText="{resourceManager.getString('resources','filterView.metric_value')}"
+                                                   labelFunction="getMetricResultString"
+                                                   dataTipFunction="getMetricResultTipString"
+                                                   showDataTips="true"
+                                                   sortCompareFunction="metricValueSortCompareFunction"/>
+                        <!--
+                        <mx:AdvancedDataGridColumn headerText="{resourceManager.getString('resources','filterView.metric_type')}"
+                                                   labelFunction="getMetricType"
+                                                   dataTipFunction="getMetricTipType"
+                                                   showDataTips="true"/>
+                        -->
+                    </mx:columns>
+                </mx:AdvancedDataGrid>
+            </mx:VBox>
+            <mx:VBox width="525"
+                     height="100%"
+                     paddingBottom="1">
+                <mx:Button label="{resourceManager.getString('resources','filterView.hide_marks')}"
+                           click="changeViewMarks(event)"
+                           id="btnViewMarks"/>
+                <mx:AdvancedDataGrid headerHeight="0"
+                                     sortableColumns="false"
+                                     width="100%"
+                                     height="300"
+                                     variableRowHeight="true"
+                                     id="evidences"
+                                     dataProvider="{model.evidenceResultList}">
+                    <mx:columns>
+                        <mx:AdvancedDataGridColumn itemRenderer="com.scopix.qualitycontrol.view.render.EvidenceRender"/>
+                    </mx:columns>
+                </mx:AdvancedDataGrid>
+                <mx:VBox width="100%">
+                    <!--botonera-->
+                    <mx:HBox width="100%">
+                        <mx:Label text="{resourceManager.getString('resources','filterView.observation')}"/>
+                        <mx:TextInput id="obs"
+                                      width="361"/>
+                    </mx:HBox>
+                    <mx:HBox width="100%">
+                        <mx:Button enabled="{model.acceptVisible}"
+                                   label="{resourceManager.getString('resources','filterView.accept')}"
+                                   click="acceptEvidence(event)"/>
+                        <mx:Button enabled="{model.rejectedVisible}"
+                                   label="{resourceManager.getString('resources','filterView.rejected')}"
+                                   click="rejectedEvidence(event)"/>
+                    </mx:HBox>
+                </mx:VBox>
+            </mx:VBox>
+        </mx:HDividedBox>
+        <mx:HBox width="100%"
+                 horizontalAlign="right"
+                 paddingRight="10">
+            <mx:Button label="{resourceManager.getString('resources','filterView.changeClient')}"
+                       width="130"
+                       click="changeCorporate(event)"/>
+            <mx:Button label="{resourceManager.getString('resources','commons.logout')}"
+                       width="130"
+                       click="logout(event)"/>
+
+        </mx:HBox>
+    </mx:VBox>
+</mx:Panel>

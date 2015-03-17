@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
+  <includeClasses>
+    <classEntry path="commons.events.AbstractGenericEvent"/>
+    <classEntry path="commons.components.skins.TrackSkin"/>
+    <classEntry path="commons.components.skins.StaticBarSkin"/>
+    <classEntry path="commons.components.ErrorPopup"/>
+    <classEntry path="commons.events.GenericEvent"/>
+    <classEntry path="commons.events.WSSecurityFaultEvent"/>
+    <classEntry path="commons.events.GenericErrorEvent"/>
+    <classEntry path="commons.events.WSFaultEvent"/>
+    <classEntry path="commons.components.controls.Spinner"/>
+    <classEntry path="commons.ResourceLocator"/>
+    <classEntry path="commons.config.CookieManager"/>
+    <classEntry path="commons.config.Configuration"/>
+    <classEntry path="commons.DummyClass"/>
+    <classEntry path="commons.events.LoadingEvent"/>
+    <classEntry path="commons.components.skins.MovingBarSkin"/>
+    <classEntry path="commons.PopUpUtils"/>
+    <classEntry path="commons.components.SuperPanel"/>
+    <classEntry path="commons.components.controls.Tick"/>
+    <classEntry path="commons.components.LoadingPopup"/>
+    <classEntry path="commons.config.CustomDateFormatter"/>
+    <classEntry path="commons.components.ProgressBarPopUp"/>
+    <classEntry path="commons.commands.BaseCommand"/>
+    <classEntry path="commons.events.ApplicationFaultEvent"/>
+    <classEntry path="commons.util.StringUtil"/>
+  </includeClasses>
+  <includeResources>
+    <resourceEntry destPath="commons/images/bt_video_pause.png" sourcePath="commons/images/bt_video_pause.png"/>
+    <resourceEntry destPath="commons/images/arrow_green.png" sourcePath="commons/images/arrow_green.png"/>
+    <resourceEntry destPath="commons/images/glendale_12_2008.gif" sourcePath="commons/images/glendale_12_2008.gif"/>
+    <resourceEntry destPath="commons/images/scopix/buttonFirstOff.gif" sourcePath="commons/images/scopix/buttonFirstOff.gif"/>
+    <resourceEntry destPath="commons/images/vertical_line.png" sourcePath="commons/images/vertical_line.png"/>
+    <resourceEntry destPath="commons/images/scopix/pointGreen.gif" sourcePath="commons/images/scopix/pointGreen.gif"/>
+    <resourceEntry destPath="commons/images/baloon_g_down.png" sourcePath="commons/images/baloon_g_down.png"/>
+    <resourceEntry destPath="commons/images/changes_arrow_up.png" sourcePath="commons/images/changes_arrow_up.png"/>
+    <resourceEntry destPath="commons/images/top_bg_upper.png" sourcePath="commons/images/top_bg_upper.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonPauseDown.gif" sourcePath="commons/images/scopix/buttonPauseDown.gif"/>
+    <resourceEntry destPath="commons/images/left_bg.png" sourcePath="commons/images/left_bg.png"/>
+    <resourceEntry destPath="commons/swf/arrow_normal.swf" sourcePath="commons/swf/arrow_normal.swf"/>
+    <resourceEntry destPath="commons/images/scopix/buttonForwardOff.gif" sourcePath="commons/images/scopix/buttonForwardOff.gif"/>
+    <resourceEntry destPath="commons/images/glendale_11_2008.gif" sourcePath="commons/images/glendale_11_2008.gif"/>
+    <resourceEntry destPath="commons/images/scopix/thumbs1-1.jpg" sourcePath="commons/images/scopix/thumbs1-1.jpg"/>
+    <resourceEntry destPath="commons/images/icon_alert_info.png" sourcePath="commons/images/icon_alert_info.png"/>
+    <resourceEntry destPath="commons/images/resizeCursor.png" sourcePath="commons/images/resizeCursor.png"/>
+    <resourceEntry destPath="commons/images/little_arrow_middle.png" sourcePath="commons/images/little_arrow_middle.png"/>
+    <resourceEntry destPath="commons/locale/es_ES/resources.properties" sourcePath="commons/locale/es_ES/resources.properties"/>
+    <resourceEntry destPath="commons/images/scopix/buttonFirst.gif" sourcePath="commons/images/scopix/buttonFirst.gif"/>
+    <resourceEntry destPath="commons/images/little_arrow_down.png" sourcePath="commons/images/little_arrow_down.png"/>
+    <resourceEntry destPath="commons/images/bottom_right.png" sourcePath="commons/images/bottom_right.png"/>
+    <resourceEntry destPath="commons/images/baloon_r_up.png" sourcePath="commons/images/baloon_r_up.png"/>
+    <resourceEntry destPath="commons/images/changepass.png" sourcePath="commons/images/changepass.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonLastDown.gif" sourcePath="commons/images/scopix/buttonLastDown.gif"/>
+    <resourceEntry destPath="commons/images/scopix/buttonRewindOff.gif" sourcePath="commons/images/scopix/buttonRewindOff.gif"/>
+    <resourceEntry destPath="commons/images/loading.png" sourcePath="commons/images/loading.png"/>
+    <resourceEntry destPath="commons/images/scopix/thumbs2-2.jpg" sourcePath="commons/images/scopix/thumbs2-2.jpg"/>
+    <resourceEntry destPath="commons/images/bt_part2.png" sourcePath="commons/images/bt_part2.png"/>
+    <resourceEntry destPath="commons/images/deviation_dot_yellow_big.png" sourcePath="commons/images/deviation_dot_yellow_big.png"/>
+    <resourceEntry destPath="commons/images/view_store.png" sourcePath="commons/images/view_store.png"/>
+    <resourceEntry destPath="commons/images/deviation_dot_yellow.png" sourcePath="commons/images/deviation_dot_yellow.png"/>
+    <resourceEntry destPath="commons/images/baloon_g_up.png" sourcePath="commons/images/baloon_g_up.png"/>
+    <resourceEntry destPath="commons/images/changes_arrow_middle.png" sourcePath="commons/images/changes_arrow_middle.png"/>
+    <resourceEntry destPath="commons/images/deviation_dot_green_big.png" sourcePath="commons/images/deviation_dot_green_big.png"/>
+    <resourceEntry destPath="commons/images/baloon_r_down.png" sourcePath="commons/images/baloon_r_down.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonFirstDown.gif" sourcePath="commons/images/scopix/buttonFirstDown.gif"/>
+    <resourceEntry destPath="commons/images/arrow_red.png" sourcePath="commons/images/arrow_red.png"/>
+    <resourceEntry destPath="commons/images/arrow_up.png" sourcePath="commons/images/arrow_up.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonPause.gif" sourcePath="commons/images/scopix/buttonPause.gif"/>
+    <resourceEntry destPath="commons/images/bottom_bg.png" sourcePath="commons/images/bottom_bg.png"/>
+    <resourceEntry destPath="commons/images/bt_back_analysis.png" sourcePath="commons/images/bt_back_analysis.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonLastOff.gif" sourcePath="commons/images/scopix/buttonLastOff.gif"/>
+    <resourceEntry destPath="commons/images/top_bg_upper_empty.png" sourcePath="commons/images/top_bg_upper_empty.png"/>
+    <resourceEntry destPath="commons/images/bt_part0.png" sourcePath="commons/images/bt_part0.png"/>
+    <resourceEntry destPath="commons/images/no_data_10_2008.gif" sourcePath="commons/images/no_data_10_2008.gif"/>
+    <resourceEntry destPath="commons/images/scopix/buttonLast.gif" sourcePath="commons/images/scopix/buttonLast.gif"/>
+    <resourceEntry destPath="commons/images/scopix/superClean.jpg" sourcePath="commons/images/scopix/superClean.jpg"/>
+    <resourceEntry destPath="commons/images/no_data_11_2008.gif" sourcePath="commons/images/no_data_11_2008.gif"/>
+    <resourceEntry destPath="commons/images/scopix/thumbs1-2.jpg" sourcePath="commons/images/scopix/thumbs1-2.jpg"/>
+    <resourceEntry destPath="commons/images/AudBt_left_selected.png" sourcePath="commons/images/AudBt_left_selected.png"/>
+    <resourceEntry destPath="commons/images/baloon_r_stand.png" sourcePath="commons/images/baloon_r_stand.png"/>
+    <resourceEntry destPath="commons/images/baloon_y_stand.png" sourcePath="commons/images/baloon_y_stand.png"/>
+    <resourceEntry destPath="commons/images/logo.jpg" sourcePath="commons/images/logo.jpg"/>
+    <resourceEntry destPath="commons/images/bt_play_selected.png" sourcePath="commons/images/bt_play_selected.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonPlayOff.gif" sourcePath="commons/images/scopix/buttonPlayOff.gif"/>
+    <resourceEntry destPath="commons/images/scopix/buttonForwardDown.gif" sourcePath="commons/images/scopix/buttonForwardDown.gif"/>
+    <resourceEntry destPath="commons/images/deviation_dot_red.png" sourcePath="commons/images/deviation_dot_red.png"/>
+    <resourceEntry destPath="commons/images/top_right.png" sourcePath="commons/images/top_right.png"/>
+    <resourceEntry destPath="commons/swf/circle_green.swf" sourcePath="commons/swf/circle_green.swf"/>
+    <resourceEntry destPath="commons/images/scopix/thumbs2-1.jpg" sourcePath="commons/images/scopix/thumbs2-1.jpg"/>
+    <resourceEntry destPath="commons/images/bt_stop_selected.png" sourcePath="commons/images/bt_stop_selected.png"/>
+    <resourceEntry destPath="commons/images/changes_arrow_middle_big.png" sourcePath="commons/images/changes_arrow_middle_big.png"/>
+    <resourceEntry destPath="commons/images/arrow_yellow.png" sourcePath="commons/images/arrow_yellow.png"/>
+    <resourceEntry destPath="commons/images/AudBt_left.png" sourcePath="commons/images/AudBt_left.png"/>
+    <resourceEntry destPath="commons/fonts/zurchn.ttf" sourcePath="commons/fonts/zurchn.ttf"/>
+    <resourceEntry destPath="commons/images/deviation_dot_white_big.png" sourcePath="commons/images/deviation_dot_white_big.png"/>
+    <resourceEntry destPath="commons/images/no_data_12_2008.gif" sourcePath="commons/images/no_data_12_2008.gif"/>
+    <resourceEntry destPath="commons/images/changes_arrow_up_big.png" sourcePath="commons/images/changes_arrow_up_big.png"/>
+    <resourceEntry destPath="commons/images/bt_back_map.png" sourcePath="commons/images/bt_back_map.png"/>
+    <resourceEntry destPath="commons/images/glendale_01_2009.gif" sourcePath="commons/images/glendale_01_2009.gif"/>
+    <resourceEntry destPath="commons/images/down_arrow.png" sourcePath="commons/images/down_arrow.png"/>
+    <resourceEntry destPath="commons/images/AudBt_right_selected.png" sourcePath="commons/images/AudBt_right_selected.png"/>
+    <resourceEntry destPath="commons/images/top_left.png" sourcePath="commons/images/top_left.png"/>
+    <resourceEntry destPath="commons/images/scopix/pointRed.gif" sourcePath="commons/images/scopix/pointRed.gif"/>
+    <resourceEntry destPath="commons/fonts/ArialBold.ttf" sourcePath="commons/fonts/ArialBold.ttf"/>
+    <resourceEntry destPath="commons/images/scopix/buttonPlay.gif" sourcePath="commons/images/scopix/buttonPlay.gif"/>
+    <resourceEntry destPath="commons/images/bt_part2_selected.png" sourcePath="commons/images/bt_part2_selected.png"/>
+    <resourceEntry destPath="commons/images/view_departments.png" sourcePath="commons/images/view_departments.png"/>
+    <resourceEntry destPath="commons/images/bt_part1.png" sourcePath="commons/images/bt_part1.png"/>
+    <resourceEntry destPath="commons/images/back_window.png" sourcePath="commons/images/back_window.png"/>
+    <resourceEntry destPath="commons/swf/arrow_up.swf" sourcePath="commons/swf/arrow_up.swf"/>
+    <resourceEntry destPath="commons/images/Zoom-In-18x18.png" sourcePath="commons/images/Zoom-In-18x18.png"/>
+    <resourceEntry destPath="commons/fonts/Arial.ttf" sourcePath="commons/fonts/Arial.ttf"/>
+    <resourceEntry destPath="commons/images/bt_pause_selected.png" sourcePath="commons/images/bt_pause_selected.png"/>
+    <resourceEntry destPath="commons/images/bt_video_play.png" sourcePath="commons/images/bt_video_play.png"/>
+    <resourceEntry destPath="commons/swf/circle_red.swf" sourcePath="commons/swf/circle_red.swf"/>
+    <resourceEntry destPath="commons/images/icon_alert_error.png" sourcePath="commons/images/icon_alert_error.png"/>
+    <resourceEntry destPath="commons/images/bt_video_stop.png" sourcePath="commons/images/bt_video_stop.png"/>
+    <resourceEntry destPath="commons/swf/circle_yellow.swf" sourcePath="commons/swf/circle_yellow.swf"/>
+    <resourceEntry destPath="commons/images/bt_back_scorecard.png" sourcePath="commons/images/bt_back_scorecard.png"/>
+    <resourceEntry destPath="commons/images/AudBt_right.png" sourcePath="commons/images/AudBt_right.png"/>
+    <resourceEntry destPath="commons/images/changes_arrow_down_big.png" sourcePath="commons/images/changes_arrow_down_big.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonForward.gif" sourcePath="commons/images/scopix/buttonForward.gif"/>
+    <resourceEntry destPath="commons/images/bt_home.png" sourcePath="commons/images/bt_home.png"/>
+    <resourceEntry destPath="commons/images/scopix_logo_final.png" sourcePath="commons/images/scopix_logo_final.png"/>
+    <resourceEntry destPath="commons/images/AudBt_center.png" sourcePath="commons/images/AudBt_center.png"/>
+    <resourceEntry destPath="commons/images/glendale_09_2008.gif" sourcePath="commons/images/glendale_09_2008.gif"/>
+    <resourceEntry destPath="commons/swf/arrow_down.swf" sourcePath="commons/swf/arrow_down.swf"/>
+    <resourceEntry destPath="commons/images/changes_arrow_down.png" sourcePath="commons/images/changes_arrow_down.png"/>
+    <resourceEntry destPath="commons/images/trend_window.png" sourcePath="commons/images/trend_window.png"/>
+    <resourceEntry destPath="commons/images/icon_alert_confirm.png" sourcePath="commons/images/icon_alert_confirm.png"/>
+    <resourceEntry destPath="commons/images/bodyWidget.png" sourcePath="commons/images/bodyWidget.png"/>
+    <resourceEntry destPath="commons/images/AudBt_center_selected.png" sourcePath="commons/images/AudBt_center_selected.png"/>
+    <resourceEntry destPath="commons/images/little_arrow_up.png" sourcePath="commons/images/little_arrow_up.png"/>
+    <resourceEntry destPath="commons/images/bottomWidget.png" sourcePath="commons/images/bottomWidget.png"/>
+    <resourceEntry destPath="commons/images/right_bg.png" sourcePath="commons/images/right_bg.png"/>
+    <resourceEntry destPath="commons/images/logo.gif" sourcePath="commons/images/logo.gif"/>
+    <resourceEntry destPath="commons/images/scopix/buttonRewindDown.gif" sourcePath="commons/images/scopix/buttonRewindDown.gif"/>
+    <resourceEntry destPath="commons/images/bt_part3.png" sourcePath="commons/images/bt_part3.png"/>
+    <resourceEntry destPath="commons/images/top_right_upper.png" sourcePath="commons/images/top_right_upper.png"/>
+    <resourceEntry destPath="commons/fonts/MyriadPro-Regular.otf" sourcePath="commons/fonts/MyriadPro-Regular.otf"/>
+    <resourceEntry destPath="commons/locale/en_US/resources.properties" sourcePath="commons/locale/en_US/resources.properties"/>
+    <resourceEntry destPath="commons/images/stores_select_all.png" sourcePath="commons/images/stores_select_all.png"/>
+    <resourceEntry destPath="commons/images/headerWidget.png" sourcePath="commons/images/headerWidget.png"/>
+    <resourceEntry destPath="commons/images/baloon_y_down.png" sourcePath="commons/images/baloon_y_down.png"/>
+    <resourceEntry destPath="commons/images/deviation_dot_red_big.png" sourcePath="commons/images/deviation_dot_red_big.png"/>
+    <resourceEntry destPath="commons/images/bottom_left.png" sourcePath="commons/images/bottom_left.png"/>
+    <resourceEntry destPath="commons/images/logout_door.png" sourcePath="commons/images/logout_door.png"/>
+    <resourceEntry destPath="commons/images/baloon_g_stand.png" sourcePath="commons/images/baloon_g_stand.png"/>
+    <resourceEntry destPath="commons/images/top_bg.png" sourcePath="commons/images/top_bg.png"/>
+    <resourceEntry destPath="commons/images/no_data_09_2008.gif" sourcePath="commons/images/no_data_09_2008.gif"/>
+    <resourceEntry destPath="commons/images/new_window.png" sourcePath="commons/images/new_window.png"/>
+    <resourceEntry destPath="commons/images/scopix/thumbs1-3.jpg" sourcePath="commons/images/scopix/thumbs1-3.jpg"/>
+    <resourceEntry destPath="commons/images/glendale_10_2008.gif" sourcePath="commons/images/glendale_10_2008.gif"/>
+    <resourceEntry destPath="commons/images/back_home.png" sourcePath="commons/images/back_home.png"/>
+    <resourceEntry destPath="commons/images/stores_unselect_all.png" sourcePath="commons/images/stores_unselect_all.png"/>
+    <resourceEntry destPath="commons/images/top_left_upper.png" sourcePath="commons/images/top_left_upper.png"/>
+    <resourceEntry destPath="commons/images/deviation_dot_green.png" sourcePath="commons/images/deviation_dot_green.png"/>
+    <resourceEntry destPath="commons/images/bt_part3_selected.png" sourcePath="commons/images/bt_part3_selected.png"/>
+    <resourceEntry destPath="commons/images/Red_DoorOut.png" sourcePath="commons/images/Red_DoorOut.png"/>
+    <resourceEntry destPath="commons/images/baloon_y_up.png" sourcePath="commons/images/baloon_y_up.png"/>
+    <resourceEntry destPath="commons/images/bt_home_selected.png" sourcePath="commons/images/bt_home_selected.png"/>
+    <resourceEntry destPath="commons/images/deviation_dot_white.png" sourcePath="commons/images/deviation_dot_white.png"/>
+    <resourceEntry destPath="commons/images/scopix/buttonPlayDown.gif" sourcePath="commons/images/scopix/buttonPlayDown.gif"/>
+    <resourceEntry destPath="commons/images/bt_part1_selected.png" sourcePath="commons/images/bt_part1_selected.png"/>
+    <resourceEntry destPath="commons/images/bt_part0_selected.png" sourcePath="commons/images/bt_part0_selected.png"/>
+    <resourceEntry destPath="commons/images/bottom_line.png" sourcePath="commons/images/bottom_line.png"/>
+    <resourceEntry destPath="commons/images/scopix/thumbs2-3.jpg" sourcePath="commons/images/scopix/thumbs2-3.jpg"/>
+  </includeResources>
+  <namespaceManifests/>
+</flexLibProperties>

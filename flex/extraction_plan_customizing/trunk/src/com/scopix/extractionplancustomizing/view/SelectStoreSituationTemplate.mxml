@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns="commons.components.*"
+    width="420" height="180"
+    styleName="scopixPanel"
+    layout="absolute"
+    enableResize="false"
+    showMinMax="false"
+    showClose="true"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    creationComplete="init()"
+    title="{resourceManager.getString('resources','selectStoreSituationTemplate.title')}">
+    <mx:Script>
+        <![CDATA[
+            import mx.core.Application;
+            import com.scopix.extractionplancustomizing.model.vo.StoreVO;
+            import com.scopix.extractionplancustomizing.model.vo.SituationTemplateVO;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+            
+            [Bindable]
+            private var action:CalendarAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+            
+            private function init():void {
+                action = CalendarAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+            }
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="416" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+        <mx:FormItem label="{resourceManager.getString('resources','selectStoreSituationTemplate.store')}" width="384">
+            <mx:ComboBox id="stores" dataProvider="{model.storesFilter}" labelField="description" width="230"/>
+        </mx:FormItem>
+        <mx:FormItem label="{resourceManager.getString('resources','selectStoreSituationTemplate.situationTemplate')}" width="384">
+            <mx:ComboBox id="situationTemplates" dataProvider="{model.stList}" labelField="name" width="230"/>
+        </mx:FormItem>
+        <mx:Spacer height="20" />
+        <mx:HBox height="26" width="100%" horizontalAlign="center"
+            verticalScrollPolicy="off" horizontalScrollPolicy="off">
+            <mx:Button label="{resourceManager.getString('resources','selectStoreSituationTemplate.copy')}" 
+                width="130" height="22"
+                click="action.copyCalendar((situationTemplates.selectedItem as SituationTemplateVO).id, (stores.selectedItem as StoreVO).id)"/>
+        </mx:HBox>
+    </mx:Form>
+</SuperPanel>

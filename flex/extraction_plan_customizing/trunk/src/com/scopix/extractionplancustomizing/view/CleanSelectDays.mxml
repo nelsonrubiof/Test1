@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns="commons.components.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="400" height="330"
+    styleName="scopixPanel"
+    enableResize="false"
+    showMinMax="false"
+    showClose="true"
+    creationComplete="init()"
+    title="{resourceManager.getString('resources','cleanselectdays.title')}">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.extractionplancustomizing.model.vo.DayOfWeekVO;
+            import com.scopix.global.GlobalParameters;
+            import com.scopix.extractionplancustomizing.model.arrays.ArrayOfDayOfWeekVO;
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+            
+            [Bindable]
+            public var action:CalendarAction;
+            [Bindable]
+            private var daysToClean:ArrayOfDayOfWeekVO;
+            
+            private function init():void {
+                action = CalendarAction.getInstance();
+                daysToClean = GlobalParameters.getInstance().daysOfWeek.clone();
+            }
+            
+            private function changeValue(evt:Event):void {
+                for each (var day:DayOfWeekVO in daysToClean) {
+                    day.selected = evt.currentTarget.selected;
+                }
+                daysToClean.refresh();
+            }
+        ]]>
+    </mx:Script>
+    <mx:Label text="{resourceManager.getString('resources','cleanselectdays.days')}" />
+    <mx:CheckBox id="selectAll" label="{resourceManager.getString('resources','commons.selecAll')}"
+        change="changeValue(event)" />
+    <mx:List id="dayList" 
+        height="200" width="300" 
+        dataProvider="{daysToClean}"
+        itemRenderer="com.scopix.extractionplancustomizing.view.renderer.SelectedDayRenderer"
+        allowMultipleSelection="false" labelField="name"/>
+    <mx:HBox width="100%" horizontalAlign="center">
+        <mx:Button label="{resourceManager.getString('resources','cleanselectdays.clean')}" 
+            width="130" height="22"
+            click="action.cleanEPRDays(daysToClean)"/>
+    </mx:HBox>
+</SuperPanel>

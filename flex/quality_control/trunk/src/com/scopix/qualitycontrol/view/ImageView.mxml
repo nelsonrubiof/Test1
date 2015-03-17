@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resize:ResizableWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+                        xmlns:resize="flex.utils.ui.resize.*"
+                        layout="absolute"
+                        creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.qualitycontrol.model.QualityControlModel;
+
+            import flash.net.navigateToURL;
+
+            import mx.controls.Image;
+            import mx.events.EffectEvent;
+            import mx.graphics.codec.JPEGEncoder;
+            import mx.managers.PopUpManager;
+
+            private var _evidenceId:Number;
+            private var _evidenceEvaluationId:Number;
+            private var _position:Number;
+            [Bindable]
+            private var model:QualityControlModel;
+
+            [Bindable]
+            public function get evidenceId():Number {
+                return _evidenceId;
+            }
+
+            public function set evidenceId(value:Number):void {
+                _evidenceId = value;
+            }
+
+            [Bindable]
+            public function get evidenceEvaluationId():Number {
+                return _evidenceEvaluationId;
+            }
+
+            public function set evidenceEvaluationId(value:Number):void {
+                _evidenceEvaluationId = value;
+            }
+
+            [Bindable]
+            public function get position():Number {
+                return _position;
+            }
+
+            public function set position(value:Number):void {
+                _position = value;
+            }
+
+            public function init():void {
+                model = QualityControlModel.getInstance();
+            }
+
+            private function onClick(evt:MouseEvent):void {
+                var boton:Button = Button(evt.target);
+                switch (evt.target.id) {
+                    case "view_template":
+                        imgTemplate.visible = boton.selected;
+                        break;
+                }
+            }
+
+            protected function closeWindow(event:MouseEvent):void {
+                PopUpManager.removePopUp(this);
+            }
+
+
+            protected function download(event:MouseEvent):void {
+                var byteArr2:ByteArray;
+                var fileRef:FileReference = new FileReference();
+                var data:BitmapData = Bitmap(imgEvidence.content).bitmapData;
+                data.draw(imgEvidence.content);
+                var encod:JPEGEncoder = new JPEGEncoder(100);
+                byteArr2 = encod.encode(data);
+                fileRef.save(byteArr2, "image.jpg");
+            }
+        ]]>
+    </mx:Script>
+    <mx:VBox width="100%"
+             height="100%">
+        <mx:Canvas width="100%"
+                   height="100%">
+            <mx:Image id="imgEvidence"
+                      x="0"
+                      y="0"
+                      width="100%"
+                      height="100%"
+                      click="closeWindow(event)"
+                      source="{model.evidenceProofUrl}?evidenceId={evidenceId}&amp;evidenceEvaluationId={evidenceEvaluationId}&amp;proofPrePath={model.proofPrePath}&amp;proofPosition={position}&amp;withMarks={model.viewMakrs}&amp;randomParam={Math.random()}"/>
+            <mx:Image id="imgTemplate"
+                      x="0"
+                      y="0"
+                      width="100%"
+                      height="100%"
+                      click="closeWindow(event)"
+                      source="{model.templateUrl}?evidenceId={evidenceId}&amp;evidenceEvaluationId={evidenceEvaluationId}&amp;evidencePrePath={model.evidencePrePath}&amp;randomParam={Math.random()}"
+                      visible="false"/>
+        </mx:Canvas>
+        <mx:HBox width="100%">
+            <mx:Button label="{resourceManager.getString('resources','imageView.view_template')}"
+                       width="50%"
+                       height="40"
+                       click="onClick(event)"
+                       id="view_template"
+                       buttonMode="true"
+                       toggle="true"/>
+            <mx:Button label="{resourceManager.getString('resources','imageView.download')}"
+                       height="40"
+                       width="50%"
+                       id="close"
+                       click="download(event)"/>
+        </mx:HBox>
+    </mx:VBox>
+
+
+</resize:ResizableWindow>

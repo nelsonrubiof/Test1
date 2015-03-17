@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off">
+	<mx:Script>
+		<![CDATA[
+		    import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+		    import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+		    import com.scopix.extractionplancustomizing.model.vo.EvidenceProviderVO;
+		    
+			private function changeCheckedState():void
+			{
+				(data as EvidenceProviderVO).selected = chk.selected;
+				ExtractionPlanCustomizingModel.getInstance().isModified = true;
+				ExtractionPlanCustomizingAction.getInstance().verifyEnableMultiCamera();
+				
+				if (chk.selected) {
+				    ExtractionPlanCustomizingAction.getInstance().addProviderToMetricTemplateSelected(data as EvidenceProviderVO);
+				} else {
+				    ExtractionPlanCustomizingAction.getInstance().removeProviderFromMetricTemplateSelected(data as EvidenceProviderVO);
+				}
+			}
+		]]>
+	</mx:Script>
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    width="3%" 
+	    x="0" 
+	    change="changeCheckedState();"/>
+    <mx:Label text="{data.description}" toolTip="{data.description}" width="97%" />
+</mx:HBox>

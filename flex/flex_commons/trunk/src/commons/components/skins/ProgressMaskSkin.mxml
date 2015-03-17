@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StateClientSkin
+	xmlns="http://www.degrafa.com/2007"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="8" height="5">
+	
+	<fills>
+		<SolidFill id="blackFill" color="#000000" />
+	</fills>
+	
+	<geometry>
+		<GeometryGroup>
+			<RoundedRectangle width="{skinWidth}" height="{skinHeight}" fill="{blackFill}" cornerRadius="4" />
+		</GeometryGroup>	
+	</geometry>
+	
+</StateClientSkin>

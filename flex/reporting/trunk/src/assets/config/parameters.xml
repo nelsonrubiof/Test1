@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<AppConfig version="1">
+	<Config>
+		<Test>
+			false
+		</Test>
+	    <Webservices>
+	    	<Security>
+	    		http://200.29.20.65:28081/security/services/SecurityWebServices
+	    	</Security>
+	    	<BusinessServices>
+				<!-- <Corporate>
+                	<id>7</id>
+                    <description>Mall Marina</description>
+                    <corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+                    <reportingUrl>http://localhost:8080/business-services/spring/services/ReportingWebServices</reportingUrl>
+                </Corporate>
+	    		<Corporate>
+	    			<id>1</id>
+	    			<description>Cabelas</description>
+	    			<corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    			<reportingUrl>http://localhost:8080/business-services/spring/services/ReportingWebServices</reportingUrl>
+	    		</Corporate>
+	    		<Corporate>
+	    			<id>2</id>
+	    			<description>Kum&Go</description>
+	    			<corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    			<reportingUrl>http://localhost:8080/business-services/spring/services/ReportingWebServices</reportingUrl>
+	    		</Corporate>-->
+                <Corporate>
+                    <id>8</id>
+                    <description>Harris Teeter</description>
+                    <corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+                    <reportingUrl>http://localhost:8080/business-services/spring/services/ReportingWebServices</reportingUrl>
+                </Corporate>
+	    		<!-- <Corporate>
+	    			<id>3</id>
+	    			<description>Lowes</description>
+	    			<corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    			<reportingUrl>http://localhost:8080/business-services/spring/services/ReportingWebServices</reportingUrl>
+	    		</Corporate>
+	    		<Corporate>
+	    			<id>4</id>
+	    			<description>Copec</description>
+	    			<corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    			<reportingUrl>http://localhost:8080/business-services/spring/services/ReportingWebServices</reportingUrl>
+	    		</Corporate>
+	    		 -->
+	    	</BusinessServices>
+	    </Webservices>
+	</Config>
+
+</AppConfig>

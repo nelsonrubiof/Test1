@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+				layout="absolute"
+				creationComplete="init()" 
+				xmlns:ns1="com.scopix.extractionplancustomizing.view.*"
+				xmlns:ns2="com.scopix.security.view.*"
+				xmlns:components="commons.components.*"
+				horizontalAlign="center" 
+				verticalAlign="middle" 
+				horizontalScrollPolicy="off"
+				verticalScrollPolicy="off"
+				pageTitle="Variable Extraction Plan">
+	<mx:states>
+		<mx:State name="selectCorporateState">
+			<mx:RemoveChild target="{loginMenu}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+				<ns1:SelectCorporate horizontalCenter="0" verticalCenter="8" id="selectCorporate" />
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="epcListState" basedOn="selectCorporateState">
+			<mx:RemoveChild target="{selectCorporate}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+				<ns1:EPCList horizontalCenter="0" verticalCenter="8" id="epcList" />
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="selectSituationTemplateState" basedOn="epcListState">
+			<mx:RemoveChild target="{epcList}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+				<ns1:SelectSituationTemplate horizontalCenter="0" verticalCenter="8" id="selectSituationTemplate" />
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="newEditEPCState" basedOn="selectSituationTemplateState">
+			<mx:RemoveChild target="{selectSituationTemplate}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+				<ns1:EPCManagement horizontalCenter="0" verticalCenter="8" id="newEditEPC" />
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="lastSentEPCState" basedOn="newEditEPCState"/>
+	</mx:states>
+	
+	<!--    <mx:transitions>
+	<mx:Transition fromState="*" toState="*">
+	<mx:Parallel id="t1" targets="{[loginMenu, selectCorporate,
+	epcList, selectStoreSituationTemplate, newEditEPC]}">
+	<mx:Fade alphaFrom="1.0" alphaTo="0.0" duration="200" />
+	<mx:Fade alphaFrom="0.0" alphaTo="1.0" duration="200" />
+	</mx:Parallel>
+	</mx:Transition>
+	</mx:transitions>-->
+	
+	<mx:Script>
+		<![CDATA[
+			import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+			import com.scopix.extractionplancustomizing.model.arrays.ArrayOfCorporateParameter;
+			import com.scopix.extractionplancustomizing.model.vo.CorporateParameter;
+			import com.scopix.global.GlobalParameters;
+			import com.scopix.periscope.webservices.security.SecurityWebServicesClient;
+			import com.scopix.test.webservice.WebServicesTest;
+			import com.scopix.test.webservice.client.WebServicesClientTest;
+			import com.scopix.util.KeepAliveTimer;
+			
+			import commons.PopUpUtils;
+			import commons.config.Configuration;
+			
+			import mx.controls.Alert;
+			import mx.events.StateChangeEvent;
+			import mx.resources.ResourceManager;
+			
+			private function init():void {
+				Configuration.getInstance().loadParameterFile("assets/config/parameters.xml","e4x");
+				Configuration.getInstance().addEventListener(Configuration.CONFIGURATION_COMPLETE, startApp);
+				GlobalParameters.getInstance().version = "Version 2.0.0";
+			}
+			
+			/* 	        private function listenAppStateChange(evt:StateChangeEvent):void {
+			if (evt.newState == "selectSituationTemplateState") {
+			Application.application.selectSituationTemplate.situationTemplates.selectedIndex = 0;
+			}
+			}
+			*/
+			private function startApp(evt:Event):void {
+				//Application.application.addEventListener(StateChangeEvent.CURRENT_STATE_CHANGE, listenAppStateChange);
+				
+				//verificando modo de ejecución
+				var test:String = Configuration.getInstance().config.Test;
+				if (test == "true") {
+					GlobalParameters.getInstance().test = true;
+					//configurando web service para test
+					WebServicesClientTest.getInstance().config("test");
+				} else {
+					GlobalParameters.getInstance().test = false;
+				}
+				
+				//load days of week
+				GlobalParameters.getInstance().loadDaysOfWeek();
+				
+				//cargando los corporates con sus url configuradas en el archivo de parametros
+				var xmlCorporateParameterList:XMLList = Configuration.getInstance().config.Webservices.BusinessServices.Corporate;
+				
+				var corporateListParameter:ArrayOfCorporateParameter = new ArrayOfCorporateParameter();
+				var corporateParameter:CorporateParameter = null;
+				for each (var obj:XML in xmlCorporateParameterList) {
+					corporateParameter = new CorporateParameter();
+					
+					corporateParameter.id = obj.id;
+					corporateParameter.description = obj.description;
+					corporateParameter.epcUrl = obj.epcUrl;
+					corporateParameter.corporateUrl = obj.corporateUrl;
+					
+					
+					corporateListParameter.addCorporateParameter(corporateParameter);
+				}
+				
+				GlobalParameters.getInstance().corporateListParameter = corporateListParameter;
+				GlobalParameters.getInstance().getStatusSendEPCInterval = 5;
+				
+				//configurando url de webservice de seguridad.
+				SecurityWebServicesClient.getInstance().config(Configuration.getInstance().config.Webservices.Security);
+				
+				var kat:KeepAliveTimer = new KeepAliveTimer(30);
+				
+				//titulo del progress bar
+				progressBarPopUp.progressBar.label = ResourceManager.getInstance().getString('resources','progressbar.label') + " %3%%";
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Style source="assets/css/Styles.css"/>
+	<mx:Style source="assets/css/Charts.css"/>
+	
+	<mx:Panel id="panelPrincipal" width="100%" height="100%" layout="absolute" styleName="CustomPanel">
+		<ns1:Header width="100%"/>
+		<ns2:Login horizontalCenter="0" verticalCenter="8"  id="loginMenu" height="192"/>
+		<components:LoadingPopup id="loadingPopUp" visible="false"/>
+		<components:ProgressBarPopUp id="progressBarPopUp" visible="false" styleName="movingProgressBar"/>
+	</mx:Panel>
+</mx:Application>

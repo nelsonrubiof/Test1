@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+				layout="absolute"
+				minWidth="955"
+				minHeight="600"
+				xmlns:view="com.scopix.reporting.view.*"
+				xmlns:view1="com.scopix.security.view.*"
+				xmlns:components="commons.components.*"
+				creationComplete="init()"
+				horizontalAlign="center"
+				verticalAlign="middle"
+				horizontalScrollPolicy="off"
+				verticalScrollPolicy="off"
+				pageTitle="Reporting Data Uploading">
+	<mx:states>
+		<mx:State name="selectCorporateState">
+			<mx:RemoveChild target="{loginMenu}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}"
+						 position="lastChild">
+				<view:SelectCorporate horizontalCenter="0"
+									  verticalCenter="8"
+									  id="selectCorporate"/>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="controlPanelState">
+			<mx:RemoveChild target="{loginMenu}"/>
+			<mx:AddChild relativeTo="{panelPrincipal}"
+						 position="lastChild">
+				<view:ControlPanel horizontalCenter="0"
+								   verticalCenter="8"
+								   id="controlPanel"/>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	<mx:Script>
+		<![CDATA[
+			import mx.events.BrowserChangeEvent;
+			import mx.managers.IBrowserManager;
+			import mx.managers.BrowserManager;
+			import com.scopix.reporting.model.vo.CorporateParameter;
+			import com.scopix.reporting.model.arrays.ArrayOfCorporateParameter;
+			import com.scopix.periscope.security.services.webservices.client.SecurityWebServicesClient;
+			import mx.resources.ResourceManager;
+			import com.scopix.global.GlobalParameters;
+			import commons.config.Configuration;
+			import com.scopix.util.KeepAliveTimer;
+
+			private function init():void {
+				Configuration.getInstance().loadParameterFile("assets/config/parameters.xml", "e4x");
+				Configuration.getInstance().addEventListener(Configuration.CONFIGURATION_COMPLETE, startApp);
+				GlobalParameters.getInstance().version = "Version 1.4.0";
+			}
+
+			private function startApp(evt:Event):void {
+
+				//verificando modo de ejecución
+				var test:String = Configuration.getInstance().config.Test;
+				if (test == "true") {
+					GlobalParameters.getInstance().test = true;
+						//configurando web service para test
+						//WebServicesClientTest.getInstance().config("test");
+				} else {
+					GlobalParameters.getInstance().test = false;
+				}
+
+				//cargando los corporates con sus url configuradas en el archivo de parametros
+				var xmlCorporateParameterList:XMLList = Configuration.getInstance().config.Webservices.BusinessServices.Corporate;
+
+				var corporateListParameter:ArrayOfCorporateParameter = new ArrayOfCorporateParameter();
+				var corporateParameter:CorporateParameter = null;
+				for each (var obj:XML in xmlCorporateParameterList) {
+					corporateParameter = new CorporateParameter();
+
+					corporateParameter.id = obj.id;
+					corporateParameter.description = obj.description;
+					corporateParameter.corporateUrl = obj.corporateUrl;
+					corporateParameter.reportingUrl = obj.reportingUrl;
+
+					corporateListParameter.addCorporateParameter(corporateParameter);
+				}
+
+				GlobalParameters.getInstance().corporateListParameter = corporateListParameter;
+
+				GlobalParameters.getInstance().intervalStatusProcess = 5;
+
+				//configurando url de webservice de seguridad.
+				SecurityWebServicesClient.getInstance().config(Configuration.getInstance().config.Webservices.Security);
+
+				var kat:KeepAliveTimer = new KeepAliveTimer(30);
+
+				//titulo del progress bar
+				progressBarPopUp.progressBar.label = ResourceManager.getInstance().getString('resources', 'progressbar.label') + " %3%%";
+			}
+		]]>
+	</mx:Script>
+	<mx:Style source="../assets/css/Styles.css"/>
+	<mx:Style source="../assets/css/Charts.css"/>
+	<mx:Panel id="panelPrincipal"
+			  width="100%"
+			  height="100%"
+			  layout="absolute"
+			  styleName="CustomPanel">
+		<view:Header width="100%"/>
+		<view1:Login horizontalCenter="0"
+					 verticalCenter="8"
+					 id="loginMenu"
+					 height="192"/>
+		<components:LoadingPopup id="loadingPopUp"
+								 visible="false"/>
+		<components:ProgressBarPopUp id="progressBarPopUp"
+									 visible="false"
+									 styleName="movingProgressBar"/>
+	</mx:Panel>
+
+</mx:Application>

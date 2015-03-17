@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+           xmlns:s="library://ns.adobe.com/flex/spark"
+           xmlns:mx="library://ns.adobe.com/flex/mx"
+           backgroundColor="#ffffff"
+           borderStyle="none"
+           backgroundAlpha="1.0"
+           horizontalScrollPolicy="off"
+           verticalScrollPolicy="off"
+           width="100%"
+           height="64"
+           creationComplete="init()">
+    <fx:Script>
+        <![CDATA[
+            import com.scopix.global.GlobalParameters;
+            import com.scopix.qualitycontrol.model.QualityControlModel;
+
+            import commons.ResourceLocator;
+
+            import mx.events.FlexEvent;
+            [Bindable]
+            private var model:QualityControlModel;
+
+            protected function init():void {
+                model = QualityControlModel.getInstance();
+            }
+        ]]>
+    </fx:Script>
+    <mx:HBox width="100%"
+             height="100%">
+        <mx:VBox verticalGap="0"
+                 horizontalAlign="center">
+            <mx:Image x="0"
+                      y="0"
+                      width="236"
+                      height="49"
+                      source="{ResourceLocator.logo}"/>
+            <mx:Label text="{GlobalParameters.getInstance().version}"
+                      fontSize="9"
+                      color="#f24132"/>
+        </mx:VBox>
+        <mx:VBox horizontalAlign="center"
+                 backgroundColor="#ffffff"
+                 width="100%"
+                 height="100%"
+                 verticalGap="2">
+            <mx:Spacer height="5"/>
+            <mx:Label text="{resourceManager.getString('resources', 'header.applicationtitle')} {model.corporateDescriptionSelected}"
+                      id="tituloApplication"
+                      enabled="true"
+                      fontSize="20"
+                      alpha="1.0"
+                      fontWeight="bold"
+                      color="#000000"/>
+            <mx:Spacer height="5"
+                       alpha="0.0"/>
+            <mx:Canvas backgroundImage="{ResourceLocator.bt_part2}"
+                       backgroundSize="100%"
+                       height="2"
+                       width="90%"/>
+			<!--
+			<s:Group>
+				<s:BitmapImage source="@Embed({ResourceLocator.bt_part2})" height="2" width="90%" />
+			</s:Group>
+			-->
+        </mx:VBox>
+    </mx:HBox>
+</mx:Canvas>

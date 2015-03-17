@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties version="1">
+  <includeClasses>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.dto.UploadEvidenceToExternalDeviceDTO"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.dto.UploadEvidenceToExternalDeviceResponseDTO"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.BaseUploadEvidenceToExternalDeviceWebService"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.BaseUploadEvidenceToExternalDeviceWebServiceSchema"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.IUploadEvidenceToExternalDeviceWebService"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.UploadEvidenceToExternalDeviceWebService"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.request.FormatDevice_request"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.request.MountDevice_request"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.request.UnMountDevice_request"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.result.FormatDeviceResultEvent"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.result.MountDeviceResultEvent"/>
+    <classEntry path="com.scopix.periscope.uploadtoexternaldevicemanagement.services.webservices.client.result.UnMountDeviceResultEvent"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

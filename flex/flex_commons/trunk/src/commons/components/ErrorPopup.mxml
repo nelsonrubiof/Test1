@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="420" 
+	height="200" 
+	alpha="0.75" 
+	borderStyle="solid" 
+	backgroundColor="#E8E4E4" 
+	borderColor="#A9A9A9"
+	verticalCenter="0"
+	horizontalCenter="0"
+	creationComplete="init();">
+
+	<mx:Label id="titleLbl" text="{resourceManager.getString('resources','msgAlertErrorTitle')}" height="25" width="294" horizontalCenter="0" top="10" fontWeight="bold" fontSize="12"/>
+	<mx:TextArea x="10" y="43" width="398" height="96" id="messageLbl" borderColor="#F41414" borderStyle="solid" borderThickness="2" themeColor="#FF9000"/>
+	<mx:Button label="{resourceManager.getString('resources','lblClose')}" click="close();" horizontalCenter="-11" bottom="29"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import commons.PopUpUtils;
+			
+			public function init():void{
+				PopUpUtils.getInstance().errorPopUp = this;
+			}
+			
+			public function close():void{
+				try{
+					this.visible = false;
+					this.messageLbl.text = "";
+					PopUpManager.removePopUp(PopUpUtils.getInstance().errorPopUp);
+				}catch(e:Error){}
+			}
+		]]>
+	</mx:Script>
+</mx:Canvas>

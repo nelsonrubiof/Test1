@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="60" height="720" 
+    borderColor="#000000" borderStyle="solid"
+    verticalScrollPolicy="off"
+    horizontalScrollPolicy="off">
+    <mx:Label x="-1" text="00:00" height="30" y="0"/>
+    <mx:Label x="-1" text="01:00" height="30" y="30"/>
+    <mx:Label x="-1" text="02:00" height="30" y="60"/>
+    <mx:Label x="-1" text="03:00" height="30" y="90"/>
+    <mx:Label x="-1" text="04:00" height="30" y="120"/>
+    <mx:Label x="-1" text="05:00" height="30" y="150"/>
+    <mx:Label x="-1" text="06:00" height="30" y="180"/>
+    <mx:Label x="-1" text="07:00" height="30" y="210"/>
+    <mx:Label x="-1" text="08:00" height="30" y="240"/>
+    <mx:Label x="-1" text="09:00" height="30" y="270"/>
+    <mx:Label x="-1" text="10:00" height="30" y="300"/>
+    <mx:Label x="-1" text="11:00" height="30" y="330"/>
+    <mx:Label x="-1" text="12:00" height="30" y="360"/>
+    <mx:Label x="-1" text="13:00" height="30" y="390"/>
+    <mx:Label x="-1" text="14:00" height="30" y="420"/>
+    <mx:Label x="-1" text="15:00" height="30" y="450"/>
+    <mx:Label x="-1" text="16:00" height="30" y="480"/>
+    <mx:Label x="-1" text="17:00" height="30" y="510"/>
+    <mx:Label x="-1" text="18:00" height="30" y="540"/>
+    <mx:Label x="-1" text="19:00" height="30" y="570"/>
+    <mx:Label x="-1" text="20:00" height="30" y="600"/>
+    <mx:Label x="-1" text="21:00" height="30" y="630"/>
+    <mx:Label x="-1" text="22:00" height="30" y="660"/>
+    <mx:Label x="-1" text="23:00" height="30" y="690"/>
+</mx:Canvas>

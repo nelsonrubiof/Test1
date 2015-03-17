@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:ns1="com.scopix.extractionplancustomizing.view.*"
+    creationComplete="init()"
+    label="{resourceManager.getString('resources','epcmanagement.general')}" width="100%" height="100%"
+    minHeight="380" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+    <mx:Script>
+        <![CDATA[
+			import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingLastSentAction;
+			import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingLastSentModel;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.effects.Glow;
+            [Bindable]
+            private var action:ExtractionPlanCustomizingLastSentAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingLastSentModel;
+
+
+            private function init():void {
+                action = ExtractionPlanCustomizingLastSentAction.getInstance();
+                model = ExtractionPlanCustomizingLastSentModel.getInstance();
+                
+                generalDataCanvas.addEventListener(MouseEvent.CLICK, abortoperation, true);
+                
+                BindingUtils.bindSetter(loadTreeDataProvider, model, "metricTemplateList");
+				BindingUtils.bindSetter(copyFullEPCToEditionEffect, model, "copyFullEPCToEditionEffect");
+            }
+            
+            private function loadTreeDataProvider(obj:Object):void {
+                //cargando los datos metricas y providers en la interfaz
+                //mtTree.dataProvider = model.metricTemplateList;
+                
+                if (model.metricTemplateList != null) {
+                    //dejando el arbol abierto inicialmente
+                    mtTree.openItems = mtTree.dataProvider;
+                }
+            }
+            
+            private function abortoperation(evt:MouseEvent):void {
+                evt.stopImmediatePropagation();
+                evt.preventDefault();
+            }
+			
+			private function copyFullEPCToEditionEffect(eff:Glow):void {
+				if (eff != null) {
+					eff.play([copyEPCFull], false);
+				}
+			}
+
+        ]]>
+    </mx:Script>
+    <mx:Canvas id="generalDataCanvas" width="942">
+		<mx:VBox>
+			<mx:Spacer height="5"/>
+			<mx:HBox>
+				<mx:CheckBox id="multiCamera" x="10" y="14" label="{resourceManager.getString('resources','epcmanagement.general.multiCamera')}"
+							 selected="{model.multiCamera}"/>
+				<mx:CheckBox id="randomCamera" x="10" y="14" label="{resourceManager.getString('resources','epcmanagement.general.randomCamera')}"
+							 selected="{model.randomCamera}"/>
+			</mx:HBox>
+			<mx:HBox>
+				<mx:Label text="{resourceManager.getString('resources','epcmanagement.general.priorization')}:"/>
+				<mx:Label text="{isNaN(model.priorization)?'':model.priorization}"/>				
+			</mx:HBox>
+		
+		</mx:VBox>
+        <mx:Label x="586" y="75" text="{resourceManager.getString('resources','epcmanagement.general.sensors')}" width="300"/>
+        <mx:Label x="10" y="75" text="{resourceManager.getString('resources','epcmanagement.general.metricTemplates')}" width="561"/>
+        <mx:List id="sensors" 
+            x="586" y="101" height="255" width="300" 
+            dataProvider="{model.sensorList}"
+            itemRenderer="com.scopix.extractionplancustomizing.view.renderer.SelectedSensorRenderer"
+            allowMultipleSelection="false" labelField="description"/>
+        <mx:Tree id="mtTree"
+            width="468" height="255"
+            editable="false"
+            dataProvider="{model.metricTemplateList}"
+            selectable="false"
+            itemRenderer="com.scopix.extractionplancustomizing.view.lastSent.renderer.CustomTreeItemRenderer"
+            showRoot="true"
+            y="101" x="10"
+            folderOpenIcon="{null}"
+            folderClosedIcon="{null}"
+            defaultLeafIcon="@Embed('/assets/img/icon_rc_WV-NP304.jpg')"/>
+        <mx:HRule left="10" y="65" right="10" width="100%"/>
+    </mx:Canvas>
+	<mx:Button id="copyEPCFull" bottom="20" left="10" width="180" height="22"
+			   label="{resourceManager.getString('resources','epcmanagement.copyFullEPC')}"			   
+			   click="action.copyFullEPC()"/><!--left="10"-->
+    <mx:Button id="backToEPCList" bottom="20" right="150" width="130" height="22"
+        label="{resourceManager.getString('resources','epcmanagement.commons.backToEPCList')}" 
+        toolTip="{resourceManager.getString('resources','epcmanagement.commons.backToEPCListToolTip')}"
+        click="action.backToEPCList()"/>
+</mx:Canvas>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:view="com.scopix.extractionplancustomizing.view.*" 
+    label="{resourceManager.getString('resources','epcmanagement.calendar')}"
+    width="933" height="450" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+			import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+			import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+			
+			import mx.core.Application;
+			import mx.core.FlexGlobals;
+            [Bindable]
+            private var action:CalendarAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+            
+            private function init():void {
+                action = CalendarAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+            }
+        ]]>
+    </mx:Script>
+    <view:Calendar id="calendar" x="10" y="0" height="380"/>
+    <mx:HBox width="100%">
+        <mx:Button id="copyCalendar" bottom="10" left="10" width="150" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.calendar.copyCalendar')}"
+            click="action.selectStoreSituationTemplate(FlexGlobals.topLevelApplication as DisplayObject)" />
+        <mx:Button id="copyDay" bottom="10" left="150" width="150" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.calendar.copyDay')}"
+            click="action.selectDaysToCopy(FlexGlobals.topLevelApplication as DisplayObject)" />
+        <mx:Button id="regenerateDetail" bottom="10" left="290" width="150" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.calendar.regenerateDetail')}" 
+            click="action.selectDaysToRegenerate(FlexGlobals.topLevelApplication as DisplayObject)"/>
+        <mx:Button id="clean" bottom="10" left="430" width="150" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.calendar.clean')}"
+            click="action.selectDaysToClean(FlexGlobals.topLevelApplication as DisplayObject)"/>
+        <mx:Spacer width="15%" right="5"/>
+        <mx:Button id="backToList" bottom="10" left="430" width="150" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.commons.backToEPCList')}" 
+            toolTip="{resourceManager.getString('resources','epcmanagement.commons.backToEPCListToolTip')}"
+            click="action.backToEPCList()"/>
+    </mx:HBox>
+    <mx:HBox width="100%">
+        <mx:Button id="copyFromLastSent" bottom="10" left="430" width="260" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.calendar.copyFromLastSent')}"
+            click="action.copyCalendarToEdition()" />
+    </mx:HBox>
+</mx:VBox>

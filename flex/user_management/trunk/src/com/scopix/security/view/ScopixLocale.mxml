@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="214" 
+	height="28"
+	creationComplete="init()">
+<mx:Metadata>
+	[ResourceBundle("resources")]
+</mx:Metadata>
+<mx:RadioButtonGroup id="languageGroup" selectedValue="en_US" change="loadLanguage(languageGroup.selectedValue.toString())" />
+<mx:RadioButton x="0" y="0" label="{resourceManager.getString('resources','login.spanish')}" 
+    id="rbSpanish" group="{languageGroup}" height="28" value="es_ES"/>
+<mx:RadioButton x="73.5" y="0" label="{resourceManager.getString('resources','login.english')}" 
+    id="rbEnglish" group="{languageGroup}" height="28" value="en_US"/>
+<mx:Script>
+	<![CDATA[
+	    import commons.config.CustomDateFormatter;
+		private function init():void{
+			resourceManager.localeChain = [ 'en_US' ];
+		}
+	
+		public function loadLanguage(lang:String):void
+	    {
+	        resourceManager.localeChain = [ lang ];
+	    }
+	    
+	    public function loadCustomDateFormatter(lang:String):void {
+	        CustomDateFormatter.getInstance().setLanguageFormat(lang);
+	    }
+	]]>
+</mx:Script>
+</mx:Canvas>

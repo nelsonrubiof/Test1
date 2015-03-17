@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+    width="100%" height="100%"
+    creationComplete="init()"
+    label="{resourceManager.getString('resources','definitioncomponent.label')}"
+    paddingLeft="10"
+    paddingRight="10">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.global.GlobalParameters;
+            import com.scopix.reporting.controller.actions.ReportingAction;
+            import com.scopix.reporting.model.ReportingModel;
+            import com.scopix.reporting.model.arrays.ArrayOfAreaTypeVO;
+            import com.scopix.reporting.model.arrays.ArrayOfStoreVO;
+            import com.scopix.reporting.model.vo.AreaTypeVO;
+            import com.scopix.reporting.model.vo.StoreVO;
+            
+            import mx.binding.utils.BindingUtils;
+            import mx.controls.Alert;
+            import mx.events.ListEvent;
+            import mx.formatters.DateFormatter;
+            import mx.utils.ObjectUtil;
+            
+            [Bindable]
+            private var action:ReportingAction;
+            
+            [Bindable]
+            private var model:ReportingModel;
+            
+            private function init():void {
+                action = ReportingAction.getInstance();
+                model = ReportingModel.getInstance();
+                
+                model.selectedIndexStores = -1;
+                model.selectedIndexAreaType = -1;
+            }
+            
+            private function addUploadProcessDetail():void {
+                var stList:ArrayOfStoreVO = new ArrayOfStoreVO(stores.selectedItems);
+                var atList:ArrayOfAreaTypeVO = new ArrayOfAreaTypeVO(areaTypes.selectedItems);
+                var edDate:Date = endDate.selectedDate;
+                action.addUploadProcessDetail(stList, atList, edDate);
+            }
+            
+            private function definitionLabelFunction(item:Object, column:AdvancedDataGridColumn):String {
+                var itemLabel:String = "";
+                switch(column.dataField) {
+                    case "store":
+                        itemLabel = item.store.description;
+                        break;
+                    case "areaType":
+                        itemLabel = item.areaType.description;
+                        break;
+					case "dateEnd":
+                        var dfDate:DateFormatter = new DateFormatter();
+                        dfDate.formatString = GlobalParameters.getInstance().dateFormat;
+                        itemLabel = dfDate.format(item.dateEnd);
+                    	break;                        
+                }
+                
+                return itemLabel;
+            }
+
+            private function storeSortCompareFunction(itemA:Object, itemB:Object):int
+            {
+                return ObjectUtil.stringCompare(itemA.store.description, itemB.store.description);
+            }
+
+            private function areaSortCompareFunction(itemA:Object, itemB:Object):int
+            {
+                return ObjectUtil.stringCompare(itemA.areaType.description, itemB.areaType.description);
+            }
+            
+			private function dateSortCompareFunction(itemA:Object, itemB:Object):int
+            {
+                return ObjectUtil.dateCompare(itemA.dateEnd, itemB.dateEnd);
+            }
+            
+            private function selectStoreItem(evt:ListEvent):void {
+                model.selectedIndexStores = evt.rowIndex;
+            }
+            
+            private function selectAreaTypeItem(evt:ListEvent):void {
+                model.selectedIndexAreaType = evt.rowIndex;
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox width="100%" height="100%">
+        <mx:VBox width="45%" height="100%" horizontalAlign="center">
+            <mx:Label text="{resourceManager.getString('resources','definitioncomponent.stores')}"
+                height="5%" />
+            <mx:List id="stores" 
+                width="100%" height="42%"
+                dataProvider="{model.storeList}"
+                labelField="description" 
+                allowMultipleSelection="true"
+                selectedIndex="{model.selectedIndexStores}"
+                itemClick="selectStoreItem(event)"/>
+            <mx:Label text="{resourceManager.getString('resources','definitioncomponent.areaTypes')}" 
+                height="5%"/>
+            <mx:List id="areaTypes" 
+                width="100%" height="43%"
+                dataProvider="{model.areaTypeList}"
+                labelField="description"
+                allowMultipleSelection="true"
+                selectedIndex="{model.selectedIndexAreaType}"/>
+            <mx:HBox>
+	            <mx:Label text="{resourceManager.getString('resources','definitioncomponent.endDate')}"	            	
+	                height="5%" />
+	        	<mx:DateField id="endDate"
+	        		dataProvider="{model.endDate}"
+	        		selectedDate="{model.endDate}"
+	        		formatString="{GlobalParameters.getInstance().dateFormat}" />
+	         </mx:HBox>
+            <mx:Spacer/>
+            <mx:Button id="add" 
+                width="130" height="5%"
+                label="{resourceManager.getString('resources','definitioncomponent.addButton')}"
+                click="addUploadProcessDetail()" />            
+        </mx:VBox>
+        <mx:Spacer width="5%" />
+        <mx:VBox width="50%" height="100%">
+            <mx:Spacer height="5%"/>
+            <mx:AdvancedDataGrid id="toProcessList"
+                width="100%" height="91%"
+                draggableColumns="false"
+                dataProvider="{model.toProcessList}"
+                sortableColumns="true">
+                <mx:columns>
+                    <mx:AdvancedDataGridColumn width="20" sortable="false"
+                        itemRenderer="com.scopix.reporting.view.renderer.chkProcessListRenderer" 
+                        headerRenderer="com.scopix.reporting.view.renderer.chkHeaderProcessListRenderer"/>
+                    <mx:AdvancedDataGridColumn dataField="store" sortCompareFunction="storeSortCompareFunction" labelFunction="definitionLabelFunction" 
+                        headerText="{resourceManager.getString('resources','definitioncomponent.store')}"/>
+                    <mx:AdvancedDataGridColumn dataField="areaType" sortCompareFunction="areaSortCompareFunction" labelFunction="definitionLabelFunction" 
+                        headerText="{resourceManager.getString('resources','definitioncomponent.areaType')}"/>
+        			<mx:AdvancedDataGridColumn dataField="dateEnd" sortCompareFunction="dateSortCompareFunction" labelFunction="definitionLabelFunction"
+                    headerText="{resourceManager.getString('resources','definitioncomponent.endDate')}"/>
+                                
+                </mx:columns>
+            </mx:AdvancedDataGrid>
+
+            <mx:HBox horizontalAlign="center" verticalAlign="top"
+                width="100%" height="4%" paddingTop="10">
+                <mx:Button id="deleteSelection"
+                    width="130" 
+                    label="{resourceManager.getString('resources','definitioncomponent.deleteSelectionButton')}"
+                    enabled="{model.deleteButtonEnable}"
+                    click="{action.deleteUploadProcessDetailList()}"/>
+                <mx:Spacer width="100" />
+                <mx:Button id="runNow" 
+                    width="130"
+                    label="{resourceManager.getString('resources','definitioncomponent.runNowButton')}"
+                    enabled="{model.runNowButtonEnable}"
+                    click="{action.uploadNow()}"/>
+            </mx:HBox>
+        </mx:VBox>
+    </mx:HBox>
+</mx:VBox>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+    width="436" height="170"
+    styleName="scopixPanel"
+    layout="absolute"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    creationComplete="init()"
+    title="{resourceManager.getString('resources','selectSituationTemplate.title')}">
+    <mx:Script>
+        <![CDATA[
+            import mx.events.ListEvent;
+            import mx.events.IndexChangedEvent;
+            import com.scopix.extractionplancustomizing.model.vo.SituationTemplateVO;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            import mx.controls.Button;
+            import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+            
+            [Bindable]
+            private var action:ExtractionPlanCustomizingAction;
+
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+            
+            private function init():void {
+                action = ExtractionPlanCustomizingAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+            }
+            
+            private function changeSelectedIndex(evt:ListEvent):void {
+                model.stSelectedIndex = evt.target.selectedIndex;
+            }
+            
+        ]]>
+    </mx:Script>
+    
+    <mx:Form width="416" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+        <mx:FormItem label="{resourceManager.getString('resources','selectSituationTemplate.store')}" width="384">
+            <mx:Label text="{model.storeDescriptionSelected}" />
+        </mx:FormItem>
+        <mx:FormItem label="{resourceManager.getString('resources','selectSituationTemplate.situationTemplate')}" width="384">
+            <mx:ComboBox id="situationTemplates" dataProvider="{model.stList}" labelField="name" width="230" selectedIndex="{model.stSelectedIndex}" change="changeSelectedIndex(event)"/>
+        </mx:FormItem>
+        <mx:Spacer height="20" />
+        <mx:HBox height="26" width="100%" 
+            verticalScrollPolicy="off" horizontalScrollPolicy="off">
+            <mx:Button label="{resourceManager.getString('resources','commons.cancel')}" 
+                click="action.cancelNewEPC()" 
+                width="130" height="22" />
+            <mx:Spacer width="70%" />
+            <mx:Button label="{resourceManager.getString('resources','selectSituationTemplate.continue')}" 
+                click="action.newEPC(situationTemplates.selectedItem as SituationTemplateVO)"
+                width="130" height="22"/>
+        </mx:HBox>
+    </mx:Form>
+</mx:Panel>

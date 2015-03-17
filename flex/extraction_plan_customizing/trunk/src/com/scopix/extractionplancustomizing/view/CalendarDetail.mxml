@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:ns1="com.scopix.extractionplancustomizing.view.*" 
+    minWidth="920" width="920" height="350"
+    verticalScrollPolicy="on"
+    horizontalScrollPolicy="off"
+    horizontalGap="0"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            
+            [Bindable]
+            private var action:CalendarAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+
+            private function init():void {
+                action = CalendarAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+                
+                model.sunday = this.sunday;
+                model.monday = this.monday;
+                model.tuesday = this.tuesday;
+                model.wednesday = this.wednesday;
+                model.thursday = this.thursday;
+                model.friday = this.friday;
+                model.saturday = this.saturday;
+                
+                model.readyToLoadCalendar = true;
+                //model.loadFirstTime = false;
+                //cargando los ep ranges
+                //action.loadEPRanges();
+            }
+        ]]>
+    </mx:Script>
+    <ns1:Hours/>
+    <ns1:Day id="sunday" name="1"/>
+    <ns1:Day id="monday" name="2"/>
+    <ns1:Day id="tuesday" name="3"/>
+    <ns1:Day id="wednesday" name="4"/>
+    <ns1:Day id="thursday" name="5"/>
+    <ns1:Day id="friday" name="6"/>
+    <ns1:Day id="saturday" name="7"/>
+</mx:HBox>

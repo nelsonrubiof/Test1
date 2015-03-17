@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<AppConfig version="1">
+
+	<Config>
+		<Test>
+			false
+		</Test>
+	    <Webservices>
+	    	<Security>
+<!-- 	    		http://204.51.184.194:28081/security/spring/services/SecurityWebServices?wsdl -->
+<!-- 	    		http://127.0.0.1:8082/security/spring/services/SecurityWebServices?wsdl -->
+http://64.151.117.136:28081/security/spring/services/SecurityWebServices?wsdl
+
+	    	</Security>
+	    	<BusinessServices>
+	    	<!--
+				<Corporate>
+                    <id>11</id>
+                    <description>Safeway</description>
+                    <qualityUrl>http://apps.scopixsolutions.com/business-services-11/spring/services/QualityControlWebServices</qualityUrl>
+                    <corporateUrl>http://apps.scopixsolutions.com/business-services-11/spring/services/CorporateWebServices</corporateUrl>
+                    <evidenceProofUrl>http://apps.scopixsolutions.com/business-services-11/spring/viewimagecontroller</evidenceProofUrl>
+                    <templateUrl>http://apps.scopixsolutions.com/business-services-11/spring/viewtemplatecontroller</templateUrl>
+                </Corporate>
+                --> 
+                <Corporate>
+                    <id>6</id>
+                    <description>Lowes</description>
+                    <qualityUrl>http://64.151.127.244:28080/business-services/spring/services/QualityControlWebServices?wsdl</qualityUrl>
+                    <corporateUrl>http://64.151.127.244:28080/business-services/spring/services/CorporateWebServices?wsdl</corporateUrl>
+                    <evidenceProofUrl>http://64.151.127.244:28080/business-services/spring/viewimagecontroller</evidenceProofUrl>
+                    <templateUrl>http://64.151.127.244:28080/business-services/spring/viewtemplatecontroller</templateUrl>
+
+<!--                     <qualityUrl>http://173.204.188.250:8080/business-services/spring/services/QualityControlWebServices?wsdl</qualityUrl> -->
+<!--                     <corporateUrl>http://173.204.188.250:8080/business-services/spring/services/CorporateWebServices?wsdl</corporateUrl> -->
+<!--                     <evidenceProofUrl>http://173.204.188.250:8080/business-services/spring/viewimagecontroller</evidenceProofUrl> -->
+<!--                     <templateUrl>http://173.204.188.250:8080/business-services/spring/viewtemplatecontroller</templateUrl> -->
+
+                </Corporate>
+                
+<!-- 				<Corporate> -->
+<!--                     <id>8</id> -->
+<!--                     <description>Harristeeter</description> -->
+<!--                     <qualityUrl>http://localhost:8082/business-services/spring/services/QualityControlWebServices</qualityUrl> -->
+<!--                     <corporateUrl>http://localhost:8082/business-services/spring/services/CorporateWebServices</corporateUrl> -->
+<!--                     <evidenceProofUrl>http://localhost:8082/business-services/spring/viewimagecontroller</evidenceProofUrl> -->
+<!--                     <templateUrl>http://localhost:8082/business-services/spring/viewtemplatecontroller</templateUrl> -->
+<!--                 </Corporate> -->
+                <!-- 				<Corporate>
+                    <id>5</id>
+                    <description>Kum and Go</description>
+                    <qualityUrl>http://localhost:8080/business-services/spring/services/QualityControlWebServices</qualityUrl>
+                    <corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+                    <evidenceProofUrl>http://localhost:8080/business-services/spring/viewimagecontroller</evidenceProofUrl>
+                    <templateUrl>http://localhost:8080/business-services/spring/viewtemplatecontroller</templateUrl>
+                </Corporate>
+                -->
+	    	</BusinessServices>
+	    </Webservices>
+	</Config>
+
+</AppConfig>

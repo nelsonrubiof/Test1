@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:ns1="com.scopix.extractionplancustomizing.view.*"
+		   width="100%" height="540" minHeight="380"
+		   label="{resourceManager.getString('resources','epcmanagement.general')}"
+		   creationComplete="init()" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+	<mx:Script>
+		<![CDATA[
+			import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+			import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+			import com.scopix.extractionplancustomizing.model.vo.MetricTemplateVO;
+			import com.scopix.util.UtilityFunctions;
+
+			import mx.binding.utils.BindingUtils;
+			import mx.core.Application;
+			import mx.effects.Glow;
+			import mx.events.ListEvent;
+			[Bindable]
+			private var action:ExtractionPlanCustomizingAction;
+			[Bindable]
+			private var model:ExtractionPlanCustomizingModel;
+
+			private function init():void {
+				action=ExtractionPlanCustomizingAction.getInstance();
+				model=ExtractionPlanCustomizingModel.getInstance();
+				//monitoreando cambios en la varible del efecto para el botón guardar
+				BindingUtils.bindSetter(saveButtonEffect, model, "saveEffect");
+			}
+
+			private function saveButtonEffect(eff:Glow):void {
+				if (eff != null) {
+					eff.play([save], false);
+				}
+			}
+
+			private function subir(evt:Event):void {
+				var mt:MetricTemplateVO=metricTemplates.selectedItem as MetricTemplateVO;
+
+				if (mt != null && metricTemplates.selectedIndex > 0) {
+					var index:Number=metricTemplates.selectedIndex;
+					model.metricTemplateList.removeItemAt(index);
+					model.metricTemplateList.addMetricTemplateVOAt(mt, index - 1);
+					metricTemplates.selectedItem=mt;
+					changeModifiedValue();
+				}
+			}
+
+			private function bajar(evt:Event):void {
+				var mt:MetricTemplateVO=metricTemplates.selectedItem as MetricTemplateVO;
+
+				if (mt != null && metricTemplates.selectedIndex < metricTemplates.dataProvider.length - 1) {
+					var index:Number=metricTemplates.selectedIndex;
+					model.metricTemplateList.removeItemAt(index);
+					model.metricTemplateList.addMetricTemplateVOAt(mt, index + 1);
+					metricTemplates.selectedItem=mt;
+					changeModifiedValue();
+				}
+			}
+
+			private function changeModifiedValue():void {
+				model.isModified=true;
+				model.multiCamera=multiCamera.selected;
+				model.randomCamera=randomCamera.selected;
+			}
+
+			private function markProvidersAssociated(evt:Event):void {
+				model.metricTemplateSelected=metricTemplates.selectedItem as MetricTemplateVO;
+				model.evidenceProviderListEnabled=model.metricTemplateSelected.selected;
+
+				UtilityFunctions.markSelected(model.evidenceProviderList, model.metricTemplateSelected.children);
+				model.evidenceProviderList.refresh();
+				action.verifyEnableMultiCamera();
+			}
+
+			protected function priorizationchange(event:ListEvent):void {
+				model.isModified=true;
+				var priorizationValue:Number=priorization.selectedItem as Number;
+				model.priorization=priorizationValue;
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox>
+		<mx:Spacer height="5"/>
+		<mx:HBox>
+		<mx:CheckBox id="multiCamera" x="10" y="14"
+					 label="{resourceManager.getString('resources','epcmanagement.general.multiCamera')}"
+					 click="changeModifiedValue()" enabled="{model.enableMulticamera}"
+					 selected="{model.multiCamera}"/>
+		<mx:CheckBox id="randomCamera" x="606" y="210"
+					 label="{resourceManager.getString('resources','epcmanagement.general.randomCamera')}"
+					 click="changeModifiedValue()" 
+					 selected="{model.randomCamera}"/> <!--enabled="{model.enableRandomcamera}"--> 
+		</mx:HBox>
+		<mx:HBox>
+			<mx:Label text="{resourceManager.getString('resources','epcmanagement.general.priorization')}:"/>
+			<mx:ComboBox id="priorization" change="priorizationchange(event)" editable="false"
+						 enabled="true" selectedIndex="{model.priorization}">
+				<mx:Array>
+					<mx:String/>
+					<mx:Number>1</mx:Number>
+					<mx:Number>2</mx:Number>
+					<mx:Number>3</mx:Number>
+					<mx:Number>4</mx:Number>
+					<mx:Number>5</mx:Number>
+					<mx:Number>6</mx:Number>
+					<mx:Number>7</mx:Number>
+					<mx:Number>8</mx:Number>
+					<mx:Number>9</mx:Number>
+					<mx:Number>10</mx:Number>
+				</mx:Array>
+			</mx:ComboBox>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:Label x="606" y="74" width="300"
+			  text="{resourceManager.getString('resources','epcmanagement.general.evidenceProviders')}"/>
+	<mx:Label x="606" y="225" width="300"
+			  text="{resourceManager.getString('resources','epcmanagement.general.sensors')}"/>
+	<mx:Label x="10" y="74" width="561"
+			  text="{resourceManager.getString('resources','epcmanagement.general.metricTemplates')}"/>
+	<mx:List id="evidenceProviders" x="606" y="95" width="300" height="114"
+			 allowMultipleSelection="false" dataProvider="{model.evidenceProviderList}"
+			 enabled="{model.evidenceProviderListEnabled}"
+			 itemRenderer="com.scopix.extractionplancustomizing.view.renderer.SelectedEvidenceProviderRenderer"
+			 labelField="description"/>
+	<mx:List id="sensors" x="606" y="255" width="300" height="114" allowMultipleSelection="false"
+			 dataProvider="{model.sensorList}"
+			 itemRenderer="com.scopix.extractionplancustomizing.view.renderer.SelectedSensorRenderer"
+			 labelField="description"/>
+	<mx:List id="metricTemplates" x="10" y="95" width="561" height="270"
+			 allowMultipleSelection="true" change="markProvidersAssociated(event)"
+			 dataProvider="{model.metricTemplateList}" dragComplete="changeModifiedValue()"
+			 dragEnabled="true" dragMoveEnabled="true" dropEnabled="true"
+			 itemRenderer="com.scopix.extractionplancustomizing.view.renderer.SelectedMetricTemplateRenderer"
+			 labelField="description"/>
+	<mx:HRule y="65" left="10" right="10" width="100%"/>
+	<mx:Button id="up" x="151" y="373" width="130" height="22"
+			   label="{resourceManager.getString('resources','epcmanagement.general.up')}"
+			   click="subir(event)"/>
+	<mx:Button id="down" x="329" y="373" width="130" height="22"
+			   label="{resourceManager.getString('resources','epcmanagement.general.down')}"
+			   click="bajar(event)"/>
+	<mx:Button id="reload" right="290" bottom="20" width="130" height="22"
+			   label="{resourceManager.getString('resources','epcmanagement.general.reload')}"
+			   click="action.reloadEPC()" enabled="{model.isModified}"/>
+	<mx:Button id="backToEPCList" right="150" bottom="20" width="130" height="22"
+			   label="{resourceManager.getString('resources','epcmanagement.commons.backToEPCList')}"
+			   click="action.backToEPCList()" enabled="{!model.isModified}"
+			   toolTip="{resourceManager.getString('resources','epcmanagement.commons.backToEPCListToolTip')}"/>
+	<mx:Button id="save" right="10" bottom="20" width="130" height="22"
+			   label="{resourceManager.getString('resources','epcmanagement.general.save')}"
+			   click="action.saveEPC()" enabled="{model.isModified}"/>
+</mx:Canvas>

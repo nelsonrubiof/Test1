@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+                layout="absolute"
+                creationComplete="init();"  
+                xmlns:ns1="com.scopix.security.view.*" 
+                xmlns:menu="com.scopix.usermanagement.view.menu.*" 
+                xmlns:components="commons.components.*" 
+                xmlns:ns2="com.scopix.usermanagement.view.*" 
+                horizontalAlign="center" 
+                verticalAlign="middle"
+                pageTitle="Scopix Security">
+    <mx:states>
+        <mx:State name="selectClientState" id="selectClientState">
+            <mx:RemoveChild target="{loginMenu}"/>
+            <mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+                <ns2:ClientSelect horizontalCenter="0" verticalCenter="8" id="clientselect" />
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="userListState" basedOn="selectClientState" id="userListState">
+            <mx:RemoveChild target="{clientselect}"/>
+            <mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+                <ns2:UserList left="0" top="65" right="5" bottom="5"  id="userlist"/>
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="addUserState" basedOn="userListState" id="addUserState">
+            <mx:RemoveChild target="{userlist}"/>
+            <mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+                <ns2:AddUser horizontalCenter="0" verticalCenter="8" id="addUser"/>
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="massiveModification">
+            <mx:RemoveChild target="{loginMenu}"/>
+            <mx:AddChild relativeTo="{panelPrincipal}" position="lastChild">
+                <ns2:MassiveModification horizontalCenter="0" verticalCenter="8" />
+            </mx:AddChild>
+        </mx:State>
+    </mx:states>
+    
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.global.GlobalParameters;
+            import com.scopix.periscope.security.services.webservices.client.SecurityWebServicesClient;
+            import com.scopix.util.KeepAliveTimer;
+            
+            import commons.config.Configuration;
+            
+            import mx.controls.Alert;
+            import mx.resources.ResourceManager;
+            
+            private function init():void {
+                Configuration.getInstance().loadParameterFile("assets/config/parameters.xml","e4x");
+                Configuration.getInstance().addEventListener(Configuration.CONFIGURATION_COMPLETE, startApp);
+                GlobalParameters.getInstance().version = "Version 1.3.0";
+            }
+            
+            private function startApp(evt:Event):void {
+                var securityWS:String = Configuration.getInstance().config.Webservices.SecurityWS;
+                //configurando url de webservice de seguridad.
+                SecurityWebServicesClient.getInstance().config(securityWS);
+                
+                this.pageTitle = ResourceManager.getInstance().getString('resources', 'header.applicationtitle');
+                new KeepAliveTimer(30);
+            }
+        ]]>
+    </mx:Script>
+    
+    <mx:Style source="assets/css/Styles.css" />
+    <mx:Style source="assets/css/Charts.css"/>
+    
+    <mx:Panel id="panelPrincipal" width="100%" height="100%" layout="absolute" styleName="CustomPanel">
+        <ns2:Header width="100%"/>
+        <ns1:Login horizontalCenter="0" verticalCenter="8"  id="loginMenu"/>
+        <components:LoadingPopup visible="false"/>
+    </mx:Panel>
+</mx:Application>

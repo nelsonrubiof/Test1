@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="120" height="31" borderColor="#000000" borderStyle="solid" click="this.dispatchEvent(new Event('change'))">
+
+    <mx:Metadata>
+        [Event(name="change", type="flash.events.Event")]
+    </mx:Metadata>
+
+</mx:Canvas>

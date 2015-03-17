@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    paddingBottom="2" paddingLeft="2" paddingRight="2" paddingTop="2" 
+    horizontalGap="0" verticalAlign="middle">
+    
+    <mx:Metadata>
+        [Event(name="change", type="flash.events.Event")]
+    </mx:Metadata>
+
+    <mx:Script>
+        <![CDATA[
+            import mx.binding.utils.BindingUtils;
+            
+            
+
+            public function handleChange():void {
+                this.dispatchEvent(new Event("change"));
+            }
+        ]]>
+    </mx:Script>
+    <mx:NumericStepper id="hours" minimum="0" maximum="23" stepSize="1" change="handleChange()" valueCommit="handleChange()" textAlign="center"/>
+    <mx:Label text=":" textAlign="center"/>
+    <mx:NumericStepper id="minutes" minimum="0"  maximum="59" stepSize="1" change="handleChange()" valueCommit="handleChange()" textAlign="center"/>
+</mx:HBox>

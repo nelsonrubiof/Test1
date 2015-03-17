@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:ns1="com.scopix.security.view.*"
+	width="318" height="188" 
+	creationComplete="init()"
+	styleName="scopixPanel"
+	verticalScrollPolicy="off"
+	horizontalScrollPolicy="off"
+	title="{resourceManager.getString('resources','login.title')}"
+	layout="absolute" defaultButton="{btnLogin}">
+
+<mx:Script>
+	<![CDATA[
+	    import mx.managers.FocusManager;
+	    import mx.controls.Alert;
+	    import com.scopix.security.model.SecurityModel;
+	    import com.scopix.security.controller.actions.LoginAction;
+	    import commons.ResourceLocator;
+	    
+	    private static var loginAction:LoginAction;
+	    
+	    //las variables del modelo no deben ser declaradas como estaticas
+	    [Bindable]
+	    private var securityModel:SecurityModel;
+	    private var userTemp:String;
+	    private var passTemp:String;
+	    
+	    public function init():void {
+	        loginAction = LoginAction.getInstance();
+	        securityModel = SecurityModel.getInstance();
+	        loginAction.loadUserCookie();
+	    }
+	    
+	    public function clear():void {
+            txtUser.text = "";
+            txtPass.text = "";
+	    }
+	    
+	]]>
+</mx:Script>
+  <mx:Form>
+      <mx:FormItem label="{resourceManager.getString('resources','login.username')}">
+        <mx:TextInput id="txtUser" x="87" y="10" width="185" borderStyle="solid" 
+            borderColor="#000000" text="{securityModel.userName}"/>
+      </mx:FormItem>
+      <mx:FormItem label="{resourceManager.getString('resources','login.password')}">
+        <mx:TextInput id="txtPass" x="87" y="35" width="185" displayAsPassword="true" 
+            borderStyle="solid" borderColor="#000000" text="{securityModel.password}"/>
+      </mx:FormItem>
+  </mx:Form>
+  <ns1:ScopixLocale id="locale" x="10" y="84" width="149"/>
+  <mx:CheckBox x="168" y="87" label="{resourceManager.getString('resources','login.remember')}" id="chkRememberMe" selected="{securityModel.rememberLogin}"/>
+  <mx:Button id="btnLogin" label="Login" width="73" height="27" x="219" y="115"
+      click="loginAction.loginSystem(txtUser.text, txtPass.text, chkRememberMe.selected);"
+      buttonMode="true"/>
+</mx:Panel>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="400" 
+	height="96"
+	alpha="1" 
+	borderStyle="solid" 
+	backgroundColor="#FFFFFF" 
+	borderColor="#A9A9A9"
+	verticalCenter="0"
+	horizontalCenter="0"
+	cornerRadius="20"
+	dropShadowEnabled="true"
+	creationComplete="init();">
+	<mx:Metadata>
+		[Event(name="closeEvent", type="mx.events.CloseEvent")]
+	</mx:Metadata>
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import commons.PopUpUtils;
+			
+			[Bindable]
+			[Embed(source="/commons/images/closePanel.png")]
+			private static var closeButton:Class;
+			
+			private function init():void {
+				this.progressBar.minimum = 0;
+				this.progressBar.maximum = 100;
+				
+				PopUpUtils.getInstance().progressBarPopUp = this;
+			}
+		]]>
+	</mx:Script>
+	<mx:ProgressBar id="progressBar" horizontalCenter="0" verticalCenter="0" width="90%"
+		labelPlacement="bottom" themeColor="#EE1122"
+		direction="right" mode="manual" styleName="movingProgressBar"
+		height="15"/>
+	<mx:Button label="{resourceManager.getString('resources','commons.close')}" height="22" width="81" x="293" y="64"
+		click="dispatchEvent(new CloseEvent(CloseEvent.CLOSE))"/>
+	
+</mx:Canvas>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+		  width="80%"
+		  height="80%"
+		  styleName="scopixPanel"
+		  layout="absolute"
+		  creationComplete="init()"
+		  title="{resourceManager.getString('resources','epclist.title')}">
+	<mx:Script>
+		<![CDATA[
+			import com.scopix.enum.EPCStatesEnum;
+			import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+			import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+			import com.scopix.extractionplancustomizing.model.arrays.ArrayOfExtractionPlanCustomizingVO;
+			import com.scopix.extractionplancustomizing.model.vo.ExtractionPlanCustomizingVO;
+			import com.scopix.extractionplancustomizing.model.vo.StoreVO;
+			
+			import mx.binding.utils.BindingUtils;
+			import mx.effects.Glow;
+			import mx.utils.ObjectUtil;
+
+			[Bindable]
+			private var action:ExtractionPlanCustomizingAction;
+
+			[Bindable]
+			private var model:ExtractionPlanCustomizingModel;
+
+
+			private function init():void {
+				action = ExtractionPlanCustomizingAction.getInstance();
+				model = ExtractionPlanCustomizingModel.getInstance();
+				BindingUtils.bindSetter(filterButtonEffect, model, "filterEffect");
+				model.runFilterEffect = false;
+			}
+
+			private function filterButtonEffect(eff:Glow):void {
+				if (eff != null && model.runFilterEffect) {
+					eff.play([filterButton], false);
+					model.runFilterEffect = false;
+				}
+			}
+
+			private function epcLabelFunction(item:Object, column:AdvancedDataGridColumn):String {
+				switch (column.dataField) {
+					case "store":
+						label = item.store.description;
+						break;
+					case "situationTemplate":
+						label = item.situationTemplate.name;
+						break;
+					case "area":
+						label = item.area.description;
+						break;
+					case "status":
+						label = resourceManager.getString("resources", item.status.value);
+						break;
+					case "canBeSent":
+						if (item.canBeSent) {
+							label = resourceManager.getString("resources", "epclist.canBeSent.yes");
+						} else {
+							label = resourceManager.getString("resources", "epclist.canBeSent.no");
+						}
+						break;
+					case "priorization":
+							label = isNaN(item.priorization) ? "":item.priorization;
+						break;
+					default:
+						label = column.dataField;
+						break;
+				}
+
+				return label;
+			}
+
+			private function stateLabelFunction(item:Object):String {
+				return resourceManager.getString("resources", item.value);
+			}
+
+			private function storeSortCompareFunction(itemA:Object, itemB:Object):int {
+				return ObjectUtil.stringCompare(itemA.store.description, itemB.store.description);
+			}
+
+			private function areaSortCompareFunction(itemA:Object, itemB:Object):int {
+				return ObjectUtil.stringCompare(itemA.area.description, itemB.area.description);
+			}
+
+			private function situationTemplateSortCompareFunction(itemA:Object, itemB:Object):int {
+				return ObjectUtil.stringCompare(itemA.situationTemplate.name, itemB.situationTemplate.name);
+			}
+
+			private function statusSortCompareFunction(itemA:Object, itemB:Object):int {
+				return ObjectUtil.stringCompare(itemA.status.value, itemB.status.value);
+			}
+
+		]]>
+	</mx:Script>
+	<mx:VBox height="100%"
+			 width="100%">
+		<mx:HBox width="100%">
+			<mx:Spacer width="90%"/>
+			<mx:Label text="{resourceManager.getString('resources','epclist.corporate')}: {model.corporateDescriptionSelected}"/>
+		</mx:HBox>
+		<mx:HBox width="100%">
+			<mx:Spacer width="90%"/>
+			<mx:Label text="{resourceManager.getString('resources','epclist.store')}: {model.storeDescriptionSelected}"/>
+		</mx:HBox>
+		<mx:Spacer height="2%"/>
+		<mx:HBox width="100%">
+			<mx:Label text="{resourceManager.getString('resources','epclist.storeFilter')}"/>
+			<mx:ComboBox id="storesCombo"
+						 dataProvider="{model.storesFilter}"
+						 labelField="description"/>
+			<mx:Label text="{resourceManager.getString('resources','epclist.statusFilter')}"/>
+			<mx:ComboBox id="statusCombo"
+						 dataProvider="{EPCStatesEnum.comboList}"
+						 labelFunction="stateLabelFunction"/>
+			<mx:Spacer width="30"/>
+			<mx:Button id="filterButton"
+					   label="{resourceManager.getString('resources','epclist.buttonFilter')}"
+					   width="81"
+					   height="22"
+					   click="action.getFilterEPCList(storesCombo.selectedItem as StoreVO, statusCombo.selectedItem as EPCStatesEnum)"/>
+		</mx:HBox>
+		<mx:AdvancedDataGrid width="100%"
+							 height="70%"
+							 dataProvider="{model.epcList}"
+							 sortableColumns="true"
+							 id="epcList"
+							 allowMultipleSelection="true"
+							 doubleClick="action.manageEPC(epcList.selectedItem as ExtractionPlanCustomizingVO)"
+							 doubleClickEnabled="true">
+			<mx:columns>
+				<mx:AdvancedDataGridColumn dataField="store"
+										   sortCompareFunction="storeSortCompareFunction"
+										   labelFunction="epcLabelFunction"
+										   headerText="{resourceManager.getString('resources','epclist.store')}"/>
+				<mx:AdvancedDataGridColumn dataField="situationTemplate"
+										   sortCompareFunction="situationTemplateSortCompareFunction"
+										   labelFunction="epcLabelFunction"
+										   headerText="{resourceManager.getString('resources','epclist.situationTemplate')}"/>
+				<mx:AdvancedDataGridColumn dataField="area"
+										   sortCompareFunction="areaSortCompareFunction"
+										   labelFunction="epcLabelFunction"
+										   headerText="{resourceManager.getString('resources','epclist.area')}"/>
+				<mx:AdvancedDataGridColumn dataField="status"
+										   sortCompareFunction="statusSortCompareFunction"
+										   labelFunction="epcLabelFunction"
+										   headerText="{resourceManager.getString('resources','epclist.status')}"/>
+				<mx:AdvancedDataGridColumn dataField="canBeSent"
+										   labelFunction="epcLabelFunction"
+										   headerText="{resourceManager.getString('resources','epclist.canBeSent')}"/>
+				<mx:AdvancedDataGridColumn dataField="priorization"
+										   labelFunction="epcLabelFunction"
+										   headerText="{resourceManager.getString('resources','epclist.priorization')}"/>
+			</mx:columns>
+		</mx:AdvancedDataGrid>
+		<mx:Spacer height="5%"/>
+		<mx:HBox horizontalAlign="left"
+				 width="100%">
+			<mx:Button label="{resourceManager.getString('resources','epclist.sendFullEPC')}"
+					   width="145"
+					   click="action.preSendEPC(null, ExtractionPlanCustomizingAction.SEND_FULL_EPC)"/>
+			<mx:Button label="{resourceManager.getString('resources','epclist.sendEPC')}"
+					   width="145"
+					   click="action.preSendEPC(new ArrayOfExtractionPlanCustomizingVO(epcList.selectedItems), ExtractionPlanCustomizingAction.SEND_EPC)"/>
+		</mx:HBox>
+		<mx:HBox width="100%">
+			<mx:Button label="{resourceManager.getString('resources','epclist.manageEPC')}"
+					   width="145"
+					   click="action.manageEPC(epcList.selectedItem as ExtractionPlanCustomizingVO)"/>
+			<mx:Button label="{resourceManager.getString('resources','epclist.newEPC')}"
+					   width="145"
+					   click="action.selectSituationTemplateView()"/>
+			<mx:Spacer width="80%"/>
+            <mx:Button label="{resourceManager.getString('resources','epclist.deleteEPCOnEdition')}"
+                       width="145"
+                       click="action.deleteEPCList(new ArrayOfExtractionPlanCustomizingVO(epcList.selectedItems))"/>
+			<mx:Button label="{resourceManager.getString('resources','epclist.disableEPC')}"
+					   width="145"
+					   click="action.disableEPCList(new ArrayOfExtractionPlanCustomizingVO(epcList.selectedItems))"/>
+			<mx:Button label="{resourceManager.getString('resources','epclist.changeClient')}"
+					   width="130"
+					   click="action.showCorporateView()"/>
+			<mx:Button label="{resourceManager.getString('resources','commons.logout')}"
+					   width="130"
+					   click="action.logout()"/>
+		</mx:HBox>
+	</mx:VBox>
+</mx:Panel>

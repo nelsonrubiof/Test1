@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" 
+		 verticalScrollPolicy="off"
+		 creationComplete="init()" height="150">
+	<mx:Script>
+		<![CDATA[
+			import com.scopix.qualitycontrol.controller.actions.QualityControlAction;
+			import com.scopix.qualitycontrol.model.QualityControlModel;
+			import com.scopix.qualitycontrol.model.arrays.ArrayOfProofVO;
+			import com.scopix.qualitycontrol.view.ImageView;
+			
+			import mx.controls.Image;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.resources.ResourceManager;
+			
+			[Bindable]
+			private var model:QualityControlModel;
+			[Bindable]
+			private var action:QualityControlAction;
+			
+			private var imageWindow:ImageView;
+			private var loader:URLLoader;
+			public function init():void {
+				model = QualityControlModel.getInstance();				
+				action = QualityControlAction.getInstance();
+ 			}
+		
+			protected function downloadEvidence(event:MouseEvent):void{
+				
+				action.downloadEvidence(data.evidenceId, data.evidencePath);			
+			}
+			
+			protected function viewImage(position:Number):void {
+				imageWindow = new ImageView();
+				imageWindow.title = ResourceManager.getInstance().getString("resources","window.viewEvidence");				
+				imageWindow.width= 650;
+				imageWindow.height = 570;
+				imageWindow.x = 10;
+				imageWindow.y = 10;
+				
+								
+				imageWindow.showCloseButton = true;	
+				imageWindow.evidenceId = data.evidenceId;
+				imageWindow.evidenceEvaluationId = data.evidenceEvaluationId;
+				imageWindow.position = position;
+				imageWindow.addEventListener(CloseEvent.CLOSE, window_close);
+				
+				PopUpManager.addPopUp(imageWindow, this, false);			
+			}
+			
+			protected function window_close(evt:CloseEvent):void {
+				PopUpManager.removePopUp(evt.currentTarget as IFlexDisplayObject);
+			}
+			
+			private function textLabel(dataP:Object):String {
+				var ret:String = "";
+				//se asume que solamente viene un motivo de can't do cuando no se pudo evaluar la evidencia
+				if (dataP.cantDoReason == null) {
+					ret = dataP.camera;
+					if (dataP.proofs !=null){						
+						ret += " \n(" + (dataP.proofs as ArrayOfProofVO).getProofVOAt(0).proofResult + ")";
+					}
+				} else {
+					ret = dataP.camera + " \n(" + dataP.cantDoReason + ")";
+				}
+				
+				return ret;
+			}
+		]]>
+	</mx:Script>
+	<mx:Text width="120" height="100%" text="{textLabel(data)}" click="downloadEvidence(event)"/>
+	<mx:Image width="175" id="img1" cachePolicy="off" visible="{data.proofVisible(0)}" click="viewImage(0)"  source="{model.evidenceProofUrl}?evidenceId={data.evidenceId}&amp;evidenceEvaluationId={data.evidenceEvaluationId}&amp;proofPrePath={model.proofPrePath}&amp;proofPosition=0&amp;withMarks={model.viewMakrs}&amp;randomParam={Math.random()}" />					
+	<mx:Image width="175"  id="img2" cachePolicy="off" visible="{data.proofVisible(1)}" click="viewImage(1)" source="{model.evidenceProofUrl}?evidenceId={data.evidenceId}&amp;evidenceEvaluationId={data.evidenceEvaluationId}&amp;proofPrePath={model.proofPrePath}&amp;proofPosition=1&amp;withMarks={model.viewMakrs}&amp;randomParam={Math.random()}" />
+</mx:HBox>

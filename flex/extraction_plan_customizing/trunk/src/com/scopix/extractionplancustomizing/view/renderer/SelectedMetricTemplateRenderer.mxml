@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0"
+    creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+            import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            import com.scopix.extractionplancustomizing.model.vo.MetricTemplateVO;
+
+            private function changeCheckedState():void
+            {
+                (data as MetricTemplateVO).selected = chk.selected;
+				(data as MetricTemplateVO).variableName = "";
+                ExtractionPlanCustomizingModel.getInstance().isModified = true;
+                
+                if (!chk.selected) {
+                    //variableName.text = "";
+                    ExtractionPlanCustomizingModel.getInstance().evidenceProviderListEnabled = false;
+                    ExtractionPlanCustomizingAction.getInstance().removeProvidersFromMetricTemplateUnselected(data as MetricTemplateVO);
+                } else {
+                    ExtractionPlanCustomizingModel.getInstance().evidenceProviderListEnabled = true;
+                }
+            }
+
+            private function changeVariableName():void {
+                //(data as MetricTemplateVO).variableName = variableName.text;
+                ExtractionPlanCustomizingModel.getInstance().isModified = true;
+            }
+            
+            private function init():void {
+                //variableName.addEventListener(KeyboardEvent.KEY_DOWN, disableBubble, false);
+            }
+            
+            private function disableBubble(evt:Event):void {
+                if (evt.bubbles) {
+                    evt.stopImmediatePropagation();
+                    evt.preventDefault();
+                }
+            }
+
+		]]>
+	</mx:Script>
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    width="3%" 
+	    change="changeCheckedState();"/>
+	<mx:Label text="{data.description}" toolTip="{data.description}" width="77%" />
+	<mx:Spacer width="10%"/>
+	<!--mx:TextInput id="variableName" 
+	    editable="{chk.selected}" 
+	    text="{data.variableName}" 
+	    width="15%"
+	    change="changeVariableName()"/-->
+</mx:HBox>

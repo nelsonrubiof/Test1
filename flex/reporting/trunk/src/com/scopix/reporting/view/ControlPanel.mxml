@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:view="com.scopix.reporting.view.*" 
+    width="80%" height="80%"
+    minHeight="430" minWidth="700"
+    styleName="scopixPanel"
+    title="{resourceManager.getString('resources','controlpanel.title')}"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.reporting.model.ReportingModel;
+            import com.scopix.reporting.controller.actions.ReportingAction;
+            
+            [Bindable]
+            private var action:ReportingAction;
+            
+            [Bindable]
+            private var model:ReportingModel;
+
+            private function init():void {
+                action = ReportingAction.getInstance();
+                model = ReportingModel.getInstance();
+            }
+            
+            private function changeTabIndex(evt:Event):void {
+                model.tnControlPanelSelectedIndex = tnControlPanel.selectedIndex;
+                //aqui se debe implementar la llamada si el valor es   definitionComponent pedir al backEnd el que esta en definicion              
+            }
+        ]]>
+    </mx:Script>
+    <mx:TabNavigator id="tnControlPanel" width="100%" height="100%" 
+        selectedIndex="{model.tnControlPanelSelectedIndex}" change="changeTabIndex(event)">
+        <view:StatusComponent id="statusComponent" width="100%" height="100%"/>
+        <view:DefinitionComponent id="definitionComponent" width="100%" height="100%"/>
+    </mx:TabNavigator>
+    <mx:HBox width="100%" height="5%" horizontalAlign="right">
+        <mx:Button label="{resourceManager.getString('resources','controlpanel.changeCorporate')}" width="130" 
+            click="action.changeClient()" />
+        <mx:Button label="{resourceManager.getString('resources','commons.logout')}" width="130" 
+            click="action.logout()" />
+    </mx:HBox>
+</mx:Panel>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" 
+    height="100%" 
+    horizontalScrollPolicy="off" 
+    verticalScrollPolicy="off">
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    label="{data.description}" 
+	    width="100%" 
+	    x="0" 
+	    toolTip="{data.description}"
+	    change="changeCheckedState();"/>
+	<mx:Script>
+		<![CDATA[
+		    import com.scopix.usermanagement.model.vo.RolesGroupVO;
+			private function changeCheckedState():void
+			{
+			    (data as RolesGroupVO).selected = chk.selected;
+			}
+		]]>
+	</mx:Script>
+</mx:Canvas>

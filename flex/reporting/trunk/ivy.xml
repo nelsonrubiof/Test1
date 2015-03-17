@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="/ivy-repository/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    
+    <info organisation="scopix-flex"
+          module="reporting"
+          revision="1.4.0" >
+    </info>
+    
+    <publications>
+        <artifact name="reporting" ext="zip" type="zip" />
+    </publications>
+    
+    <dependencies>
+        <dependency name="business_services_api" rev="1.10.2" changing="true"/>
+        <dependency name="security_api" rev="1.1.0" changing="true"/>
+        <dependency name="flex_commons" rev="1.2.0" changing="true"/>
+        
+        <dependency name="corelib" org='adobe' rev="3.2.0"/>
+    </dependencies>
+
+</ivy-module>

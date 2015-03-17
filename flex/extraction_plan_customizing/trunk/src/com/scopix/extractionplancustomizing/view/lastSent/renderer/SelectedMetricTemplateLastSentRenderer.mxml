@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0">
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    label="{data.description}" 
+	    width="70%" 
+	    toolTip="{data.description}"/>
+	    <mx:Spacer width="18%"/>
+	<mx:Label id="variableName" 
+	    text="{data.variableName}" 
+	    width="10%"/>
+</mx:HBox>

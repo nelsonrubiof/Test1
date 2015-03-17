@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0"
+    horizontalAlign="center">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.reporting.controller.actions.ReportingAction;
+            import com.scopix.reporting.model.vo.UploadProcessDetailVO;
+            private function changeCheckedState():void
+			{
+				(data as UploadProcessDetailVO).selected = chk.selected;
+				ReportingAction.getInstance().validateDeleteButtonEnable();
+			}
+        ]]>
+    </mx:Script>
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    width="4%" 
+	    change="changeCheckedState();"/>
+</mx:HBox>

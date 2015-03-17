@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="400" 
+    height="186" 
+    x="-3" 
+    y="36" borderStyle="none" 
+    creationComplete="init();" 
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off">
+
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            import com.scopix.extractionplancustomizing.model.vo.CorporateVO;
+            import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+            import commons.ResourceLocator;
+            
+            [Bindable]
+            private var action:ExtractionPlanCustomizingAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+            
+            public function init():void {
+                action = ExtractionPlanCustomizingAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+            }
+        ]]>
+    </mx:Script>
+    <mx:Panel width="100%" height="178" title="{resourceManager.getString('resources','selectcorporate.title')}" layout="absolute" 
+        styleName="scopixPanel" verticalScrollPolicy="off" horizontalScrollPolicy="off">
+        <mx:Image width="138" height="56" x="10" y="10" visible="false"/>
+        <mx:Form>
+            <mx:FormItem label="{resourceManager.getString('resources','selectcorporate.corporateList.prompt')}" width="100%">
+                <mx:ComboBox x="156" y="28" id="corporateList" height="22" width="214" labelField="description" dataProvider="{model.corporateList}" />
+            </mx:FormItem>
+        </mx:Form>
+        <mx:Button id="logout" x="10" y="94" label="{resourceManager.getString('resources','commons.logout')}" width="81" height="22" 
+            click="action.logout()" />
+        <mx:Button name="continue" x="285" y="94" label="{resourceManager.getString('resources','selectcorporate.continue')}" width="81" height="22" 
+            click="{action.epcListView(corporateList.selectedItem as CorporateVO)}" />
+    </mx:Panel>
+    
+</mx:VBox>

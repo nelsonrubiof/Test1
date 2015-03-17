@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off">
+	<mx:Script>
+		<![CDATA[
+		    import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+		    import com.scopix.extractionplancustomizing.model.vo.SensorVO;
+		    
+			private function changeCheckedState():void
+			{
+				(data as SensorVO).selected = chk.selected;
+				ExtractionPlanCustomizingModel.getInstance().isModified = true;
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    width="3%" 
+	    x="0" 
+	    change="changeCheckedState();"/>
+	<mx:Label text="{data.description}" toolTip="{data.description}" width="97%" />
+</mx:HBox>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="/ivy-repository/ivy-doc.xsl"?>
+<ivy-module version="1.0">
+    
+    <info organisation="scopix-flex"
+          module="flex_commons"
+          revision="1.6.0" 
+          status="release">
+    </info>
+    
+    <publications>
+        <artifact name="flex_commons" ext="swc" type="swc" />
+    </publications>
+
+    <dependencies>
+        <dependency name="degrafaflex" rev="4.0" org="google" changing="true"/>
+    </dependencies>
+
+</ivy-module>

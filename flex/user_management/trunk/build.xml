@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name='Flex Ant Tasks Build Script'>
+       
+    <property name='application.name' value='ScopixSecurity'/>
+    <property name='application.title' value='Scopix Security'/>
+    <property name='application.zipname' value='user_management.zip'/>
+    <property name='project_sdk.version' value='4.5.1'/>
+
+    <import file="${ant.home}/conf/build-cc-flex.xml"/>
+
+    <property file='${ant.home}/conf/build-flex.properties'/>
+    
+    <property name='deploypath.dir' value='${basedir}/bin-debug' />
+        
+    <property name='html.file' value='${deploypath.dir}/${application.name}.html' />
+
+</project>
+

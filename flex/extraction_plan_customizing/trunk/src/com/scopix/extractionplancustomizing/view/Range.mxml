@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns="commons.components.*" xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:ns1="com.scopix.extractionplancustomizing.view.*" 
+    width="598" height="375" alpha="1"
+    backgroundAlpha="1" backgroundColor="#ffffff"
+    styleName="scopixPanel"
+    modalTransparencyBlur="1"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    verticalGap="20"
+    enableResize="false"
+    showMinMax="false"
+    showClose="false"
+    layout="vertical"
+    paddingLeft="5"
+    paddingRight="5"
+    creationComplete="init()"
+    title="{resourceManager.getString('resources','range.title')}">
+    
+    <mx:Script>
+        <![CDATA[
+            import mx.binding.utils.BindingUtils;
+            import mx.formatters.NumberFormatter;
+            import com.scopix.extractionplancustomizing.model.vo.ExtractionPlanRangeVO;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+            
+            [Bindable]
+            private var msg:String;
+            
+            [Bindable]
+            public var rdId:Number;
+            [Bindable]
+            public var action:CalendarAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+            
+            private function init():void {
+                msg = resourceManager.getString('resources', 'range.message');
+                action = CalendarAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+                BindingUtils.bindSetter(updateInitialTime, model.initialTimeRange, "change");
+                BindingUtils.bindSetter(updateEndTime, model.endTimeRange, "change");
+            }
+            
+            private function updateInitialTime(evt:Event):void {
+                startTime.hours.value = model.initialTimeRange.hours;
+                startTime.minutes.value = model.initialTimeRange.minutes;
+            }
+
+            private function updateEndTime(evt:Event):void {
+                endTime.hours.value = model.endTimeRange.hours;
+                endTime.minutes.value = model.endTimeRange.minutes;
+            }
+            
+            private function saveRange():void {
+                var range:ExtractionPlanRangeVO = new ExtractionPlanRangeVO();
+                
+                range.id = rdId;
+                range.dayOfWeek = new Number(model.dayOfWeekSelected.name);
+                range.initialTime = new Date("01/01/2010 " + startTime.hours.value + ":" + startTime.minutes.value);
+                range.endTime = new Date("01/01/2010 " + endTime.hours.value + ":" + endTime.minutes.value);
+                range.frecuency = frequency.value;
+                range.duration = duration.value;
+                range.samples = samples.value;
+                range.eprType = epRangeType.selectedValue.toString();
+                
+                action.saveRange(range);
+            }
+
+            private function regenerateDetail():void {
+                var range:ExtractionPlanRangeVO = new ExtractionPlanRangeVO();
+                
+                range.id = rdId;
+                range.dayOfWeek = new Number(model.dayOfWeekSelected.name);
+                range.initialTime = new Date("01/01/2010 " + startTime.hours.value + ":" + startTime.minutes.value);
+                range.endTime = new Date("01/01/2010 " + endTime.hours.value + ":" + endTime.minutes.value);
+                range.frecuency = frequency.value;
+                range.duration = duration.value;
+                range.samples = samples.value;
+                range.eprType = epRangeType.selectedValue.toString();
+                
+                action.regenerateDetail(range)
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox width="574" horizontalGap="20" height="260">
+        <mx:VBox width="410" height="100%">
+            <mx:HBox width="100%">
+                <mx:Label text="{resourceManager.getString('resources','range.start')}" height="17" width="43" textAlign="left"/>
+                <ns1:TimePicker id="startTime" />
+            </mx:HBox>
+            <mx:HBox width="100%">
+                <mx:Label text="{resourceManager.getString('resources','range.end')}" height="17" width="43"/>
+                <ns1:TimePicker id="endTime" />
+            </mx:HBox>
+            <mx:HBox width="100%">
+                <mx:Label text="{resourceManager.getString('resources','range.samples')}"/>
+                <mx:NumericStepper id="samples" maximum="5000" minimum="1" value="{model.samplesRange}" />
+            </mx:HBox>
+            <mx:HBox width="100%">
+                <mx:Label text="{resourceManager.getString('resources','range.frequency')}" width="150"/>
+                <mx:NumericStepper id="frequency" value="{model.frequencyRange}" maximum="3600" minimum="1" stepSize="1" textAlign="center"/>
+                <mx:Spacer width="10" />
+                <mx:Label text="{resourceManager.getString('resources','range.minutes')}" />
+            </mx:HBox>
+            <mx:HBox width="100%">
+                <mx:Label text="{resourceManager.getString('resources','range.duration')}" width="150"/>
+                <mx:NumericStepper id="duration" value="{model.durationRange}" maximum="3600" minimum="1" stepSize="1" textAlign="center"/>
+                <mx:Spacer width="10" />
+                <mx:Label text="{resourceManager.getString('resources','range.seconds')}" />
+            </mx:HBox>
+            <mx:HBox width="100%">
+                <mx:RadioButtonGroup id="epRangeType" selectedValue="{model.eprTypeRange}" />
+                <mx:RadioButton id="rbFix" group="{epRangeType}" value="FIXED"
+                    label="{resourceManager.getString('resources','range.fixed')}"/>
+                <mx:RadioButton id="rbRandom" group="{epRangeType}" value="RANDOM"
+                    label="{resourceManager.getString('resources','range.random')}"/>
+				<mx:RadioButton id="rbAutomatic" group="{epRangeType}" value="AUTOMATIC_EVIDENCE"
+								label="{resourceManager.getString('resources','range.automatic')}"/>
+				<mx:RadioButton id="rbRealRandom" group="{epRangeType}" value="REAL_RANDOM"
+								label="{resourceManager.getString('resources','range.realRandom')}"/>
+            </mx:HBox>
+            <mx:Text width="100%" height="100%" text="{msg}" paddingTop="5"/>
+        </mx:VBox>
+        <mx:VBox width="140" horizontalAlign="center">
+            <mx:Button label="{resourceManager.getString('resources','range.generate')}" width="110"
+                click="regenerateDetail()" />
+            <mx:AdvancedDataGrid id="eprdDetail" width="138" height="199" dataProvider="{model.eprdList}">
+                <mx:columns>
+                    <mx:AdvancedDataGridColumn dataField="timeSample" headerText="{resourceManager.getString('resources','range.requestTime')}" />
+                </mx:columns>
+            </mx:AdvancedDataGrid>
+        </mx:VBox>
+    </mx:HBox>
+    <mx:HBox width="100%">
+        <mx:Button label="{resourceManager.getString('resources','commons.cancel')}" width="105" click="action.cancelRange(this)"/>
+        <mx:Spacer width="80%" />
+        <mx:Button label="{resourceManager.getString('resources','range.save')}" width="105" click="saveRange()"/>
+    </mx:HBox>
+</SuperPanel>

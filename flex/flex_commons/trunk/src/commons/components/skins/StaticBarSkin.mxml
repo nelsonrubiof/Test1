@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StateClientSkin 
+	xmlns="http://www.degrafa.com/2007"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="8" height="8" >
+	
+	<fills>
+		<LinearGradientFill id="backgroundFill" baseOrientation="vertical">
+			<GradientStop color="#006688" ratio="0" alpha=".90"/>
+			<GradientStop color="#0088CC" ratio="1" alpha=".90"/>
+		</LinearGradientFill>
+		
+		<BitmapFill id="hatchingFill" source="@Embed('/commons/images/hatching.png')" />
+		<SolidFill id="stripeFill" color="#0088cc" alpha=".90"/>
+	</fills>
+
+
+	<!-- Hatching Mask -->
+	<RoundedRectangle id="hatchingMask" width="{skinWidth}" height="{skinHeight}" 
+		cornerRadius="4" fill="{hatchingFill}" />
+	
+	<geometry>
+		<!-- Background -->
+		<RoundedRectangle width="{skinWidth}" height="{skinHeight}" 
+			cornerRadius="4" fill="{backgroundFill}" />
+		
+		<!-- Stripes -->
+		<RoundedRectangle width="{skinWidth}" height="{skinHeight}"
+			cornerRadius="4" fill="{stripeFill}"
+			maskMode="alpha" mask="{hatchingMask}" />
+	</geometry>
+	
+</StateClientSkin>

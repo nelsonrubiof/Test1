@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0">
+	<mx:Label text="{data.store.description}" toolTip="{data.store.description}" width="48%" />
+	<mx:Label text="{data.areaType.description}" toolTip="{data.areaType.description}" width="48%" />
+	<mx:Image />
+</mx:HBox>

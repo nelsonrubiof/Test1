@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:lastSent="com.scopix.extractionplancustomizing.view.lastSent.*" 
+    minWidth="920" width="920" height="350"
+    verticalScrollPolicy="on"
+    horizontalScrollPolicy="off"
+    horizontalGap="0"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarLastSentAction;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingLastSentModel;
+            
+            [Bindable]
+            private var action:CalendarLastSentAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingLastSentModel;
+
+            private function init():void {
+                action = CalendarLastSentAction.getInstance();
+                model = ExtractionPlanCustomizingLastSentModel.getInstance();
+                
+                model.sunday = this.sunday;
+                model.monday = this.monday;
+                model.tuesday = this.tuesday;
+                model.wednesday = this.wednesday;
+                model.thursday = this.thursday;
+                model.friday = this.friday;
+                model.saturday = this.saturday;
+                
+                model.readyToLoadCalendar = true;
+                //model.loadFirstTime = false;
+                //cargando los ep ranges
+                //action.loadEPRanges();
+            }
+        ]]>
+    </mx:Script>
+    <lastSent:Hours/>
+    <lastSent:Day id="sunday" name="1"/>
+    <lastSent:Day id="monday" name="2"/>
+    <lastSent:Day id="tuesday" name="3"/>
+    <lastSent:Day id="wednesday" name="4"/>
+    <lastSent:Day id="thursday" name="5"/>
+    <lastSent:Day id="friday" name="6"/>
+    <lastSent:Day id="saturday" name="7"/>
+</mx:HBox>

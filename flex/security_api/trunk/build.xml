@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name='Flex Ant Tasks Build Script'>
+       
+    <property name='application.name' value='security_api'/>
+    <property name='application.title' value='Security API'/>
+	<property name='project_sdk.version' value='4.5.1'/>
+
+    <import file="${ant.home}/conf/build-cc-flex.xml"/>
+
+    <property file='${ant.home}/conf/build-flex.properties'/>
+    
+    <property name='deploypath.dir' value='${basedir}/bin-debug' />
+        
+    <property name='html.file' value='${deploypath.dir}/${application.name}.html' />
+
+</project>

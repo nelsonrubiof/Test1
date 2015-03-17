@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:controls="commons.components.controls.*" 
+	width="286" 
+	height="68" 
+	alpha="1" 
+	borderStyle="solid" 
+	backgroundColor="#FFFFFF" 
+	borderColor="#A9A9A9"
+	verticalCenter="0"
+	horizontalCenter="0"
+	cornerRadius="20"
+	dropShadowEnabled="true"
+	creationComplete="init();">
+
+<!--	<mx:Image width="269" source="{ResourceLocator.loading}" height="29" horizontalCenter="0" verticalCenter="0"/>-->
+	<controls:Spinner id="spinner" horizontalCenter="0" verticalCenter="0"
+	    size="35"
+	    numTicks="16"
+	    tickWidth="3"
+	    speed="1000"
+	    fadeSpeed="600"
+	    tickColor="#F46B4A"/>
+	<mx:Script>
+		<![CDATA[
+			import commons.PopUpUtils;
+			import commons.ResourceLocator;
+			public function init():void{
+			    spinner.play();
+				PopUpUtils.getInstance().loadingPopUp = this;
+			}
+		]]>
+	</mx:Script>
+</mx:Canvas>

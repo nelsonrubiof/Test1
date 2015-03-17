@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0"
+    horizontalAlign="center"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.reporting.model.ReportingModel;
+            import com.scopix.reporting.controller.actions.ReportingAction;
+            
+            [Bindable]
+            private var action:ReportingAction;
+
+            [Bindable]
+            private var model:ReportingModel;
+            
+            private function init():void {
+                action = ReportingAction.getInstance();
+                model = ReportingModel.getInstance();
+            }
+            
+            private function changeCheckedState():void
+			{
+				action.selectAll(chk.selected);
+			}
+        ]]>
+    </mx:Script>
+	<mx:CheckBox id="chk" 
+	    width="4%" 
+	    change="changeCheckedState();"
+	    selected="{model.selectAllValue}"/>
+</mx:HBox>

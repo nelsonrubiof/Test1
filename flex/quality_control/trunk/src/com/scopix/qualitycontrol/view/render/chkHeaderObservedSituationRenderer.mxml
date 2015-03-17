@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0"
+    horizontalAlign="center"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+			import com.scopix.qualitycontrol.controller.actions.QualityControlAction;
+			import com.scopix.qualitycontrol.model.QualityControlModel;
+            
+            [Bindable]
+            private var action:QualityControlAction;
+
+            [Bindable]
+            private var model:QualityControlModel;
+            
+            private function init():void {
+                action = QualityControlAction.getInstance();
+                model = QualityControlModel.getInstance();
+				
+            }
+            
+            private function changeCheckedState(selected:Boolean):void {
+				action.selectAllObservedSituationFinished(selected);
+			}
+        ]]>
+    </mx:Script>
+	
+	<mx:Image toolTip="{resourceManager.getString('resources','chkHeaderObs.select_all')}" source="assets/img/chk_select_all.png" click="changeCheckedState(true)"/>
+	<mx:Image toolTip="{resourceManager.getString('resources','chkHeaderObs.unselect_all')}" source="assets/img/chk_unselect_all.png" click="changeCheckedState(false)"/>
+</mx:HBox>

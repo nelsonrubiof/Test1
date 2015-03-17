@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    horizontalGap="0"
+    horizontalAlign="center"
+	creationComplete="init()"
+	>
+    <mx:Script>
+        <![CDATA[
+			import com.scopix.qualitycontrol.controller.actions.QualityControlAction;
+			import com.scopix.qualitycontrol.model.vo.ObservedSituationFinishedVO;
+			
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			private var action:QualityControlAction;
+			
+            private function changeCheckedState():void {
+				(data as ObservedSituationFinishedVO).selected = chk.selected;
+				action.validateSelectedObservedSituationFinished();
+			}
+
+			protected function init():void {
+				action = QualityControlAction.getInstance();
+			}
+
+        ]]>
+    </mx:Script>
+	<mx:CheckBox id="chk" 
+	    selected="{data.selected}" 
+	    width="4%" 
+	    change="changeCheckedState();"/>
+</mx:HBox>

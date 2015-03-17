@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="100%" 
+    height="100%"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off">
+    <mx:HBox width="100%">
+    	<mx:CheckBox id="chk" 
+    	    selected="{data.selected}" 
+    	    label="{data.userName}" 
+    	    width="30%" 
+    	    x="0" 
+    	    toolTip="{data.userName}"
+    	    change="changeCheckedState();"/>
+    	<mx:Label text="{data.fullName}" width="70%" />
+    </mx:HBox>
+	<mx:Script>
+		<![CDATA[
+		    import com.scopix.usermanagement.model.vo.PeriscopeUserVO;
+			private function changeCheckedState():void
+			{
+			    (data as PeriscopeUserVO).selected = chk.selected;
+			}
+		]]>
+	</mx:Script>
+</mx:Canvas>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" 
+    layout="absolute" 
+    width="550" 
+    height="506"
+    creationComplete="init();"
+    title="{resourceManager.getString('resources','massivemodification.title')}"
+    styleName="scopixPanel">
+    
+    <mx:Script>
+        <![CDATA[
+        	import com.scopix.usermanagement.controller.actions.UserManagementAction;
+        	import com.scopix.usermanagement.model.UserManagementModel;
+            
+            [Bindable]
+            private var action:UserManagementAction;
+            [Bindable]
+            private var model:UserManagementModel;
+            
+            public function init():void {
+                action = UserManagementAction.getInstance();
+                model = UserManagementModel.getInstance();
+            }
+            
+        ]]>
+    </mx:Script>
+    <mx:VBox width="100%" height="100%">
+        <mx:HBox horizontalAlign="right" width="100%">
+            <mx:Image width="125" visible="false" />
+        </mx:HBox>
+        <mx:Label id="usersToModified" text="{resourceManager.getString('resources','massivemodification.usersToModified')}" />
+        <mx:List id="usersToModifiedList" 
+            dataProvider="{model.usersToModifiedList}" 
+            itemRenderer="com.scopix.usermanagement.view.renderer.SelectedPeriscopeUserRenderer" 
+            width="100%" height="100%" 
+            allowMultipleSelection="true" y="22"/>
+        <mx:Label id="groupToModified" text="{resourceManager.getString('resources','massivemodification.groupToModified')} {model.massiveModificacionTypeDescription}" />
+        <mx:List id="groupToModifiedList" 
+            dataProvider="{model.groupToModifiedList}" 
+            itemRenderer="com.scopix.usermanagement.view.renderer.SelectedMassiveElementsRenderer" 
+            width="100%" height="100%" 
+            allowMultipleSelection="true" y="22"/>
+        <mx:HBox width="100%" height="30" 
+            verticalAlign="middle" horizontalAlign="center">
+            <mx:Button id="addToSelected" 
+                label="{resourceManager.getString('resources','massivemodification.addToSelected')}" 
+                width="180" height="22"
+                click="action.addToSelected();"/>
+            <mx:Button id="deleteToSelected" 
+                label="{resourceManager.getString('resources','massivemodification.deleteToSelected')}" 
+                width="180" height="22"
+                click="action.removeToSelected()"/>
+            <mx:Spacer width="20" height="100%"/>
+            <mx:Button id="cancel" 
+                label="{resourceManager.getString('resources','massivemodification.cancel')}" width="130" height="22" 
+                click="action.backToListFromMassiveModification();"/>
+        </mx:HBox>
+    </mx:VBox>
+</mx:Panel>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<StateClientSkin 
+	xmlns="http://www.degrafa.com/2007"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="8" height="5"
+	addedToStage="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.effects.AnimateProperty;
+			import com.degrafa.transform.TranslateTransform;
+			import flash.utils.setInterval;
+			
+			private var initilaized:Boolean = false;
+			private var translator:TranslateTransform;
+			private var animator:AnimateProperty;
+			private var timer:Timer;
+			
+			
+			private function init():void {
+				
+				if(!initilaized) {
+					initilaized = true;
+					
+					translator = new TranslateTransform();
+					translator.x = 0;
+					translator.y = 0;
+					hatchingFill.transform = translator;
+					
+					animator = new AnimateProperty();
+					animator.target = translator;
+					animator.duration = 1000;
+					animator.property = "x";
+					animator.fromValue = 0;
+					animator.toValue = 20;
+					
+					timer = new Timer(800);
+					timer.addEventListener(TimerEvent.TIMER, playAnimation);
+					timer.start();
+				}
+			}
+			private function playAnimation(event:TimerEvent):void {
+				animator.play();
+			}
+		]]>
+	</mx:Script>
+
+	<fills>
+		<LinearGradientFill id="backgroundFill" baseOrientation="vertical">
+			<GradientStop color="#F24132" ratio="0" alpha=".90"/>
+			<GradientStop color="#FFA58E" ratio="1" alpha=".90"/>
+		</LinearGradientFill>
+		
+		<BitmapFill id="hatchingFill" source="@Embed('/commons/images/hatching.png')" />
+		<SolidFill id="stripeFill" color="#FFA58E" alpha=".90"/>
+	</fills>
+
+
+
+	<!-- Hatching Mask -->
+	<RoundedRectangle id="hatchingMask" width="{skinWidth}" height="{skinHeight}" 
+		cornerRadius="4" fill="{hatchingFill}" />
+	
+	<geometry>
+		<!-- Background -->
+		<RoundedRectangle width="{skinWidth}" height="{skinHeight}" 
+			cornerRadius="4" fill="{backgroundFill}" />
+		
+		<!-- Stripes -->
+		<RoundedRectangle width="{skinWidth}" height="{skinHeight}"
+			cornerRadius="4" fill="{stripeFill}"
+			maskMode="alpha" mask="{hatchingMask}" />
+	</geometry>
+	
+</StateClientSkin>

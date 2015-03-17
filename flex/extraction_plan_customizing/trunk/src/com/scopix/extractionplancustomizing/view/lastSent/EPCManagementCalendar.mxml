@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:lastSent="com.scopix.extractionplancustomizing.view.lastSent.*" 
+    label="{resourceManager.getString('resources','epcmanagement.calendar')}"
+    width="100%" height="100%" minHeight="480" verticalScrollPolicy="off" horizontalScrollPolicy="off"
+    creationComplete="init()">
+    <mx:Script>
+        <![CDATA[
+            import mx.binding.utils.BindingUtils;
+            import mx.effects.Glow;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingLastSentModel;
+            import mx.core.Application;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarLastSentAction;
+            [Bindable]
+            private var action:CalendarLastSentAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingLastSentModel;
+            
+            private function init():void {
+                action = CalendarLastSentAction.getInstance();
+                model = ExtractionPlanCustomizingLastSentModel.getInstance();
+                BindingUtils.bindSetter(copyCalendarToEditionButtonEffect, model, "copyCalendarToEditionEffect");
+				BindingUtils.bindSetter(copyFullEPCToEditionEffect, model, "copyFullEPCToEditionEffect");
+            }
+            
+            private function copyCalendarToEditionButtonEffect(eff:Glow):void {
+                if (eff != null) {
+                    eff.play([copyCalendarToEdition], false);
+                }
+            }
+			
+			private function copyFullEPCToEditionEffect(eff:Glow):void {
+				if (eff != null) {
+					eff.play([copyEPCFull], false);
+				}
+			}
+        ]]>
+    </mx:Script>
+    <lastSent:Calendar id="calendar" x="10" y="0" height="380"/>
+    <mx:HBox width="100%" ><!--paddingLeft="5"-->
+		<mx:Button id="copyEPCFull" bottom="20" left="10" width="180" height="22"
+				   label="{resourceManager.getString('resources','epcmanagement.copyFullEPC')}"				   
+				   click="action.copyFullEPC()"/>
+        <mx:Button id="copyCalendarToEdition" bottom="10" left="10" width="260" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.copyCalendarToEdition')}" 
+            click="action.copyCalendarToEdition()"/>
+        <mx:Spacer width="50%" right="5"/>
+        <mx:Button id="backToList" bottom="10" right="150" width="150" height="22"
+            label="{resourceManager.getString('resources','epcmanagement.commons.backToEPCList')}" 
+            toolTip="{resourceManager.getString('resources','epcmanagement.commons.backToEPCListToolTip')}"
+            click="action.backToEPCList()"/>
+    </mx:HBox>
+</mx:VBox>

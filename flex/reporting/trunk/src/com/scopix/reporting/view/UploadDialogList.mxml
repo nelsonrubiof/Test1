@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+    layout="vertical" 
+    minWidth="400" minHeight="300"
+    showCloseButton="true"
+    close="preClose(event);">
+    <mx:Script>
+        <![CDATA[
+            import com.scopix.reporting.model.arrays.ArrayOfUploadProcessDetailVO;
+            import mx.utils.ObjectUtil;
+            import mx.events.CloseEvent;
+            import mx.managers.PopUpManager;
+            
+            [Bindable]
+            public var subTitle:String;
+            
+            [Bindable]
+            public var infList:ArrayOfUploadProcessDetailVO;
+            
+            private function preClose(evt:CloseEvent):void {
+                PopUpManager.removePopUp(this);
+            }
+            
+            private function definitionLabelFunction(item:Object, column:AdvancedDataGridColumn):String {
+                var itemLabel:String = "";
+                switch(column.dataField) {
+                    case "store":
+                        itemLabel = item.store.description;
+                        break;
+                    case "areaType":
+                        itemLabel = item.areaType.description;
+                        break;
+                }
+                
+                return itemLabel;
+            }
+                        
+            private function storeSortCompareFunction(itemA:Object, itemB:Object):int
+            {
+                return ObjectUtil.stringCompare(itemA.store.description, itemB.store.description);
+            }
+
+            private function areaSortCompareFunction(itemA:Object, itemB:Object):int
+            {
+                return ObjectUtil.stringCompare(itemA.areaType.description, itemB.areaType.description);
+            }
+        ]]>
+    </mx:Script>
+    <mx:Label text="{subTitle}" />
+    <mx:AdvancedDataGrid id="informationList"
+        width="100%" height="91%"
+        draggableColumns="false"
+        dataProvider="{infList}"
+        sortableColumns="true"
+        horizontalScrollPolicy="off"
+        verticalScrollPolicy="on">
+        <mx:columns>
+            <mx:AdvancedDataGridColumn
+                dataField="store" 
+                sortCompareFunction="storeSortCompareFunction" 
+                labelFunction="definitionLabelFunction" 
+                headerText="{resourceManager.getString('resources','definitioncomponent.store')}"/>
+            <mx:AdvancedDataGridColumn 
+                dataField="areaType" 
+                sortCompareFunction="areaSortCompareFunction" 
+                labelFunction="definitionLabelFunction" 
+                headerText="{resourceManager.getString('resources','definitioncomponent.areaType')}"/>
+        </mx:columns>
+    </mx:AdvancedDataGrid>
+</mx:TitleWindow>

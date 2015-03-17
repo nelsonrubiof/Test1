@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<AppConfig version="1">
+
+	<Config>
+		<Test>
+			false
+		</Test>
+	    <Webservices>
+	    	<Security>
+<!-- 	    		http://200.29.20.65:28081/security/services/SecurityWebServices -->
+<!-- 	    		http://64.151.127.242:28080/security-cxf/spring/services/SecurityWebServices?wsdl -->
+<!-- 	    		http://localhost:8082/security/services/SecurityWebServices -->
+	    		http://localhost:7881/security/spring/services/SecurityWebServices?wsdl
+<!-- 	    		http://192.168.7.6:28091/security/services/SecurityWebServices -->
+	    	</Security>
+	    	<BusinessServices>
+				<!-- <Corporate>
+                	<id>100</id>
+                    <description>Mall Marina</description>
+                    
+                    <epcUrl>http://localhost:8080/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+                    <corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+                    
+                    
+                    <epcUrl>http://192.168.7.6:28092/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+                    <corporateUrl>http://192.168.7.6:28092/business-services/spring/services/CorporateWebServices</corporateUrl>
+                </Corporate>
+                <Corporate>
+					<id>1</id>
+                    <description>Cabelas</description>
+                    <epcUrl>http://localhost:8080/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+                    <corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+                </Corporate>
+                <Corporate>
+	    			<id>5</id>
+	    			<description>Kum&Go</description>
+	    			<epcUrl>http://localhost:8080/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+	    			<corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    		</Corporate>
+                <Corporate>                
+                    <id>8</id>
+                    <description>Harris Teeter</description>
+                    <epcUrl>http://localhost:8080/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+                    <corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+                </Corporate>-->
+	    		<Corporate>
+	    			<id>6</id>
+	    			<description>Lowes</description>
+	    			<epcUrl>http://64.151.127.244:28080/business-services/spring/services/ExtractionPlanManagerWebServices?wsdl</epcUrl>
+	    			<corporateUrl>http://64.151.127.244:28080/business-services/spring/services/CorporateWebServices?wsdl</corporateUrl>
+	    		</Corporate>
+	    		<!--
+	    		<Corporate>
+	    			<id>4</id>
+	    			<description>Copec</description>
+	    			<epcUrl>http://localhost:8080/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+	    			<corporateUrl>http://localhost:8080/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    		</Corporate>
+	    		<Corporate>
+	    			<id>10</id>
+	    			<description>Cocacola</description>
+	    			<epcUrl>http://cocacola.scopix.cl/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+	    			<corporateUrl>http://cocacola.scopix.cl/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    		</Corporate>-->
+<!-- 	    		<Corporate> -->
+<!-- 	    			<id>8</id> -->
+<!-- 	    			<description>Harris</description> -->
+<!-- 	    			<epcUrl>http://64.151.127.242:28080/bs-cxf/spring/services/ExtractionPlanManagerWebServices?wsdl</epcUrl> -->
+<!-- 	    			<corporateUrl>http://64.151.127.242:28080/bs-cxf/spring/services/CorporateWebServices?wsdl</corporateUrl> -->
+<!-- 	    		</Corporate> -->
+	    		<!--
+	    		<Corporate>
+	    			<id>8</id>
+	    			<description>Harris</description>
+	    			<epcUrl>http://localhost:8082/business-services/spring/services/ExtractionPlanManagerWebServices</epcUrl>
+	    			<corporateUrl>http://localhost:8082/business-services/spring/services/CorporateWebServices</corporateUrl>
+	    		</Corporate>
+	    		-->
+	    	</BusinessServices>
+	    </Webservices>
+	</Config>
+
+</AppConfig>

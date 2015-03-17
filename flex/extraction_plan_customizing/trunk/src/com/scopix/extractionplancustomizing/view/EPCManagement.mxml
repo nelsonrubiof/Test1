@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:ns1="com.scopix.extractionplancustomizing.view.*"
+    xmlns:lastSent="com.scopix.extractionplancustomizing.view.lastSent.*" 
+    width="944" height="580"
+    creationComplete="init()"
+    styleName="scopixPanel"
+    verticalScrollPolicy="off"
+    horizontalScrollPolicy="off"
+    layout="vertical"
+    title="{resourceManager.getString('resources','epcmanagement.title')}">
+    <mx:Script>
+        <![CDATA[
+            import mx.binding.utils.BindingUtils;
+            import com.scopix.enum.EPCStatesEnum;
+            import com.scopix.extractionplancustomizing.model.vo.ExtractionPlanCustomizingVO;
+            import mx.controls.Button;
+            import mx.controls.Label;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingLastSentModel;
+            import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingLastSentAction;
+            import mx.events.IndexChangedEvent;
+            import mx.controls.TabBar;
+            import commons.events.ApplicationFaultEvent;
+            import commons.events.GenericErrorEvent;
+            import com.scopix.extractionplancustomizing.model.arrays.ArrayOfMetricTemplateVO;
+            import mx.controls.Alert;
+            import com.scopix.extractionplancustomizing.model.vo.MetricTemplateVO;
+            import com.scopix.extractionplancustomizing.controller.actions.ExtractionPlanCustomizingAction;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+            
+            [Bindable]
+            private var action:ExtractionPlanCustomizingAction;
+            [Bindable]
+            private var actionLastSent:ExtractionPlanCustomizingLastSentAction;
+            [Bindable]
+            private var model:ExtractionPlanCustomizingModel;
+            [Bindable]
+            private var modelLastSent:ExtractionPlanCustomizingLastSentModel;
+
+            private function init():void {
+                action = ExtractionPlanCustomizingAction.getInstance();
+                actionLastSent = ExtractionPlanCustomizingLastSentAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+                modelLastSent = ExtractionPlanCustomizingLastSentModel.getInstance();
+                
+                //agregando listener que captura el click antes de llegar a sus componentes
+                //internos
+                tnGlobal.addEventListener(MouseEvent.CLICK, generalDataIsSaved, true);
+                tnEdit.addEventListener(MouseEvent.CLICK, epcIsCreated, true);
+            }
+            
+            private function generalDataIsSaved(evt:MouseEvent):void {
+                //se busca en el target si se ha presionado un TAB. De ser asi se valida si esta
+                //en modificación o no.
+
+                if (model.isModified && evt.target.toString().indexOf("Tab") > 0) {
+                    evt.stopImmediatePropagation();
+                    evt.preventDefault();
+                    
+                    var appError:ApplicationFaultEvent = new ApplicationFaultEvent("epcmanagement.must_save_epc");
+                    action.applicationError(appError);
+                }
+            }
+            //validacion necesaria al entrar al calendario
+            private function epcIsCreated(evt:MouseEvent):void {
+                if ((model.isModified || evt.target.toString().indexOf("Tab") > 0) && model.epc == null) {
+                    evt.stopImmediatePropagation();
+                    evt.preventDefault();
+                    
+                    var appError:ApplicationFaultEvent = new ApplicationFaultEvent("epcmanagement.must_save_epc");
+                    action.applicationError(appError);
+                }
+            }
+            
+            private function changeGlobalTabNav(evt:IndexChangedEvent):void {
+                model.selectedGlobalTabNavIndex = evt.newIndex;
+                
+                if (evt.newIndex == 0 && modelLastSent.epc != null && !model.verifyEdition) {
+                    //edition seleccionado
+                    //model.tnEditVisibleValue = false;
+                    action.verifyEPCEdition(modelLastSent.epc.situationTemplate.id, modelLastSent.epc.store.id);
+                    
+                } else if (evt.newIndex == 1 && model.epc != null && !model.verifyLastSent) {
+                    //last sent seleccionado
+                    //model.tnLastSentVisibleValue = false;
+                    actionLastSent.verifyEPCLastSent(model.epc.situationTemplate.id, model.storeIdSelected);
+                }
+            }
+            
+            private function changeTabNav(evt:IndexChangedEvent):void {
+                model.selectedTabNav = evt.newIndex;
+                
+                if (evt.newIndex == 1) {
+                    model.verticalScrollPositionCalendar = 200;
+                    //action.loadCalendar();
+                    if (model.loadFirstTime) {
+                        BindingUtils.bindSetter(loadCalendar, model, "readyToLoadCalendar");
+                    }
+                }
+            }
+            
+            private function changeTabNavLastSent(evt:IndexChangedEvent):void {
+                model.selectedTabNavLastSent = evt.newIndex;
+                
+                if (evt.newIndex == 1) {
+                    modelLastSent.verticalScrollPositionCalendar = 200;
+                    //actionLastSent.loadCalendar();
+                    if (modelLastSent.loadFirstTime) {
+                        BindingUtils.bindSetter(loadCalendarLastSent, modelLastSent, "readyToLoadCalendar");
+                    }
+                }
+            }
+            
+            private function loadCalendar(val:Boolean):void {
+                if (val && tnGlobal.selectedIndex == 0) {
+                    action.loadCalendar();
+                }
+            }
+            
+            private function loadCalendarLastSent(val:Boolean):void {
+                if (val && tnGlobal.selectedIndex == 1) {
+                    actionLastSent.loadCalendar();
+                }
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox width="100%" horizontalAlign="center" backgroundColor="#f4f4f4">
+        <mx:Label id="subtitle" styleName="subtitlePanel" text="{model.subtitle}" />
+    </mx:HBox>
+    <mx:TabNavigator id="tnGlobal" width="925" height="100%" 
+        selectedIndex="{model.selectedGlobalTabNavIndex}"
+        change="changeGlobalTabNav(event)">
+        <mx:TabNavigator id="tnEdit" x="10" y="10" width="923" height="481" minHeight="380"
+            selectedIndex="{model.selectedTabNav}"
+            label="{resourceManager.getString('resources','epcmanagement.edit')}"
+            change="changeTabNav(event)">
+            <ns1:EPCManagementGeneralData id="generalData"/>
+            <ns1:EPCManagementCalendar id="generalCalendar" />
+            <ns1:EPCManagementDetail id="generalDetail" />
+        </mx:TabNavigator>
+        <mx:TabNavigator id="tnLastSent" x="10" y="10" width="100%" height="100%"
+            selectedIndex="{model.selectedTabNavLastSent}"  
+            label="{resourceManager.getString('resources','epcmanagement.lastSent')}"
+            change="changeTabNavLastSent(event)">
+            <lastSent:EPCManagementGeneralData id="generalDataLastSent" />
+            <lastSent:EPCManagementCalendar id="generalCalendarLastSent" />
+            <lastSent:EPCManagementDetail id="generalDetailLastSent" />
+        </mx:TabNavigator>
+    </mx:TabNavigator>
+</mx:Panel>

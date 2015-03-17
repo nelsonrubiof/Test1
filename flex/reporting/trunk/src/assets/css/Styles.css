@@ -1,0 +1,167 @@
+Application 
+{
+    backgroundColor: #FFFFFF;
+    theme-color:#F24132;
+}
+
+Alert
+{
+    borderStyle: solid;
+    borderColor: #ffffff;
+    background-color:#f4f4f4;
+    borderAlpha: 1;
+    borderThickness: 1;
+    roundedBottomCorners: true;
+    cornerRadius: 5;
+    highlightAlphas: 0, 0;
+    headerHeight: 24;
+    header-class:alertHeader;
+    headerColors: #f46b4a, #f24132;
+    footerColors: #003300, #c7c7c7;
+    dropShadowEnabled:"true";
+    titleStyleName: "alertTitle";
+    messageStyleName: "alertMessage";
+    themeColor: #f24132;
+}
+
+TitleWindow
+{
+    backgroundAlpha: "0.8";
+    borderStyle: solid;
+    borderColor: #ffffff;
+    background-color:#f4f4f4;
+    borderAlpha: 1;
+    borderThickness: 1;
+    roundedBottomCorners: true;
+    cornerRadius: 5;
+    highlightAlphas: 0, 0;
+    headerHeight: 24;
+    header-class:alertHeader;
+    headerColors: #f46b4a, #f24132;
+    footerColors: #003300, #c7c7c7;
+    dropShadowEnabled:"true";
+    titleStyleName: "alertTitle";
+    messageStyleName: "alertMessage";
+    themeColor: #f24132;
+}
+
+.panelScopixTitle
+{
+	font-size:13;
+	font-weight:bold;
+	color:#ffffff;
+	textAlign: "center";
+}
+
+.subtitlePanel
+{
+	font-size:13;
+	font-weight:bold;
+	color:#000000;
+	textAlign: "center";
+}
+
+.alertMessage
+{
+	color:#000000;
+}
+
+Panel {
+   borderColor: #F24132;
+   borderAlpha: 0.3;
+   borderThicknessLeft: 6;
+   borderThicknessTop: 10;
+   borderThicknessBottom: 12;
+   borderThicknessRight: 6;
+   roundedBottomCorners: true;
+   cornerRadius: 19;
+   headerHeight: 21;
+   backgroundAlpha: 1;
+   highlightAlphas: 0.2, 0;
+   headerColors: #ff0000, #cccccc;
+   dropShadowEnabled: true;
+   shadowDistance: 4;
+   shadowDirection: center;
+}
+
+.CustomPanel {
+   borderColor: #ffffff;
+   backgroundColor: #ffffff;
+   borderAlpha: 0.3;
+   borderThicknessLeft: 0;
+   borderThicknessTop: 0;
+   borderThicknessBottom: 0;
+   borderThicknessRight: 0;
+   cornerRadius: 0;
+   headerHeight: 0;
+   roundedBottomCorners: false;
+   backgroundAlpha: 1;
+   headerColors: #ff0000, #cccccc;
+   shadowDistance: 4;
+   shadowDirection: center;
+   dropShadowEnabled: false;
+}
+
+.CustomPanelList {
+   borderColor: #F24132;
+   borderAlpha: 0.3;
+   borderThicknessLeft: 6;
+   borderThicknessTop: 10;
+   borderThicknessBottom: 12;
+   borderThicknessRight: 6;
+   roundedBottomCorners: true;
+   cornerRadius: 19;
+   headerHeight: 5;
+   backgroundAlpha: 1;
+   highlightAlphas: 0.2, 0;
+   headerColors: #ff0000, #cccccc;
+   dropShadowEnabled: true;
+   shadowDistance: 4;
+   shadowDirection: center;
+}
+
+.scopixPanel {
+    borderStyle: solid;
+    borderColor: #ffffff;
+    background-color:#f4f4f4;
+    borderAlpha: 1;
+    borderThickness: 1;
+    roundedBottomCorners: true;
+    cornerRadius: 5;
+    highlightAlphas: 0, 0;
+    headerHeight: 24;
+    header-class:alertHeader;
+    headerColors: #f46b4a, #f24132;
+    footerColors: #003300, #c7c7c7;
+    dropShadowEnabled:"true";
+    titleStyleName: "panelScopixTitle";
+    messageStyleName: "alertMessage";
+    themeColor: #f24132;
+}
+
+.closePanel {
+	upSkin:        Embed('/assets/img/closePanel.png');
+	overSkin:      Embed('/assets/img/closePanel.png');
+	downSkin:      Embed('/assets/img/closePanel.png');
+	disabledSkin:  Embed('/assets/img/closePanel.png');
+}
+
+.closeBtn {
+	upSkin:        Embed('/assets/img/closeButton.png');
+	overSkin:      Embed('/assets/img/closeButton.png');
+	downSkin:      Embed('/assets/img/closeButton.png');
+	disabledSkin:  Embed('/assets/img/closeButton.png');
+}
+
+.editBtn {
+	upSkin:        Embed('/assets/img/editButton.png');
+	overSkin:      Embed('/assets/img/editButton.png');
+	downSkin:      Embed('/assets/img/editButton.png');
+	disabledSkin:  Embed('/assets/img/editButton.png');
+}
+
+.movingProgressBar {
+	barSkin: ClassReference("commons.components.skins.MovingBarSkin");
+	trackSkin: ClassReference("commons.components.skins.TrackSkin");
+	maskSkin: ClassReference("commons.components.skins.ProgressMaskSkin");
+}

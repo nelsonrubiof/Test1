@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns="commons.components.*" xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="400" height="448"
+    styleName="scopixPanel"
+    enableResize="false"
+    showMinMax="false"
+    showClose="true"
+    creationComplete="init()"
+    title="{resourceManager.getString('resources','copydayselectdays.title')}">
+    <mx:Script>
+        <![CDATA[
+            import mx.events.ListEvent;
+            import mx.controls.Alert;
+            import com.scopix.extractionplancustomizing.view.renderer.SelectedDayRenderer;
+            import mx.controls.CheckBox;
+            import com.scopix.extractionplancustomizing.model.vo.DayOfWeekVO;
+            import com.scopix.global.GlobalParameters;
+            import com.scopix.extractionplancustomizing.model.arrays.ArrayOfDayOfWeekVO;
+            import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+            import com.scopix.extractionplancustomizing.model.ExtractionPlanCustomizingModel;
+        
+            [Bindable]
+            public var action:CalendarAction;
+            [Bindable]
+            public var model:ExtractionPlanCustomizingModel;
+            [Bindable]
+            private var dayListCombo:ArrayOfDayOfWeekVO;
+            [Bindable]
+            private var daysToCopy:ArrayOfDayOfWeekVO;
+            
+            private function init():void {
+                action = CalendarAction.getInstance();
+                model = ExtractionPlanCustomizingModel.getInstance();
+                dayListCombo = GlobalParameters.getInstance().daysOfWeek.clone();
+                daysToCopy = GlobalParameters.getInstance().daysOfWeek.clone();
+                
+                dayList.addEventListener(MouseEvent.CLICK, validate, true);
+            }
+            
+            private function validate(evt:Event):void {
+                if (evt.target is CheckBox) {
+                    var dowOne:DayOfWeekVO = cmbDayList.selectedItem as DayOfWeekVO;
+                    var dowTwo:DayOfWeekVO = dayList.selectedItem as DayOfWeekVO;
+                    if (dowOne.id == dowTwo.id) {
+                        Alert.show(resourceManager.getString('resources','copydayselectdays.select_same_day_error'));
+                        evt.stopImmediatePropagation();
+                    }
+                } else if (evt.target is ComboBox) {
+                    dayList.dataProvider.getDayOfWeekVOAt(cmbDayList.selectedIndex).selected = false;
+                    daysToCopy.refresh();
+                }
+            }
+
+            private function changeValue(evt:Event):void {
+                for each (var day:DayOfWeekVO in daysToCopy) {
+                    if (!evt.currentTarget.selected || day.id != (cmbDayList.selectedItem as DayOfWeekVO).id) {
+                        day.selected = evt.currentTarget.selected;
+                    }
+                }
+                daysToCopy.refresh();
+            }
+
+        ]]>
+    </mx:Script>
+    <mx:Label text="{resourceManager.getString('resources','copydayselectdays.sourceDay')}" />
+    <mx:ComboBox id="cmbDayList" dataProvider="{dayListCombo}" labelField="name" width="50%" change="validate(event)" />
+    <mx:Spacer height="5" />
+    <mx:Label text="{resourceManager.getString('resources','copydayselectdays.days')}" />
+    <mx:CheckBox id="selectAll" label="{resourceManager.getString('resources','commons.selecAll')}"
+        change="changeValue(event)" />
+    <mx:List id="dayList" 
+        height="200" width="300" 
+        dataProvider="{daysToCopy}"
+        itemRenderer="com.scopix.extractionplancustomizing.view.renderer.SelectedDayRenderer"
+        allowMultipleSelection="false" labelField="name"
+        click="validate(event)"/>
+    <mx:RadioButtonGroup id="detailOption" selectedValue="COPY" />
+    <mx:RadioButton id="rbCopy" group="{detailOption}" value="COPY"
+        label="{resourceManager.getString('resources','copydayselectdays.copyDetail')}"/>
+    <mx:RadioButton id="rbRegenerate" group="{detailOption}" value="REGENERATE"
+        label="{resourceManager.getString('resources','copydayselectdays.regenerateDetail')}"/>
+    <mx:HBox width="100%" horizontalAlign="center">
+        <mx:Button label="{resourceManager.getString('resources','copydayselectdays.copy')}" 
+            width="130" height="22"
+            click="action.copyDayToDays(cmbDayList.selectedItem as DayOfWeekVO, daysToCopy, detailOption.selectedValue.toString())" />
+    </mx:HBox>
+</SuperPanel>

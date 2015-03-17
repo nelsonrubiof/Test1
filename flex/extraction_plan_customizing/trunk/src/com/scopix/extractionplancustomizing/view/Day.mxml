@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+    width="120" height="720" 
+    xmlns:ns1="com.scopix.extractionplancustomizing.view.*"
+    borderColor="#000000"
+    borderStyle="solid"
+    horizontalScrollPolicy="off"
+    verticalScrollPolicy="off"
+    creationComplete="init()">
+    
+    <mx:Script>
+        <![CDATA[
+			import com.scopix.extractionplancustomizing.controller.actions.CalendarAction;
+			
+			import mx.core.Application;
+			import mx.core.FlexGlobals;
+
+            [Bindable]
+            public var action:CalendarAction;
+            
+            private function init():void {
+                action = CalendarAction.getInstance();
+            }
+            
+            private function showSelectRange(obj:Hour):void {
+                action.newRangeView(obj, this, FlexGlobals.topLevelApplication as DisplayObject);
+            }
+            
+            public function removeRanges():void {
+                for each (var dObj:DisplayObject in this.getChildren()) {
+                    if (dObj is RangeDay) {
+                        this.removeChild(dObj);
+                    }
+                }
+            }
+        ]]>
+    </mx:Script>
+    
+    <ns1:Hour x="-1" y="0" id="cero" name="0" change="showSelectRange(this.cero)"/>
+    <ns1:Hour x="-1" y="30" id="one" name="1" change="showSelectRange(this.one)"/>
+    <ns1:Hour x="-1" y="60" id="two" name="2" change="showSelectRange(this.two)"/>
+    <ns1:Hour x="-1" y="90" id="three" name="3" change="showSelectRange(this.three)"/>
+    <ns1:Hour x="-1" y="120" id="four" name="4" change="showSelectRange(this.four)"/>
+    <ns1:Hour x="-1" y="150" id="five" name="5" change="showSelectRange(this.five)"/>
+    <ns1:Hour x="-1" y="180" id="six" name="6" change="showSelectRange(this.six)"/>
+    <ns1:Hour x="-1" y="210" id="seven" name="7" change="showSelectRange(this.seven)"/>
+    <ns1:Hour x="-1" y="240" id="eight" name="8" change="showSelectRange(this.eight)"/>
+    <ns1:Hour x="-1" y="270" id="nine" name="9" change="showSelectRange(this.nine)"/>
+    <ns1:Hour x="-1" y="300" id="ten" name="10" change="showSelectRange(this.ten)"/>
+    <ns1:Hour x="-1" y="330" id="eleven" name="11" change="showSelectRange(this.eleven)"/>
+    <ns1:Hour x="-1" y="360" id="twelve" name="12" change="showSelectRange(this.twelve)"/>
+    <ns1:Hour x="-1" y="390" id="thirteen" name="13" change="showSelectRange(this.thirteen)"/>
+    <ns1:Hour x="-1" y="420" id="fourteen" name="14" change="showSelectRange(this.fourteen)"/>
+    <ns1:Hour x="-1" y="450" id="fifteen" name="15" change="showSelectRange(this.fifteen)"/>
+    <ns1:Hour x="-1" y="480" id="sixteen" name="16" change="showSelectRange(this.sixteen)"/>
+    <ns1:Hour x="-1" y="510" id="seventeen" name="17" change="showSelectRange(this.seventeen)"/>
+    <ns1:Hour x="-1" y="540" id="eighteen" name="18" change="showSelectRange(this.eighteen)"/>
+    <ns1:Hour x="-1" y="570" id="nineteen" name="19" change="showSelectRange(this.nineteen)"/>
+    <ns1:Hour x="-1" y="600" id="twenty" name="20" change="showSelectRange(this.twenty)"/>
+    <ns1:Hour x="-1" y="630" id="twentyOne" name="21" change="showSelectRange(this.twentyOne)"/>
+    <ns1:Hour x="-1" y="660" id="twentyTwo" name="22" change="showSelectRange(this.twentyTwo)"/>
+    <ns1:Hour x="-1" y="690" id="twentyThree" name="23" change="showSelectRange(this.twentyThree)"/>
+</mx:Canvas>
