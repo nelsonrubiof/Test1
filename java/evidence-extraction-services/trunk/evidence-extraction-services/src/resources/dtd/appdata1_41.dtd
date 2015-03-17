@@ -1,0 +1,41 @@
+<!-- A countdata element contains at least one typedesc element and a   -->
+<!-- number of cntset elements. A typedesc element contains a number of -->
+<!-- type elements, each having a unique id attribute and a string      -->
+<!-- value describing the data type. A cntset element has three         -->
+<!-- attributes for the name of the counter, the data set start time    -->
+<!-- and the save interval delta. The starttime is given in seconds     -->
+<!-- since the epoch, delta is given in seconds. A cntset contains a    -->
+<!-- number of cntgroup elements, each in turn containing a number of   -->
+<!-- cnt elements carrying data for one save interval. A cnt element    -->
+<!-- has one attribute describing the data type id and a value that     -->
+<!-- gives the actual count.                                            -->
+<!--                                                                    -->
+<!-- This specification can be used for event driven data collection as -->
+<!-- well as time driven. In that case, each cntgroup should be given a -->
+<!-- timestemp. With timestamps in the cntgroup elements, the cntset    -->
+<!-- starttime and delta may be ignored (but must still be included).   -->
+
+<!ELEMENT countdata (typedesc+,cntset*)>
+  <!ATTLIST countdata
+            version CDATA #IMPLIED>
+
+  <!ELEMENT typedesc (type?)>
+
+    <!ELEMENT type (CDATA)>
+      <!ATTLIST type
+                typeid ID #REQUIRED>
+
+  <!ELEMENT cntset (cntgroup*)>
+    <!ATTLIST cntset
+              name      CDATA #REQUIRED
+              starttime CDATA #REQUIRED
+              delta     CDATA #REQUIRED>
+
+    <!ELEMENT cntgroup (cnt*)>
+      <!ATTLIST cntgroup
+                timestamp CDATA #IMPLIED>
+
+      <!ELEMENT cnt (CDATA)>
+        <!ATTLIST cnt
+                  typeid IDREF #REQUIRED>
+
