@@ -1,0 +1,384 @@
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="css/main.css"/>
+        <link rel="stylesheet" href="css/bootstrap.css"/>
+        <link rel="stylesheet" href="css/bootstrap-datetimepicker.css"/> 
+        <link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.css"/>
+        <link rel="stylesheet" href="css/smoothness/jquery-ui-1.10.4.custom.min.css"/>
+        <link rel="stylesheet" href="css/jquery.dynatable.css"/>
+
+        <script src="js/jquery.js"></script>
+        <script src="js/jquery.getUrlParam.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+        <script src="js/jquery.dynatable.js"></script>
+        <script src="js/bootstrap-datetimepicker.js"></script>
+        <script src="js/dateformat.js"></script>
+
+        <title>Business Services</title>
+    </head>
+    <body> 
+        <div class="loading tabla"  style="height: 100% ; width: 100%;"> </div>
+        <div style="width:70%; padding-left:50px" >
+            <ul class="nav nav-pills pull-right">
+                <li><a href="/business-services">Home</a></li>
+            </ul>
+            <h2 class="text-muted">Evidence Region Transfers Monitor</h2>
+        </div>
+        </br>
+        <table>
+            <tr>
+                <td style="padding-bottom: 30px; padding-left: 50px;"><h3>Search</h3></td>
+            </tr>
+            <tr> 
+                <td style="padding-right:10px; padding-left: 50px;" > 
+                    <label for="storeId" >Store</label>
+                </td>
+                <td style="padding-right:10px;">
+                    <select id="storeId" name="storeId" class="form-control" ></select>
+                </td>
+                <td style="padding-right:10px; padding-left: 30px;" > 
+                    <label for="situationTemplateId" >Situation Template</label>
+                </td>
+                <td style="padding-right:10px;">
+                    <select id="situationTemplateId" name="situationTemplateId" class="form-control" ></select>
+                </td>
+                <td style="padding-right:10px; padding-left: 30px;" > 
+                    <label for="completedSelect" >Transmitted</label>
+                </td>
+                <td style="padding-right:10px;">
+                    <select id="completedSelect" name="completedSelect" class="form-control" ></select>
+                </td>
+                <td style="padding-right:10px; padding-left: 30px">
+                    <button type="button" onclick="getRegions();" class="btn btn-default">Get Region Transfers</button>
+                </td>
+            </tr>
+        </table>
+        </br>
+        <table>
+            <tr>
+                <td style="padding-right:20px; padding-left: 50px;"> 
+                    <label>Specify Date Range</label>
+                </td>
+                <td style="padding: 30px 20px 0 45px">
+                    <div class="form-group">
+                        <div class="input-group date form_datetime col-5" data-link-field="selectDate" id="selectDatePicker">
+                            <input class="form-control" size="16" type="text" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="selectDate" value="" ><br/>
+                    </div>
+                </td>
+                <td > 
+                    <label for="selectFromTime">From</label>
+                </td>
+                <td style="padding: 30px 20px 0 30px"> 
+                    <div class="form-group">
+                        <div class="input-group date form_datetime col-5" data-link-field="selectFromTime" id="selectFromTimePicker">
+                            <input class="form-control" size="16" type="text" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="selectFromTime" value=""/><br/>
+                    </div>
+                </td>
+                <td > 
+                    <label for="selectToTime">To</label>
+                </td>
+                <td style="padding: 30px 20px 0 30px"> 
+                    <div class="form-group">
+                        <div class="input-group date form_datetime col-5" data-link-field="selectToTime" id="selectToTimePicker">
+                            <input class="form-control" size="16" type="text" value="" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                        <input type="hidden" id="selectToTime" value="" /><br/>
+                    </div>
+                </td>
+            </tr>   
+        </table>
+        </br>
+        <div style="width:70%;" >
+            <div style="padding-left: 50px; text-align: left; ">
+                <h3>Evidence Region Transfers Statistics</h3>
+            </div>
+            <div id="completedPerc" style="padding-left: 50px; text-align: center;">
+            </div>
+            <div id="totalEvidences" style="padding-left: 50px; text-align: center;">
+            </div>
+        </div>
+        </br>
+        </br>
+        <table  style="width: 90%;">
+            <tr>
+                <td style="padding-bottom: 30px; padding-left: 50px;"><h3>Evidence Region Transfers</h3></td>
+            </tr>
+            <tr>
+                <td style="padding-left: 50px;">
+                    <table id="data" class="table">
+                        <thead>
+                        <th data-dynatable-column="evidenceId">Evidence Id</th>
+                        <th data-dynatable-column="evidenceFileName">File Name</th>
+                        <th data-dynatable-column="evidenceDate">Evidence Date</th>
+                        <th data-dynatable-column="regionServerName">Server Name</th>
+                        <th data-dynatable-column="completed">Transmitted</th>
+                        <th data-dynatable-column="transmissionDate">Transmission Date</th>
+                        <th data-dynatable-column="errorMessage">Error Message</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
+<script type="text/javascript">
+                        var login = '11111';
+                        var noRecords = 'There are no records';
+                        var allStoresLabel = 'All Stores';
+                        var allTransmitions = 'All'
+                        var transmitted = 'Transmitted'
+                        var notTransmitted = 'Not Transmitted'
+                        var allTemplatesLabel = 'All Templates';
+                        var manStoreName = 'Store Name is mandatory';
+                        var manSituationName = 'Situation Template is mandatory';
+                        var manDate = 'Date is Mandatory';
+                        var requiredDates = 'Date, From and To are mandatory in order to search by time range';
+                        var noExpectedError = 'An unexpected error ocurred ...';
+                        function setDay(date) {
+                            var day1 = new Date(date);
+                            var day2 = new Date(date);
+                            day1.setHours(0, 0, 0, 0);
+                            day2.setHours(23, 59, 0, 0);
+                            $('#selectFromTimePicker').datetimepicker('setStartDate', day1);
+                            $('#selectFromTimePicker').datetimepicker('setEndDate', day2);
+                            $('#selectToTimePicker').datetimepicker('setEndDate', day2);
+                        }
+                        function setStartHour(date) {
+                            $('#selectToTimePicker').datetimepicker('setStartDate', new Date(date));
+                        }
+                        $(function() {
+                            $('#selectDatePicker').datetimepicker({
+                                maxView: 2,
+                                minView: 2,
+                                autoclose: true,
+                                format: "mm/dd/yyyy",
+                                language: 'pt-BR'
+                            });
+                            $('#selectDatePicker').datetimepicker().on('changeDate', function(ev) {
+                                setDay(ev.date);
+                            });
+                        });
+                        $(function() {
+                            $('#selectFromTimePicker').datetimepicker({
+                                maxView: 1,
+                                minView: 0,
+                                startView: 1,
+                                autoclose: true,
+                                format: "HH:ii P",
+                                language: 'pt-BR',
+                                showMeridian: true
+                            });
+                            $('#selectFromTimePicker').datetimepicker().on('changeDate', function(ev) {
+                                setTimeout(function() {
+                                    setStartHour($('#selectFromTime').val());
+                                }, '100');
+                            });
+                        });
+                        $(function() {
+                            $('#selectToTimePicker').datetimepicker({
+                                maxView: 1,
+                                minView: 0,
+                                startView: 1,
+                                autoclose: true,
+                                format: "HH:ii P",
+                                language: 'pt-BR',
+                                showMeridian: true
+                            });
+                        });
+                        $(function() {
+                            $('#storeId').append('<option value="-1">' + allStoresLabel + '</option>');
+                            $.ajax({
+                                url: '/business-services/spring/services/rest/frontend/getStores/' + login,
+                                type: 'post',
+                                crossDomain: true,
+                                dataType: 'json',
+                                success: function(response) {
+                                    var data = response.StoreFrontEndDTOContainer.storeDTOs;
+                                    if (response.StoreFrontEndDTOContainer.storeDTOs instanceof Array) {
+                                        for (var i = 0; i < response.StoreFrontEndDTOContainer.storeDTOs.length; i++) {
+                                            $('#storeId').append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                                        }
+                                    } else {
+                                        $('#storeId').append('<option value="' + data.id + '">' + data.name + '</option>');
+                                    }
+
+                                },
+                                error: function(request, status, error) {
+                                    console.error(request.responseText);
+                                    console.log(status);
+                                    console.error(error);
+                                }
+                            });
+                        });
+                        $(function() {
+                            $('#situationTemplateId').append('<option value="-1">' + allTemplatesLabel + '</option>');
+                            $.ajax({
+                                url: '/business-services/spring/services/rest/frontend/getSituationTemplates/' + login,
+                                type: 'post',
+                                crossDomain: true,
+                                dataType: 'json',
+                                success: function(response) {
+                                    var data = response.SituationTemplateFEContainerDTO.situationTemplateDTOs;
+                                    if (response.SituationTemplateFEContainerDTO.situationTemplateDTOs instanceof Array) {
+                                        for (var i = 0; i < response.SituationTemplateFEContainerDTO.situationTemplateDTOs.length; i++) {
+                                            $('#situationTemplateId').append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+                                        }
+                                    } else {
+                                        $('#situationTemplateId').append('<option value="' + data.id + '">' + data.name + '</option>');
+                                    }
+
+                                },
+                                error: function(request, status, error) {
+                                    console.error(request.responseText);
+                                    console.log(status);
+                                    console.error(error);
+                                }
+                            });
+                        });
+                        $('#completedSelect').append('<option value="0">' + allTransmitions + '</option>');
+                        $('#completedSelect').append('<option value="1">' + transmitted + '</option>');
+                        $('#completedSelect').append('<option value="2">' + notTransmitted + '</option>');
+                        var jsonRecords = JSON.parse('[]');
+                        $('#data').dynatable({
+                            dataset: {
+                                records: jsonRecords
+                            }
+                        });
+                        var dynatable = $('#data').data('dynatable');
+                        dynatable.paginationPerPage.set(20);
+                        dynatable.paginationPage.set(1);
+                        dynatable.process();
+                        $('.loading.tabla').fadeOut(500);
+                        function getRegions() {
+                            var selectDate = '';
+                            if ($('#selectDate').val() != '') {
+                                selectDate = (new Date($('#selectDate').val())).format("dd/mm/yyyy")
+                            }
+                            var selectFromTime = '';
+                            if ($('#selectFromTime').val() != '') {
+                                selectFromTime = (new Date($('#selectFromTime').val())).format("hh:MM:00");
+                            }
+                            var selectToTime = '';
+                            if ($('#selectToTime').val() != '') {
+                                selectToTime = (new Date($('#selectToTime').val())).format("hh:MM:00");
+                            }
+                            var storeSelect = $('#storeId').val();
+                            var completedSelect = $('#completedSelect').val();
+                            var situationSelect = $('#situationTemplateId').val();
+                            var message = '';
+                            var cont = true;
+                            if (typeof storeSelect == 'undefined' || storeSelect == '') {
+                                message = message + manStoreName + '\n';
+                                cont = false;
+                            }
+                            if (typeof situationSelect == 'undefined' || situationSelect == '') {
+                                message = message + manSituationName + '\n';
+                                cont = false;
+                            }
+                            if (typeof selectDate == 'undefined' || selectDate == '') {
+                                selectDate = '';
+                            }
+                            if (typeof selectFromTime == 'undefined' || selectFromTime == '') {
+                                selectFromTime = "";
+                            }
+                            if (typeof selectToTime == 'undefined' || selectToTime == '') {
+                                selectToTime = "";
+                            }
+                            if ((selectFromTime == '' && selectToTime != '') || (selectFromTime != '' && selectToTime == '')) {
+                                if (selectDate == '') {
+                                    cont = false;
+                                    message = message + requiredDates + '\n';
+                                }
+                            }
+                            if (!cont) {
+                                alert(message);
+                                return false;
+                            }
+                            $('.loading.tabla').show();
+                            $.ajax({
+                                url: '/business-services/spring/services/rest/evidenceRegionTransfer/getTransferByCriteria/' + login,
+                                type: 'post',
+                                data: '{"RequestRegionTransferDTO": { ' +
+                                        '"storeId":  "' + storeSelect + '",' +
+                                        '"situationTemplateId":  "' + situationSelect + '",' +
+                                        '"dayDate":  "' + selectDate + '",' +
+                                        '"startTime":  "' + selectFromTime + '",' +
+                                        '"completed":  "' + completedSelect + '",' +
+                                        '"endTime":  "' + selectToTime + '"' +
+                                        '}' +
+                                        '}',
+                                contentType: 'application/json; charset=UTF-8',
+                                crossDomain: true,
+                                dataType: 'json',
+                                success: function(response) {
+                                    console.log(response);
+                                    var errorsFound = response.RegionTransferContainerDTO.error;
+                                    if (!errorsFound) {
+                                        var records = response.RegionTransferContainerDTO.evidenceRegionTransferDTOs;
+                                        if (typeof records != 'undefined') {
+                                            if (!(records instanceof Array)) {
+                                                var array = new Array();
+                                                array.push(records);
+                                                records = array;
+                                            }
+                                            var parsedData = {regionTransfers: []};
+                                            for (var index = 0; index < records.length; ++index) {
+                                                var regionTransfer = {};
+                                                regionTransfer ['evidenceId'] = records[index].evidenceId;
+                                                regionTransfer ['evidenceFileName'] = records[index].evidenceFileName;
+                                                regionTransfer ['evidenceDate'] = records[index].evidenceDate;
+                                                regionTransfer ['regionServerName'] = records[index].regionServerName;
+                                                regionTransfer ['completed'] = String(records[index].completed);
+                                                regionTransfer ['transmissionDate'] = records[index].transmissionDate;
+                                                regionTransfer ['errorMessage'] = records[index].errorMessage;
+                                                parsedData.regionTransfers.push(regionTransfer);
+                                            }
+                                            $('#completedPerc').empty();
+                                            $('#completedPerc').append('<h4 style="color: green; display: inline-block;">Completed: ' + response.RegionTransferContainerDTO.evidenceRegionTransferStatsDTO.transferredPercentage + '%</h4>');
+                                            $('#completedPerc').append('&nbsp;&nbsp;&nbsp;&nbsp;');
+                                            $('#completedPerc').append('<h4 style="color: red; display: inline-block;">Not Completed: ' + response.RegionTransferContainerDTO.evidenceRegionTransferStatsDTO.notTransferredPercentage + '%</h4>');
+                                            $('#totalEvidences').empty();
+                                            $('#totalEvidences').append('<h4 style="color: blue; display: inline-block;">Total Evidences: ' + response.RegionTransferContainerDTO.evidenceRegionTransferStatsDTO.totalEvidences + '</h4>');
+                                            $('#totalEvidences').append('&nbsp;&nbsp;&nbsp;&nbsp;');
+                                            $('#totalEvidences').append('<h4 style="color: green; display: inline-block;">Transferred: ' + response.RegionTransferContainerDTO.evidenceRegionTransferStatsDTO.transferredEvidences + '</h4>');
+                                            $('#totalEvidences').append('&nbsp;&nbsp;&nbsp;&nbsp;');
+                                            $('#totalEvidences').append('<h4 style="color: red; display: inline-block;">Not Transferred: ' + response.RegionTransferContainerDTO.evidenceRegionTransferStatsDTO.notTransferredEvidences + '</h4>');
+                                            dynatable.settings.dataset.originalRecords = parsedData.regionTransfers;
+                                        } else {
+                                            $('#completedPerc').empty();
+                                            $('#totalEvidences').empty();
+                                            dynatable.settings.dataset.originalRecords = undefined;
+                                        }
+
+                                        dynatable.sorts.clear();
+                                        dynatable.sorts.add('evidenceId', -1);
+                                        dynatable.paginationPerPage.set(20);
+                                        dynatable.paginationPage.set(1);
+                                        dynatable.process();
+                                        $('.loading.tabla').fadeOut(500);
+                                    } else {
+                                        console.log(response);
+                                        $('.loading.tabla').fadeOut(500);
+                                        alert(noExpectedError);
+                                    }
+                                }, error: function(request, status, error) {
+                                    console.error(request.responseText);
+                                    console.log(status);
+                                    console.error(error);
+                                    $('.loading.tabla').fadeOut(500);
+                                }
+                            });
+                        }
+                        ;
+</script>

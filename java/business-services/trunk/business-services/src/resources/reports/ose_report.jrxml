@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ose_report" printOrder="Horizontal" pageWidth="2800" pageHeight="595" orientation="Landscape" columnWidth="2760" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true">
+	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<field name="situation" class="java.lang.String">
+		<fieldDescription><![CDATA[situation]]></fieldDescription>
+	</field>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="evaluationResult" class="java.lang.Double"/>
+	<field name="compliant" class="java.lang.Integer"/>
+	<field name="ruleName" class="java.lang.String"/>
+	<field name="metric1" class="java.lang.Double"/>
+	<field name="metricName1" class="java.lang.String"/>
+	<field name="metric2" class="java.lang.Double"/>
+	<field name="metricName2" class="java.lang.String"/>
+	<field name="metric3" class="java.lang.Double"/>
+	<field name="metricName3" class="java.lang.String"/>
+	<field name="metric4" class="java.lang.Double"/>
+	<field name="metricName4" class="java.lang.String"/>
+	<field name="metric5" class="java.lang.Double"/>
+	<field name="metricName5" class="java.lang.String"/>
+	<field name="metric6" class="java.lang.Double"/>
+	<field name="metricName6" class="java.lang.String"/>
+	<field name="metric7" class="java.lang.Double"/>
+	<field name="metricName7" class="java.lang.String">
+		<fieldDescription><![CDATA[metricName7]]></fieldDescription>
+	</field>
+	<field name="metric8" class="java.lang.Double"/>
+	<field name="metricName8" class="java.lang.String">
+		<fieldDescription><![CDATA[metricName8]]></fieldDescription>
+	</field>
+	<field name="metric9" class="java.lang.Double"/>
+	<field name="metricName9" class="java.lang.String">
+		<fieldDescription><![CDATA[metricName9]]></fieldDescription>
+	</field>
+	<field name="metric10" class="java.lang.Double">
+		<fieldDescription><![CDATA[metric10]]></fieldDescription>
+	</field>
+	<field name="metricName10" class="java.lang.String">
+		<fieldDescription><![CDATA[metricName10]]></fieldDescription>
+	</field>
+	<field name="sentToMIS" class="java.lang.Boolean"/>
+	<field name="sentToMISDate" class="java.util.Date">
+		<fieldDescription><![CDATA[sentToMISDate]]></fieldDescription>
+	</field>
+	<field name="target" class="java.lang.Double">
+		<fieldDescription><![CDATA[target]]></fieldDescription>
+	</field>
+	<field name="standard" class="java.lang.Double">
+		<fieldDescription><![CDATA[standard]]></fieldDescription>
+	</field>
+	<field name="metricCount" class="java.lang.Integer">
+		<fieldDescription><![CDATA[metricCount]]></fieldDescription>
+	</field>
+	<field name="department" class="java.lang.String"/>
+	<field name="product" class="java.lang.String">
+		<fieldDescription><![CDATA[product]]></fieldDescription>
+	</field>
+	<field name="storeName" class="java.lang.String">
+		<fieldDescription><![CDATA[storeName]]></fieldDescription>
+	</field>
+	<field name="state" class="java.lang.String">
+		<fieldDescription><![CDATA[state]]></fieldDescription>
+	</field>
+	<field name="evaluationDate" class="java.util.Date">
+		<fieldDescription><![CDATA[evaluationDate]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="85">
+			<staticText>
+				<reportElement x="668" y="21" width="325" height="37"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22"/>
+				</textElement>
+				<text><![CDATA[Evaluaciones de Situaciones]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="32">
+			<staticText>
+				<reportElement x="15" y="7" width="119" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Inicio]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" hyperlinkType="None">
+				<reportElement x="134" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{startDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="330" y="7" width="130" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Termino]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement x="460" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{endDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31">
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="15" y="0" width="119" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Situacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="219" y="0" width="65" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Cumplimiento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="134" y="0" width="85" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="284" y="0" width="82" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Formula]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="366" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="486" y="0" width="48" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="534" y="0" width="119" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="653" y="0" width="51" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 2]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="823" y="0" width="51" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="704" y="0" width="119" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="994" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="874" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 4]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1164" y="0" width="51" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1044" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1335" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1215" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 6]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1505" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1385" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 7]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1675" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1555" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1845" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1725" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 9]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2015" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Valor Metrica 10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="1895" y="0" width="120" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Metrica 10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2065" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Target]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2115" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Estandar]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2165" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad Metricas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2215" y="0" width="100" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Area]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2315" y="0" width="100" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Producto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2415" y="0" width="100" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Tienda]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2515" y="0" width="50" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="2565" y="0" width="117" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="10" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Evaluacion]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="15" y="0" width="118" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{situation}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="133" y="0" width="86" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="219" y="0" width="65" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{compliant}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="284" y="0" width="81" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ruleName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="366" y="0" width="120" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="534" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="704" y="0" width="119" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="874" y="0" width="119" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName4}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1043" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName5}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1214" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName6}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1384" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName7}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1554" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName8}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1894" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName10}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1724" y="0" width="121" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{metricName9}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="486" y="0" width="48" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="655" y="0" width="49" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="823" y="0" width="51" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric3}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="994" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric4}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1164" y="0" width="51" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric5}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1334" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric6}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1505" y="1" width="50" height="19" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric7}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1675" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric8}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="1844" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric9}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2015" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{metric10}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2064" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{target}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2114" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{standard}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2164" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$F{metricCount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2214" y="0" width="100" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{department}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2314" y="0" width="100" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{product}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2414" y="0" width="100" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{storeName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2514" y="0" width="50" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{state}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH.mm.ss" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="2564" y="0" width="118" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{evaluationDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

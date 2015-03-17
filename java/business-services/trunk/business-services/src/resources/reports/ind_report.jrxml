@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="1000" pageHeight="595" orientation="Landscape" columnWidth="960" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true">
+	<parameter name="startDate" class="java.util.Date"/>
+	<parameter name="endDate" class="java.util.Date"/>
+	<field name="indicatorName" class="java.lang.String"/>
+	<field name="date" class="java.util.Date">
+		<fieldDescription><![CDATA[date]]></fieldDescription>
+	</field>
+	<field name="situation" class="java.lang.String"/>
+	<field name="numerator" class="java.lang.Double"/>
+	<field name="denominator" class="java.lang.Double"/>
+	<field name="state" class="java.lang.String"/>
+	<field name="sentToMIS" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[sentToMIS]]></fieldDescription>
+	</field>
+	<field name="sentToMISDate" class="java.util.Date"/>
+	<field name="storeName" class="java.lang.String"/>
+	<field name="evaluationDate" class="java.util.Date">
+		<fieldDescription><![CDATA[evaluationDate]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="79">
+			<staticText>
+				<reportElement x="274" y="15" width="325" height="37"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22"/>
+				</textElement>
+				<text><![CDATA[Evaluaciones de Indicadores]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35">
+			<staticText>
+				<reportElement x="330" y="7" width="130" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Termino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="15" y="7" width="119" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Inicio]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement x="460" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{endDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy" hyperlinkType="None">
+				<reportElement x="134" y="7" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$P{startDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34">
+			<staticText>
+				<reportElement x="84" y="0" width="144" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Situacion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="0" width="250" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Indicador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="478" y="0" width="121" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="599" y="0" width="74" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Numerador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="673" y="0" width="80" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Denominador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="753" y="0" width="61" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="814" y="0" width="121" height="34"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Evaluacion]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="84" y="0" width="144" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{situation}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="228" y="0" width="250" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{indicatorName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="478" y="0" width="121" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="599" y="0" width="74" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{numerator}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="673" y="0" width="80" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{denominator}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="753" y="0" width="61" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{state}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true" hyperlinkType="None">
+				<reportElement mode="Opaque" x="814" y="0" width="121" height="18"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{evaluationDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
