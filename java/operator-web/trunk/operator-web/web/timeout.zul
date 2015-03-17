@@ -1,0 +1,4 @@
+<window width="80%" title="Timeout" border="normal">
+    <label value="${labels.timeout.msg1}"/>
+	<label value="${labels.timeout.msg2}"/>
+</window>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:cxf="http://cxf.apache.org/core"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://cxf.apache.org/core 
+       http://cxf.apache.org/schemas/core.xsd
+       http://cxf.apache.org/jaxws 
+       http://cxf.apache.org/schemas/jaxws.xsd
+       http://cxf.apache.org/jaxrs
+       http://cxf.apache.org/schemas/jaxrs.xsd">
+    
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    
+    <!-- definicion de un REST Service JSON -->
+    <jaxrs:server id="operatorWebRest" address="/REST">
+        <jaxrs:serviceBeans>
+            <ref bean="operatorWebService" />
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
+    <!-- security -->
+    <jaxws:client id="SecurityWebServicesClient-1"
+        serviceClass="com.scopix.periscope.securitymanagement.services.webservices.SecurityWebServices"
+        address="http://10.114.119.40:28081/security/spring/services/SecurityWebServices"/>
+        
+    <!-- colas combinadas -->
+    <jaxws:client id="EvaluationRoutingWebServicesClient"
+        serviceClass="com.scopix.periscope.evaluationroutingmanagement.services.webservices.EvaluationRoutingWebServices"
+        address="http://10.114.119.43:28084/combined-queue/spring/services/EvaluationRoutingWebServices"/>
+
+    <!-- queue management -->
+    <!-- lowes -->
+    <jaxws:client id="QueueManagementWebServicesClient-lowes"
+        serviceClass="com.scopix.periscope.queuemanagement.services.webservices.QueueManagementWebServices"
+        address="http://10.114.119.39:28080/business-services/spring/services/QueueManagementWebServices"/>
+
+    <!-- starbucks -->
+    <jaxws:client id="QueueManagementWebServicesClient-starbucks"
+        serviceClass="com.scopix.periscope.queuemanagement.services.webservices.QueueManagementWebServices"
+        address="http://10.114.119.25:8080/business-services/spring/services/QueueManagementWebServices"/>
+
+    <!-- delhaize -->
+    <jaxws:client id="QueueManagementWebServicesClient-delhaize"
+        serviceClass="com.scopix.periscope.queuemanagement.services.webservices.QueueManagementWebServices"
+        address="http://10.114.119.15:8080/business-services/spring/services/QueueManagementWebServices"/>
+
+</beans>

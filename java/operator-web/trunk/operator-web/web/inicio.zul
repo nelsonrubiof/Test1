@@ -1,0 +1,98 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit"?>
+
+<zk>
+    <div align="center">
+        <window id="inicioWindow" width="600px" apply="com.scopix.periscope.bean.InicioBean">
+            <style  src="/css/genericGrid.css"/>
+            <script>
+                <![CDATA[
+                    var needToConfirmInicio = true;
+
+                    //Valida si la ventana del navegador se cierra, para alertar al usuario que debe
+                    //cerrar sesión apropiadamente
+                    window.onbeforeunload = confirmExit;
+                    function confirmExit(){
+                        var lblConfirmCloseInicio = zk.Widget.$(jq('$lblConfirmCloseInicio')[0]);
+                        var confirmText = lblConfirmCloseInicio.getValue();
+
+                        if(needToConfirmInicio){
+                            return confirmText;
+                        }else{
+                            return;
+                        }
+                    }
+                ]]>
+            </script>
+
+            <groupbox contentStyle="border:0;" height="100px"/>
+            <label id="lblConfirmCloseInicio" visible="false"/>
+            
+            <div align="right">
+                <toolbarbutton label="${labels.eval.cerrarSesion}" forward="onClick=onClickCerrarSesion()" 
+                    style="color:#084B8A; font-weight: bold;"/>
+            </div>
+            
+            <!-- grid general -->
+            <grid width="600px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="400px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row>
+                        <label/>
+                        <div align="center">
+                            <image src="/img/scopixLogo.png" width="305px" height="85px"/>
+                        </div>
+                        <label/>
+                    </row>
+                    <row style="background-color:#D8D8D8">
+                        <label/>
+                        <!-- grid combos y botones -->
+                        <grid width="500px" style="border:0;">
+                            <columns>
+                                <column width="110px"/>
+                                <column width="290px"/>
+                            </columns>
+                            <rows>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- cliente -->
+                                    <div align="right">
+                                        <label value="${labels.login.cliente}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <combobox id="cmbClientes" model="@{inicioWindow$composer.lstClientes}" readonly="true" width="150px" constraint="no empty"
+                                            tooltiptext="${labels.login.cmbClientesTooltip}" forward="onAfterRender=onAfterRenderClientes(),onSelect=onSelectClientes()">
+                                            <comboitem self="@{each=client}" label="@{client.description}" value="@{client.uniqueCorporateId}"/>
+                                        </combobox>
+                                    </div>
+                                </row>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- cola -->
+                                    <div align="right">
+                                        <label value="${labels.login.cola}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <combobox id="cmbColas" model="@{inicioWindow$composer.lstColas}" readonly="true" width="150px" constraint="no empty"
+                                            tooltiptext="${labels.login.cmbColasTooltip}">
+                                            <comboitem self="@{each=queue}" label="@{queue.name}" value="@{queue.name}"/>
+                                        </combobox>
+                                    </div>
+                                </row>
+                            </rows>
+                        </grid>
+                        <label/>
+                    </row>
+                    <row style="background-color:#D8D8D8">
+                        <label/>
+                        <div align="center">
+                            <button id="btnIngresar" label="${labels.login.ingresar}" width="85px" forward="onClick=onClickIngresar()"/>
+                        </div>
+                        <label/>
+                    </row>
+                </rows>
+            </grid>
+        </window>
+    </div>
+</zk>

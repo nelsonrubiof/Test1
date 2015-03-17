@@ -1,0 +1,120 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit"?>
+
+<zk>
+    <div align="center">
+        <window id="win" width="600px" apply="com.scopix.periscope.bean.LoginBean">
+            <style  src="/css/genericGrid.css"/>
+            <groupbox contentStyle="border:0;" height="100px"/>
+            <!-- grid general -->
+            <grid width="600px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="400px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row>
+                        <label/>
+                        <label/>
+                        <label value="${labels.login.version}" style="font-weight: bold; color:#8A0808;"/>
+                    </row>
+                    <row>
+                        <label/>
+                        <div align="center">
+                            <image src="/img/scopixLogo.png" width="305px" height="85px"/>
+                        </div>
+                        <label/>
+                    </row>
+                    <row style="background-color:#D8D8D8">
+                        <label/>
+                        <div align="center">
+                            <label value="${labels.login.texto1}" style="font-weight: bold; color:#084B8A;"/>
+                        </div>
+                        <label/>
+                    </row>
+                    <row style="background-color:#D8D8D8">
+                        <label/>
+                        <div align="center">
+                            <label value="${labels.login.texto2}" style="font-weight: bold; color:#084B8A;"/>
+                        </div>
+                        <label/>
+                    </row>
+                    <row style="background-color:#D8D8D8">
+                        <label/>
+                        <!-- grid combos y botones -->
+                        <grid width="500px" style="border:0;">
+                            <columns>
+                                <column width="110px"/>
+                                <column width="290px"/>
+                            </columns>
+                            <rows>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- usuario -->
+                                    <div align="right">
+                                        <label value="${labels.login.usuario}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <textbox id="txtLogin" constraint="no empty" width="143px"/>
+                                    </div>
+                                </row>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- clave -->
+                                    <div align="right">
+                                        <label value="${labels.login.clave}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <textbox id="txtPassword" type="password" constraint="no empty" width="143px"/>
+                                    </div>
+                                </row>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- cliente -->
+                                    <div align="right">
+                                        <label value="${labels.login.cliente}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <combobox id="cmbClientes" model="@{win$composer.lstClientes}" readonly="true" width="150px" constraint="no empty"
+                                            tooltiptext="${labels.login.cmbClientesTooltip}" forward="onAfterRender=onAfterRenderClientes(),onSelect=onSelectClientes()">
+                                            <comboitem self="@{each=client}" label="@{client.description}" value="@{client.uniqueCorporateId}"/>
+                                        </combobox>
+                                    </div>
+                                </row>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- cola -->
+                                    <div align="right">
+                                        <label value="${labels.login.cola}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <combobox id="cmbColas" model="@{win$composer.lstColas}" readonly="true" width="150px" constraint="no empty"
+                                            tooltiptext="${labels.login.cmbColasTooltip}" forward="onSelect=onSelectColas()">
+                                            <comboitem self="@{each=queue}" label="@{queue.name}" value="@{queue.name}"/>
+                                        </combobox>
+                                    </div>
+                                </row>
+                                <row style="background-color:#D8D8D8">
+                                    <!-- oficina -->
+                                    <div align="right">
+                                        <label value="${labels.login.oficina}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                    <div align="center">
+                                        <combobox id="cmbOficinas" model="@{win$composer.lstOficinas}" readonly="true" width="150px" constraint="no empty"
+                                            tooltiptext="${labels.login.cmboficina.tooltip}" forward="onAfterRender=onAfterRenderOficinas()">
+                                            <comboitem self="@{each=office}" label="@{office.name}" value="@{office.name}"/>
+                                        </combobox>
+                                    </div>
+                                </row>
+                            </rows>
+                        </grid>
+                        <label/>
+                    </row>
+                    <row style="background-color:#D8D8D8">
+                        <label/>
+                        <div align="center">
+                            <button id="btnIngresar" label="${labels.login.ingresar}" width="85px" forward="onClick=onClickIngresar()"/>
+                        </div>
+                        <label/>
+                    </row>
+                </rows>
+            </grid>
+        </window>
+    </div>
+</zk>

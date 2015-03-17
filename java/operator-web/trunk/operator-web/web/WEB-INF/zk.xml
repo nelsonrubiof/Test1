@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Created by ZK Studio -->
+<zk>
+    <desktop-config>
+    	<file-check-period>3600</file-check-period><!-- unit: seconds -->
+	</desktop-config>
+    <system-config>
+        <disable-zscript>true</disable-zscript>
+        <label-location>/WEB-INF/i18n/i3-label.properties</label-location> <!-- Default -->
+        <label-location>/WEB-INF/i18n/i3-label_es.properties</label-location> <!-- Español -->
+    	<label-location>/WEB-INF/i18n/i3-label_en.properties</label-location> <!-- English -->
+    </system-config>
+    <library-property>
+        <name>org.zkoss.zul.progressbox.position</name>
+        <value>center</value>
+    </library-property>
+    <client-config>
+        <processing-prompt-delay>1</processing-prompt-delay>
+    </client-config>
+    <device-config>
+        <device-type>ajax</device-type>
+        <timeout-uri>/timeout.zul</timeout-uri><!-- An empty URL can cause the browser to reload the same URL -->
+    </device-config>
+    <system-property>
+        <name>org.zkoss.zel.impl.parser.SKIP_IDENTIFIER_CHECK</name>
+        <value>true</value>
+    </system-property>
+</zk>

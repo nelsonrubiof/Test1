@@ -1,0 +1,125 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./northWindow"?>
+
+<!-- parte superior de la pantalla de evaluación -->
+<window id="northWindow" apply="${evaluationWindow$composer.northHeaderBean}">
+    <style  src="/css/genericGrid.css"/>
+    <script>
+        <![CDATA[
+            //CRONÓMETRO, Autor: Iván Nieto Pérez  
+            //Este script y otros muchos pueden  descarse on-line de forma gratuita  
+            //en El Código: www.elcodigo.com  
+
+            var decimas  = 0;
+            var segundos = 0;
+            var minutos  = 0;
+            var cronoInterval;
+
+            function initCronoInterval(){
+                cronoInterval = setInterval(
+                    function () {
+                        //incrementa el crono
+                        decimas++;
+                        if(decimas > 9){
+                            decimas = 0;
+                            segundos++;
+                            if(segundos > 59){
+                                segundos = 0;
+                                minutos++;
+                                if(minutos> 99){
+                                    detenerCrono();
+                                    return true;
+                                }
+                            }
+                        }
+
+                        //configura la salida
+                        var valorCrono = "";
+                        valorCrono = (minutos < 10) ? "0" + minutos : minutos;
+                        valorCrono += (segundos < 10) ? ":0" + segundos : ":" + segundos;
+
+                        lblCronometro = zk.Widget.$(jq('$lblCronometro')[0]);
+                        if(typeof lblCronometro != 'undefined') {
+                            lblCronometro.setValue(valorCrono);
+                        }
+                    },
+                100);
+            }
+
+            function clearCronoInterval(){
+                clearInterval(cronoInterval);
+            }
+        ]]>
+    </script>
+
+    <grid width="1570px" style="border:0;">
+        <columns>
+            <column width="220px"/>
+            <column width="1150px"/>
+            <column width="200px"/>
+        </columns>
+        <rows>
+            <row style="background-color:#D8D8D8" zclass="none">
+                <!-- logo scopix -->
+                <image src="/img/scopixLogo.png" width="205px" height="40px"/>
+                <grid width="1150px" style="border:0;">
+                    <columns>
+                        <column width="70px"/> <!-- cliente -->
+                        <column width="140px"/> <!-- nombre cliente -->
+                        <column width="70px"/> <!-- tienda -->
+                        <column width="70px"/> <!-- nombre tienda -->
+                        <column width="90px"/> <!-- zona/cámara -->
+                        <column width="150px"/> <!-- nombre zona/cámara -->
+                        <column width="105px"/> <!-- fecha evidencia -->
+                        <column width="175px"/> <!-- fecha evidencia -->
+                        <column width="75px" align="right"/> <!-- usuario -->
+                        <column width="100px" align="center"/> <!-- nombre usuario -->
+                        <column width="105px" align="center"/> <!-- versión -->
+                    </columns>
+                    <rows>
+                        <row style="background-color:#D8D8D8" zclass="none">
+                            <label value="${labels.login.cliente}" style="font-weight: bold; color:#084B8A;"/>
+                            <label id="lblClient" style="font-weight: bold; color:#8A0808;"/>
+
+                            <label value="${labels.eval.tienda}" style="font-weight: bold; color:#084B8A;"/>
+                            <label id="lblStore" style="font-weight: bold; color:#8A0808;"/>
+
+                            <label value="${labels.eval.zonaCamara}" style="font-weight: bold; color:#084B8A;"/>
+                            <label id="lblZone" style="font-weight: bold; color:#8A0808;"/>
+
+                            <label value="${labels.eval.fechaEvidencia}" style="font-weight: bold; color:#084B8A;"/>
+                            <label id="lblEvidenceDate" style="font-weight: bold; color:#8A0808;"/>
+                            
+                            <!-- usuario autenticado -->
+                            <label value="${labels.login.usuario}" style="font-weight: bold; color:#084B8A;"/>
+                            <label id="lblLogin" style="font-weight: bold; color:#088A29;"/>
+
+                            <label value="${labels.login.version}" style="font-weight: bold; color:#8A0808;"/>
+                        </row>
+                    </rows>
+                </grid>
+                <label/>
+            </row>
+        </rows>
+    </grid>
+    <!-- grilla encabezados -->
+    <grid width="1570px" style="border:0;">
+        <columns>
+            <column width="392px"/>
+            <column width="392px"/>
+            <column width="392px"/>
+            <column width="394px"/>
+        </columns>
+        <rows>
+            <row height="8px" style="background-color:#D8D8D8" zclass="none">
+                <label/>
+                <div align="center">
+                    <label value="${labels.eval.tiempoEvaluacion}" style="font-weight: bold; color:#088A29; font-size:9pt"/>
+                </div>
+                <div align="left">
+                    <label id="lblCronometro" value="00:00" style="font-weight: bold; color:#088A29; font-size:11pt"/>
+                </div>
+                <label/>
+            </row>
+        </rows>
+    </grid>
+</window>

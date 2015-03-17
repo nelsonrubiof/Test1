@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Config>
+    <BusinessServices>
+        <!-- CORPORATES -->
+        <Corporate>
+            <id>6</id>
+            <name>Lowes</name>
+            <security>1</security>
+            <description>Lowes</description>
+            <evidenceUrl>/data/ftp/evidence/Lowes/</evidenceUrl>
+            <proofPath>/data/ftp/proofs/Lowes/</proofPath>
+            <templateUrl>/data/ftp/evidence/Lowes/</templateUrl>
+            <operatorImgServicesURL>http://64.151.117.139:28082/operator-images-services/services/REST/</operatorImgServicesURL>
+            <operatorImgPrivateServicesURL>http://64.151.117.139:28082/operator-images-services/services/REST/</operatorImgPrivateServicesURL>
+        
+        </Corporate>
+        <Corporate>
+            <id>17</id>
+            <name>Starbucks</name>
+            <security>1</security>
+            <description>Starbucks</description>
+            <evidenceUrl>/data/ftp/evidence/Starbucks/</evidenceUrl>
+            <proofPath>/data/ftp/proofs/Starbucks/</proofPath>
+            <templateUrl>/data/ftp/evidence/Starbucks/</templateUrl>
+            <operatorImgServicesURL>http://64.151.117.139:28082/operator-images-services/services/REST/</operatorImgServicesURL>
+            <operatorImgPrivateServicesURL>http://64.151.117.139:28082/operator-images-services/services/REST/</operatorImgPrivateServicesURL>
+        </Corporate>
+        <Corporate>
+            <id>18</id>
+            <name>Delhaize</name>
+            <security>1</security>
+            <description>Delhaize</description>
+            <evidenceUrl>/data/ftp/evidence/Delhaize/</evidenceUrl>
+            <proofPath>/data/ftp/proofs/Delhaize/</proofPath>
+            <templateUrl>/data/ftp/evidence/Delhaize/</templateUrl>
+                    <!--URL Publica para mostrar imagenes y videos -->
+            <operatorImgServicesURL>http://64.151.117.139:28082/operator-images-services/services/REST/</operatorImgServicesURL>
+                    <!--URL Privada par envio interno -->
+            <operatorImgPrivateServicesURL>http://64.151.117.139:28082/operator-images-services/services/REST/</operatorImgPrivateServicesURL>
+        </Corporate>
+
+        <!-- OFICINAS -->
+        <Office>
+            <name>VINA DEL MAR</name>
+            <equivalences>
+                <equivalence>
+                    <name>VINA</name>
+                    <!--URL Publica -->
+                    <operatorImgServicesURL>http://190.113.30.217:8011/operator-images-services2/services/REST/</operatorImgServicesURL>
+                </equivalence>
+            </equivalences>
+        </Office>
+        <Office>
+            <name>NEPAL</name>
+            <equivalences>
+                <equivalence>
+                    <name>NEPAL</name>
+                    <!--URL Publica -->
+                    <operatorImgServicesURL>http://110.44.123.219:28080/operator-images-services/services/REST/</operatorImgServicesURL>
+                </equivalence>
+            </equivalences>
+        </Office>
+    </BusinessServices>
+</Config>

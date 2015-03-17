@@ -1,0 +1,530 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./rightYesNoWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte derecha de la pantalla de evaluación, tipo de métrica: SÍ/NO -->
+    <window id="rightYesNoWindow" apply="${evaluationWindow$composer.leftMetricBean.rightMetricDetail}">
+        <script type="text/javascript" src="/js/dragresize.js"/> <!-- javascript para arrastrar o ajustar tamaño de marcas/puntos-->
+        <style  src="/css/rightYesNoMetric.css"/>
+        <script>
+            <![CDATA[
+                var metricValue = '';
+                var hiddenCircles = 'S';
+                var yesSquaresCount = 0;
+                var noSquaresCount = 0;
+                var hiddenYesSquares = 'S';
+                var hiddenNoSquares = 'S';
+                var cambioCamara = 'N'; //Indica si es un cambio de cámara en una misma métrica
+
+                var yesSquaresMap = new Object();
+                var noSquaresMap = new Object();
+
+                function saveCirclesSquaresData(){}
+
+                function onClickDeshacer() {}
+
+                function onClickDeshacerTodo() {}
+
+                function hideAllCurrentCircles() {}
+
+                function markEvidence() {}
+
+                function deleteAllCurrentSquares(){
+                    deleteMarks('S');
+                }
+
+                //********** Actualiza label del valor de métrica **********
+                function updateLblValorMetrica(){
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue(metricValue);
+                    lblValorMetrica.smartUpdate('value', metricValue);
+                }
+
+                var dragresize = new DragResize('dragresize', { minWidth: 15, minHeight: 15, minLeft: 390, minTop: 82, maxLeft: 1025, maxTop: 560 });
+
+                dragresize.isElement = function(elm){
+                    if (elm.className && elm.className.indexOf('drsElement') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize.isHandle = function(elm){
+                    if (elm.className && elm.className.indexOf('drsMoveHandle') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize.ondragfocus = function() { };
+                dragresize.ondragstart = function(isResize) { };
+                dragresize.ondragmove = function(isResize) { };
+                dragresize.ondragend = function(isResize) { };
+                dragresize.ondragblur = function() { };
+
+                dragresize.apply(document);
+
+                //****** Oculta las marcas (el nombre circles se reutiliza por la métrica de conteo) ******
+                function hideCircles(){
+                    if(yesSquaresCount>0){
+                        for (var i=1; i<=yesSquaresCount; i++){
+                            var myDiv = yesSquaresMap[('square'+i)];
+                            myDiv.style.display='none';
+                        }
+                        hiddenYesSquares = 'S';
+                        hiddenCircles = 'S';
+
+                    }else if(noSquaresCount>0){
+                        for (var i=1; i<=noSquaresCount; i++){
+                            var myDiv = noSquaresMap[('square'+i)];
+                            myDiv.style.display='none';
+                        }
+                        hiddenNoSquares = 'S';
+                        hiddenCircles = 'S';
+                    }
+                }
+
+                //****** Muestra las marcas (el nombre circles se reutiliza por la métrica de conteo) ******
+                function showCircles(){
+                    if(yesSquaresCount>0){
+                        for (var i=1; i<=yesSquaresCount; i++){
+                            var myDiv = yesSquaresMap[('square'+i)];
+                            myDiv.style.display='inline';
+                        }
+                        hiddenYesSquares = 'N';
+                        hiddenCircles = 'N';
+                    }else if(noSquaresCount>0){
+                        for (var i=1; i<=noSquaresCount; i++){
+                            var myDiv = noSquaresMap[('square'+i)];
+                            myDiv.style.display='inline';
+                        }
+                        hiddenNoSquares = 'N';
+                        hiddenCircles = 'N';
+                    }
+                }
+
+                //****** Dibuja marca cuadrada SÍ ******
+                function drawYesSquare(xPos, yPos, width, height){
+                    //Suma conteo de YESsquares
+                    noSquaresCount = 0;
+                    yesSquaresCount = 1;
+
+                    var lastSquare = document.getElementById(('square1'));
+                    if(lastSquare!=null) { //en caso de que exista un square antes, lo reemplaza, no importa el tipo
+                        lastSquare.parentNode.removeChild(lastSquare); //elimina de la pantalla el square
+                        delete yesSquaresMap[('square1')]; //elimina de la estructura el square
+                        delete noSquaresMap[('square1')]; //elimina de la estructura el square
+                    }
+
+                    var newdiv = document.createElement('div');
+                    newdiv.setAttribute('id', ('square'+yesSquaresCount));
+                    newdiv.setAttribute('class', 'drsElement drsMoveHandle squareYes');
+                    newdiv.setAttribute('style', 'min-width:25px; min-height:25px; left: '+ xPos +'px; top: '+ yPos +'px; width:' + width + 'px; height:' + height + 'px;');
+                    document.body.appendChild(newdiv);
+
+                    yesSquaresMap[('square'+yesSquaresCount)] = newdiv;
+
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue('S');
+                    lblValorMetrica.smartUpdate('value', 'S');
+
+                    hiddenYesSquares = 'N';
+                    hiddenCircles = 'N';
+                    
+                    var yesSquaresConcat = '';
+                    for (var i=1; i <= yesSquaresCount; i++){
+                        var myDiv = yesSquaresMap[('square' + i)];
+                        yesSquaresConcat = yesSquaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                    }
+                    yesSquaresConcat = yesSquaresConcat.substring(1, yesSquaresConcat.length);
+                    
+                    var lblYesSquares = zk.Widget.$(jq('$lblYesSquares')[0]);
+                    if(typeof lblYesSquares != 'undefined') {
+                        lblYesSquares.setValue(yesSquaresConcat);
+                        lblYesSquares.smartUpdate('value', yesSquaresConcat);
+                    }
+                    var lblNoSquares = zk.Widget.$(jq('$lblNoSquares')[0]);
+                    if(typeof lblNoSquares != 'undefined') {
+                        lblNoSquares.setValue('');
+                        lblNoSquares.smartUpdate('value', '');
+                    }
+                }
+
+                //****** Dibuja marca cuadrada NO ******
+                function drawNoSquare(xPos, yPos, width, height){
+                    //Suma conteo de NOsquares
+                    noSquaresCount = 1;
+                    yesSquaresCount = 0;
+
+                    var lastSquare = document.getElementById(('square1'));
+                    if(lastSquare!=null) { //en caso de que exista un square antes, lo reemplaza, no importa el tipo
+                        lastSquare.parentNode.removeChild(lastSquare); //elimina de la pantalla el square
+                        delete yesSquaresMap[('square1')]; //elimina de la estructura el square
+                        delete noSquaresMap[('square1')]; //elimina de la estructura el square
+                    }
+
+                    var newdiv = document.createElement('div');
+                    newdiv.setAttribute('id', ('square'+noSquaresCount));
+                    newdiv.setAttribute('class', 'drsElement drsMoveHandle squareNo');
+                    newdiv.setAttribute('style', 'min-width:25px; min-height:25px; left: '+ xPos +'px; top: '+ yPos +'px; width:' + width + 'px; height:' + height + 'px;');
+                    document.body.appendChild(newdiv);
+
+                    noSquaresMap[('square'+noSquaresCount)] = newdiv;
+
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue('N');
+                    lblValorMetrica.smartUpdate('value', 'N');
+
+                    hiddenNoSquares = 'N';
+                    hiddenCircles = 'N';
+                    
+                    var noSquaresConcat = '';
+                    for (var i=1; i <= noSquaresCount; i++){
+                        var myDiv = noSquaresMap[('square' + i)];
+                        noSquaresConcat = noSquaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                    }
+                    noSquaresConcat = noSquaresConcat.substring(1, noSquaresConcat.length);
+                    
+                    var lblNoSquares = zk.Widget.$(jq('$lblNoSquares')[0]);
+                    if(typeof lblNoSquares != 'undefined') {
+                        lblNoSquares.setValue(noSquaresConcat);
+                        lblNoSquares.smartUpdate('value', noSquaresConcat);
+                    }
+                    var lblYesSquares = zk.Widget.$(jq('$lblYesSquares')[0]);
+                    if(typeof lblYesSquares != 'undefined') {
+                        lblYesSquares.setValue('');
+                        lblYesSquares.smartUpdate('value', '');
+                    }
+                }
+
+                //********** Almacena datos de las marcas realizadas en la evidencia actual **********
+                //**********            Luego borra las figuras de la pantalla              **********
+                function saveShapesData(){
+                    saveCurrentShapesData();
+                }
+
+                //********** Almacena datos de las marcas realizadas en la evidencia actual **********
+                function saveCurrentShapesData(){
+                    var yesSquaresConcat = '';
+                    var noSquaresConcat = '';
+
+                    if(yesSquaresCount > 0){
+                        for (var i=1; i <= yesSquaresCount; i++){
+                            var myDiv = yesSquaresMap[('square' + i)];
+                            yesSquaresConcat = yesSquaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                        }
+                        yesSquaresConcat = yesSquaresConcat.substring(1, yesSquaresConcat.length);
+                    }
+
+                    if(noSquaresCount > 0){
+                        for (var i=1; i <= noSquaresCount; i++){
+                            var myDiv = noSquaresMap[('square' + i)];
+                            noSquaresConcat = noSquaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                        }
+                        noSquaresConcat = noSquaresConcat.substring(1, noSquaresConcat.length);
+                    }
+
+                    var lblYesSquares = zk.Widget.$(jq('$lblYesSquares')[0]);
+
+                    if(typeof lblYesSquares != 'undefined') {
+                        lblYesSquares.setValue(yesSquaresConcat);
+                        lblYesSquares.smartUpdate('value', yesSquaresConcat);
+                    }
+
+                    var lblNoSquares = zk.Widget.$(jq('$lblNoSquares')[0]);
+                    if(typeof lblYesSquares != 'undefined') {
+                        lblNoSquares.setValue(noSquaresConcat);
+                        lblNoSquares.smartUpdate('value', noSquaresConcat);
+                    }
+                }
+
+                //****** Oculta las marcas ******
+                function hideMarks(){
+                    if(yesSquaresCount>0){
+                        for (var i=1; i<=yesSquaresCount; i++){
+                            var myDiv = yesSquaresMap[('square'+i)];
+                            myDiv.style.display='none';
+                        }
+                        hiddenYesSquares = 'S';
+                        hiddenCircles = 'S';
+                    }
+                    if(noSquaresCount>0){
+                        for (var i=1; i<=noSquaresCount; i++){
+                            var myDiv = noSquaresMap[('square'+i)];
+                            myDiv.style.display='none';
+                        }
+                        hiddenNoSquares = 'S';
+                        hiddenCircles = 'S';
+                    }
+                }
+
+                function hideAllCurrentSquares() {
+                    if(yesSquaresCount > 0){
+                        for(var i=1; i <= yesSquaresCount; i++){
+                            var myDiv = yesSquaresMap[('square' + i)];
+                            myDiv.style.display = 'none';
+                        }
+                        hiddenYesSquares = 'S';
+                    }
+                    if(noSquaresCount > 0){
+                        for(var i=1; i <= noSquaresCount; i++){
+                            var myDiv = noSquaresMap[('square' + i)];
+                            myDiv.style.display = 'none';
+                        }
+                        hiddenNoSquares = 'S';
+                    }
+                }
+
+                function deleteMarks(isChangingMetric){
+                    if(yesSquaresCount==0 && noSquaresCount==0){
+                        lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                            lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                            var notDefinedText = lblNotDefined.getValue();
+
+                            if(noEvalGuardar == 'S'){
+                                lblValorMetrica.setValue(notDefinedText);
+                                lblValorMetrica.smartUpdate('value', notDefinedText);
+                                noEvalGuardar = 'N';
+                            }else if(isChangingMetric == 'N'){
+                                alert('No existen marcas por quitar en la evidencia actual');
+                            }
+                    }else{
+                        if(yesSquaresCount > 0){ //hay marcas cuadradas en la evidencia actual
+                            var lastSquare = document.getElementById(('square' + yesSquaresCount));
+
+                            if(lastSquare != null) {
+                                lastSquare.parentNode.removeChild(lastSquare);              //elimina de la pantalla la marca cuadrada
+                            }
+
+                            delete yesSquaresMap[('square' + yesSquaresCount)]; //elimina de la estructura la marca cuadrada
+
+                            yesSquaresCount = yesSquaresCount - 1;
+                        }
+
+                        if(noSquaresCount > 0){ //hay marcas cuadradas en la evidencia actual
+                            var lastSquare = document.getElementById(('square' + noSquaresCount));
+
+                            if(lastSquare != null) {
+                                lastSquare.parentNode.removeChild(lastSquare);              //elimina de la pantalla la marca cuadrada
+                            }
+
+                            delete noSquaresMap[('square' + noSquaresCount)]; //elimina de la estructura la marca cuadrada
+                            noSquaresCount = noSquaresCount - 1;
+                        }
+
+                        if(yesSquaresCount==0 && noSquaresCount==0){
+                            lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+
+                            if(typeof lblNotDefined != 'undefined') {
+                                var notDefinedText = lblNotDefined.getValue();
+                                lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+
+                                lblValorMetrica.setValue(notDefinedText);
+                                lblValorMetrica.smartUpdate('value', notDefinedText);
+                            }
+                        }
+                    }
+                }
+
+                function deleteAllCurrentShapes(isChangingMetric) {
+                    deleteMarks(isChangingMetric);
+                }
+                
+                function deleteAllCurrentShapes(keepMetricValue, isChangingMetric, isDeshacer) {
+                    deleteMarks(isChangingMetric);
+                }
+
+                //********** Deshace último punto marcado **********
+                function deleteLastPoint() {
+                    deleteMarks('N');
+                    
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                    var notDefinedText = lblNotDefined.getValue();
+                    
+                    if(noEvalGuardar == 'S'){
+                        lblValorMetrica.setValue(notDefinedText);
+                        lblValorMetrica.smartUpdate('value', notDefinedText);
+                        noEvalGuardar = 'N';
+                    }
+                }
+
+                function showAllCurrentSquares(){
+                    if(yesSquaresCount > 0){
+                        for (var i=1; i <= yesSquaresCount; i++){
+                            var myDiv = yesSquaresMap[('square' + i)];
+                            myDiv.style.display = 'inline';
+                        }
+                        hiddenYesSquares = 'N';
+                    }
+                    if(noSquaresCount > 0){
+                        for (var i=1; i <= noSquaresCount; i++){
+                            var myDiv = noSquaresMap[('square' + i)];
+                            myDiv.style.display = 'inline';
+                        }
+                        hiddenNoSquares = 'N';
+                    }
+                }
+
+                function onClickNextCamara(){
+                    cambioCamara = 'S';
+
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+
+                function onSelectCamara(){
+                    cambioCamara = 'S';
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){
+                        setPlayerTime();
+                    }
+                }
+
+                function onClickSiguiente(){
+                    saveShapesData();
+
+                    if(yesSquaresCount>0){
+                        for (var i=1; i<=yesSquaresCount; i++){
+                            var square = document.getElementById(('square'+i));
+                            square.parentNode.removeChild(square);
+                        }
+                        yesSquaresCount = 0;
+                    }
+                    if(noSquaresCount>0){
+                        for (var i=1; i<=noSquaresCount; i++){
+                            var square = document.getElementById(('square'+i));
+                            square.parentNode.removeChild(square);
+                        }
+                        noSquaresCount = 0;
+                    }
+
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+            ]]>
+        </script>
+        
+        <label id="lblNotDefined" value="${labels.eval.noDefinido}" visible="false"/>
+        <label id="lblYesSquares" visible="false"/> <!-- Label utilizado para almacenar la información de la marca de sí -->
+        <label id="lblNoSquares" visible="false"/> <!-- Label utilizado para almacenar la información de la marca de no -->
+        <label id="lblCurrentTIme" visible="false"/>
+
+        <div align="center">
+            <grid width="210px" style="border:0;">
+                <columns>
+                    <column width="210px"/>
+                </columns>
+                <rows>
+                    <row style="background-color:#D8D8D8" zclass="none" height="50px">
+                        <grid width="210px" style="border:0;">
+                            <columns>
+                                <column width="110px"/>
+                                <column width="100px"/>
+                            </columns>
+                            <rows>
+                                <row style="background-color:#D8D8D8" zclass="none">
+                                    <div align="center">
+                                        <label id="lblNomMetrica" style="font-weight: bold; color:#084B8A;"/>
+                                    </div>
+                                    <div align="center">
+                                        <label id="lblValorMetrica" value="${labels.eval.noDefinido}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="200px" height="400px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" style="background-color:#D8D8D8">
+                        <div align="center">
+                            <!-- SÍ -->
+                            <button id="btnYes" width="60px" height="60px" image="/img/yes.png" tooltiptext="${labels.eval.si}" 
+                                disabled="true" forward="onClick=onClickYes">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        drawYesSquare(675, 325, 50, 50);
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                        <div align="center">
+                            <!-- NO -->
+                            <button id="btnNo" width="60px" height="60px" image="/img/no.png" tooltiptext="${labels.eval.no}" 
+                                disabled="true" forward="onClick=onClickNo">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        drawNoSquare(675, 325, 50, 50);
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                    <row zclass="none" height="340px" style="background-color:#D8D8D8">
+                        <label/><label/>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="280px" height="75px" style="border:0;">
+                <columns>
+                    <column width="180px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" height="75px" style="background-color:#D8D8D8">
+                        <div align="center">
+                            <groupbox id="groupBoxMultiCamara" width="150px">
+                                <combobox id="cmbMultiCamaras" model="@{rightYesNoWindow$composer.lstCamaras}"
+                                    readonly="true" width="135px" constraint="no empty" tooltiptext="${labels.default.multicamaraTooltip}"
+                                    forward="onAfterRender=onAfterRenderMulticamara(),onSelect=onSelectCamara()">
+                                        <attribute w:name="onSelect">
+                                            <![CDATA[
+                                                onSelectCamara();
+                                            ]]>
+                                        </attribute>
+                                    <comboitem self="@{each=camara}" label="@{camara.name}" value="@{camara.name}"/>
+                                </combobox>
+                            </groupbox>
+                        </div>
+                        <div align="left">
+                            <button id="btnNextCamara" label="${labels.eval.nextCamara}" forward="onClick=onClickNextCamara">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        onClickNextCamara();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="200px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" style="background-color:#D8D8D8">
+                        <button id="btnSiguiente" label="${labels.eval.siguiente}" forward="onClick=onClickSiguiente">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickSiguiente();
+                                ]]>
+                            </attribute>
+                        </button>
+                        <button id="btnEnviarFinalizar" label="${labels.eval.finalizar}" forward="onClick=onClickFinalizar" disabled="true"/>
+                    </row>
+                </rows>
+            </grid>
+        </div>
+    </window>
+</zk>

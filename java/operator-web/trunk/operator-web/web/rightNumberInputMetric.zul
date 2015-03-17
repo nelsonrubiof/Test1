@@ -1,0 +1,216 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./rightDirectWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte derecha de la pantalla de evaluación, tipo de métrica: ENTRADA DIRECTA -->
+    <window id="rightDirectWindow" apply="${evaluationWindow$composer.leftMetricBean.rightMetricDetail}">
+        <label id="lblCurrentTIme" visible="false"/>
+        <style  src="/css/genericGrid.css"/>
+        <script>
+            <![CDATA[
+                var metricValue = '';
+                var hiddenCircles = 'S';
+                var cambioCamara = 'N';                 //Indica si es un cambio de cámara en una misma métrica
+
+                function markEvidence(){}
+
+                function showCircles(){}
+
+                function hideCircles(){}
+                
+                function saveShapesData(){}
+                
+                function saveCurrentShapesData(){}
+
+                function deleteAllCurrentSquares(){}
+
+                function deleteAllCurrentCircles(isDeshacer){}
+
+                function onClickDeshacer(){}
+
+                function onClickDeshacerTodo(){}
+
+                function saveCirclesSquaresData(){}
+                
+                function deleteAllCurrentShapes(keepMetricValue, isChangingMetric, isDeshacer) {
+                    deleteLastPoint();
+                }
+
+                function deleteLastPoint() {
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                    var notDefinedText = lblNotDefined.getValue();
+                    
+                    if(noEvalGuardar == 'S'){
+                        lblValorMetrica.setValue(notDefinedText);
+                        lblValorMetrica.smartUpdate('value', notDefinedText);
+                        noEvalGuardar = 'N';
+                    }
+                }
+                
+
+                function hideAllCurrentCircles(){}
+
+                function hideAllCurrentSquares(){}
+
+                function showAllCurrentCircles(){}
+
+                function showAllCurrentSquares(){}
+
+                //********** Actualiza label del valor de métrica **********
+                function updateLblValorMetrica(){
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue(metricValue);
+                    lblValorMetrica.smartUpdate('value', metricValue);
+                }
+
+                function onChangingValor(event){
+                    if(event.value != ''){
+                        if(event.value >= 0){
+                            lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                            lblValorMetrica.setValue(event.value);
+                            lblValorMetrica.smartUpdate('value', event.value);
+                        }
+                    }
+                }
+
+                function onClickNextCamara(){
+                    cambioCamara = 'S';
+
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+
+                function onClickSiguiente(){
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+
+                function onSelectCamara(){
+                    cambioCamara = 'S';
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){
+                        setPlayerTime();
+                    }
+                }
+            ]]>
+        </script>
+        
+        <label id="lblNotDefined" value="${labels.eval.noDefinido}" visible="false"/>
+
+        <div align="center">
+            <grid width="210px" style="border:0;">
+                <columns>
+                    <column width="210px"/>
+                </columns>
+                <rows>
+                    <row style="background-color:#D8D8D8" zclass="none" height="50px">
+                        <grid width="210px" style="border:0;">
+                            <columns>
+                                <column width="110px"/>
+                                <column width="100px"/>
+                            </columns>
+                            <rows>
+                                <row style="background-color:#D8D8D8" zclass="none">
+                                    <div align="center">
+                                        <label id="lblNomMetrica" style="font-weight: bold; color:#084B8A;"/>
+                                    </div>
+                                    <div align="center">
+                                        <label id="lblValorMetrica" value="${labels.eval.noDefinido}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="200px" height="400px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" style="background-color:#D8D8D8">
+                        <div align="center">
+                            <div align="center">
+                                <label value="${labels.eval.valor}" style="font-weight: bold;"/>
+                            </div>
+                        </div>
+                        <div align="center">
+                            <div align="center">
+                                <groupbox width="71px">
+                                    <intbox id="iboxValor" disabled="true" constraint="no negative,no empty" maxlength="3" width="50px" forward="onChanging=onChangingValor()">
+                                        <attribute w:name="onChanging">
+                                            <![CDATA[
+                                                onChangingValor(event);
+                                            ]]>
+                                        </attribute>
+                                    </intbox>
+                                </groupbox>
+                            </div>
+                        </div>
+                    </row>
+                    <row zclass="none" height="367px" style="background-color:#D8D8D8">
+                        <label/><label/>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="280px" height="75px" style="border:0;">
+                <columns>
+                    <column width="180px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" height="75px" style="background-color:#D8D8D8">
+                        <div align="center">
+                            <groupbox id="groupBoxMultiCamara" width="150px">
+                                <combobox id="cmbMultiCamaras" model="@{rightDirectWindow$composer.lstCamaras}"
+                                    readonly="true" width="135px" constraint="no empty" tooltiptext="${labels.default.multicamaraTooltip}"
+                                    forward="onAfterRender=onAfterRenderMulticamara(),onSelect=onSelectCamara()">
+                                        <attribute w:name="onSelect">
+                                            <![CDATA[
+                                                onSelectCamara();
+                                            ]]>
+                                        </attribute>
+                                    <comboitem self="@{each=camara}" label="@{camara.name}" value="@{camara.name}"/>
+                                </combobox>
+                            </groupbox>
+                        </div>
+                        <div align="left">
+                            <button id="btnNextCamara" label="${labels.eval.nextCamara}" forward="onClick=onClickNextCamara">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        onClickNextCamara();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="200px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" style="background-color:#D8D8D8">
+                        <button id="btnSiguiente" label="${labels.eval.siguiente}" forward="onClick=onClickSiguiente">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickSiguiente();
+                                ]]>
+                            </attribute>
+                        </button>
+                        <button id="btnEnviarFinalizar" label="${labels.eval.finalizar}" forward="onClick=onClickFinalizar" disabled="true"/>
+                    </row>
+                </rows>
+            </grid>
+        </div>
+    </window>
+</zk>

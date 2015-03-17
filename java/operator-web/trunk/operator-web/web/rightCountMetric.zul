@@ -1,0 +1,732 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./rightCountWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte derecha de la pantalla de evaluación, tipo de métrica: CONTEO -->
+    <window id="rightCountWindow" apply="${evaluationWindow$composer.leftMetricBean.rightMetricDetail}">
+        <script type="text/javascript" src="/js/dragresize.js"/> <!-- javascript para arrastrar o ajustar tamaño de marcas/puntos-->
+        <style  src="/css/rightCountMetric.css"/>
+        <script>
+            <![CDATA[
+                var metricCount = 0;                    //conteo total de la métrica
+                var cambioCamara = 'N';                 //Indica si es un cambio de cámara en una misma métrica
+                var selectedCircleDiv = '';             //indica size seleccionado de los círculos
+                var currentCirclesCount = 0;            //conteo de los círculos de la evidencia actual
+                var currentSquaresCount = 0;            //conteo de las marcas cuadradas de la evidencia actual
+                var currentMetricToZero = 'N';          //indica si la métrica actual se define en cero
+                var validateToDeleteAllShapes = 'N';    //Indica si es validación invocada desde el cambio de métrica
+
+                var currentCirclesMap = new Object();   //estructura en donde se almacenarán los círculos marcados de la evidencia actual
+                var currentSquaresMap = new Object();   //estructura en donde se almacenarán las marcas cuadradas de la evidencia actual
+
+                var hiddenCurrentCircles = 'N';           //indica si los círculos de la evidencia actual están ocultos (NO borrados)
+                var hiddenCurrentSquares = 'N';           //indica si las marcas cuadradas de la evidencia actual están ocultas (NO borradas)
+
+                //********** DRAG_RESIZE **********
+                var dragresize = new DragResize('dragresize', { minWidth: 10, minHeight: 10, minLeft: 390, minTop: 82, maxLeft: 1025, maxTop: 560 });
+
+                dragresize.isElement = function(elm){
+                    if (elm.className && elm.className.indexOf('drsElement') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize.isHandle = function(elm){
+                    if (elm.className && elm.className.indexOf('drsMoveHandle') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize.ondragfocus = function() { };
+                dragresize.ondragstart = function(isResize) { };
+                dragresize.ondragmove = function(isResize) { };
+                dragresize.ondragend = function(isResize) { };
+                dragresize.ondragblur = function() { };
+
+                dragresize.apply(document);
+
+                //********** Variable que solamente manejará la posibilidad de arrastrar, no de cambiar el tamaño
+                var dragresize2 = new DragResize('dragresize2', { minWidth: 10, minHeight: 10, minLeft: 390, minTop: 82, maxLeft: 1025, maxTop: 560 });
+
+                dragresize2.isElement = function(elm){
+                    if (elm.className && elm.className.indexOf('drsElement2') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize2.isHandle = function(elm){
+                    if (elm.className && elm.className.indexOf('drsMoveHandle2') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize2.noresize = true; //Desactiva resize de los círculos
+                dragresize2.ondragfocus = function() { };
+                dragresize2.ondragstart = function(isResize) { };
+                dragresize2.ondragmove = function(isResize) { };
+                dragresize2.ondragend = function(isResize) { };
+                dragresize2.ondragblur = function() { };
+
+                dragresize2.apply(document);
+
+                //********** Marca punto sobre la evidencia **********
+                function markEvidence(xPos, yPos, width, height) {
+                    if(selectedCircleDiv=='1'){
+                        width=10; height=10;
+                    }else if(selectedCircleDiv=='2'){
+                        width=15; height=15;
+                    }else if(selectedCircleDiv=='3'){
+                        width=20; height=20;
+                    }else if(selectedCircleDiv=='5'){
+                        //No hace nada
+                    }else{
+                        width=15; height=15; //size por defecto
+                    }
+
+                    //En caso que sea un cambio de cámara ('S'), no suma al valor de la métrica (al momento de pintar desde el inicio del bean central)
+                    if(cambioCamara == 'N'){
+                        metricCount = metricCount + 1;
+                    }
+
+                    //Se vuelve 'N' asegurando que puede haber cambiado de cámara pero luego hace una marca de punto, para que vuelva a sumar al valor de la métrica
+                    cambioCamara == 'N';
+
+                    drawCircle(xPos, yPos, width, height);
+
+                    updateLblValorMetrica();
+                }
+
+                //********** Actualiza label del valor de métrica **********
+                function updateLblValorMetrica(){
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue(metricCount);
+                    lblValorMetrica.smartUpdate('value', metricCount);
+                }
+
+                //********** Dibuja un círculo **********
+                function drawCircle(xPos, yPos, width, height){
+                    currentCirclesCount = currentCirclesCount + 1;
+
+                    var newdiv = document.createElement('div');
+                    newdiv.setAttribute('id', ('circle' + currentCirclesCount));
+                    newdiv.setAttribute('class', 'drsElement2 drsMoveHandle2 circle');
+                    newdiv.setAttribute('style', 'min-width:10px; min-height:10px; left: '+ xPos +'px; top: '+ yPos +'px; width:' + width + 'px; height:' + height + 'px;');
+                    document.body.appendChild(newdiv);
+
+                    currentCirclesMap[('circle' + currentCirclesCount)] = newdiv;
+                    currentMetricToZero = 'N';
+                }
+
+                //********** Dibuja marca cuadrada **********
+                function drawSquare(xPos, yPos, width, height){
+                    currentSquaresCount = currentSquaresCount + 1;
+
+                    var newdiv = document.createElement('div');
+                    newdiv.setAttribute('id', ('square' + currentSquaresCount));
+                    newdiv.setAttribute('class', 'drsElement drsMoveHandle square');
+                    newdiv.setAttribute('style', 'min-width:25px; min-height:25px; left: '+ xPos +'px; top: '+ yPos +'px; width:' + width + 'px; height:' + height + 'px;');
+                    document.body.appendChild(newdiv);
+
+                    currentSquaresMap[('square' + currentSquaresCount)] = newdiv;
+                }
+
+                //********** Deshace último punto marcado **********
+                function deleteLastPoint() {
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                    var notDefinedText = lblNotDefined.getValue();
+
+                    if(currentCirclesCount > 0){ //hay puntos marcados en la evidencia actual
+                        var lastCircle = document.getElementById(('circle' + currentCirclesCount));
+
+                        if(lastCircle!=null && typeof lastCircle != 'undefined'){
+                            lastCircle.parentNode.removeChild(lastCircle);              //elimina de la pantalla el círculo
+                            delete currentCirclesMap[('circle' + currentCirclesCount)]; //elimina de la estructura el círculo
+
+                            metricCount = metricCount - 1;
+                            currentCirclesCount = currentCirclesCount - 1;
+                        }
+
+                        if(metricCount == 0){ //No existen más puntos en la métrica
+                            lblValorMetrica.setValue(notDefinedText);
+                            lblValorMetrica.smartUpdate('value', notDefinedText);
+                        }else{
+                            lblValorMetrica.setValue(metricCount);
+                            lblValorMetrica.smartUpdate('value', metricCount);
+                        }
+                    }else{
+                        //No hay puntos por deshacer, valida si había marcado la métrica como cero
+                        var value = lblValorMetrica.getValue();
+
+                        if(value == '0' || noEvalGuardar == 'S'){
+                            lblValorMetrica.setValue(notDefinedText);
+                            lblValorMetrica.smartUpdate('value', notDefinedText);
+                            noEvalGuardar = 'N';
+                        }else{
+                            alert('No existen puntos o valor por deshacer en la evidencia actual');
+                        }
+                    }
+                }
+
+                //********** Deshace última marca cuadrada **********
+                function deleteLastSquare() {
+                    if(currentSquaresCount > 0){ //hay marcas cuadradas en la evidencia actual
+                        var lastSquare = document.getElementById(('square' + currentSquaresCount));
+
+                        if(lastSquare!=null && typeof lastSquare != 'undefined'){
+                            lastSquare.parentNode.removeChild(lastSquare);              //elimina de la pantalla la marca cuadrada
+                            delete currentSquaresMap[('square' + currentSquaresCount)]; //elimina de la estructura la marca cuadrada
+                        }
+
+                        currentSquaresCount = currentSquaresCount - 1;
+                    }else{
+                        alert('No existen marcas de grupo por deshacer en la evidencia actual');
+                    }
+                }
+
+                //********** Deshace todas las marcas sobre la evidencia actual **********
+                function deleteAllCurrentShapes(keepMetricValue, isChangingMetric, isDeshacer) {
+                    if(currentCirclesCount == 0 && currentSquaresCount == 0){
+                        lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                        lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                        var notDefinedText = lblNotDefined.getValue();
+
+                        //No hay elementos por deshacer, valida si había marcado la métrica como cero
+                        var value = lblValorMetrica.getValue();
+
+                        if(value == '0' || noEvalGuardar == 'S'){
+                            if(validateToDeleteAllShapes == 'N'){
+                                lblValorMetrica.setValue(notDefinedText);
+                                lblValorMetrica.smartUpdate('value', notDefinedText);
+                                noEvalGuardar = 'N';
+                            }else{
+                                validateToDeleteAllShapes = 'N';
+                            }
+                        }else if(isChangingMetric == 'N'){
+                            alert('No existen puntos, marcas o valor por deshacer en la evidencia actual');
+                        }   
+                    }else{
+                        subDeleteAllShapes(keepMetricValue, isDeshacer);
+                    }
+                }
+
+                //********** Deshace todas las marcas sobre la evidencia **********
+                function subDeleteAllShapes(keepMetricValue, isDeshacer){
+                    deleteAllCurrentCircles(isDeshacer);
+                    deleteAllCurrentSquares();
+
+                    if(currentMetricToZero == 'S'){
+                        keepMetricValue = 'S';
+                    }
+
+                    if(keepMetricValue == 'N'){
+                        lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+
+                        if(metricCount == 0){ //No existen más puntos en la métrica
+                            lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                            var notDefinedText = lblNotDefined.getValue();
+
+                            lblValorMetrica.setValue(notDefinedText);
+                            lblValorMetrica.smartUpdate('value', notDefinedText);
+                        }else{
+                            lblValorMetrica.setValue(metricCount);
+                            lblValorMetrica.smartUpdate('value', metricCount);
+                        }
+                    }
+                }
+
+                //********** Elimina todos los circulos de la evidencia actual **********
+                function deleteAllCurrentCircles(isDeshacer){
+                    if(currentCirclesCount > 0){
+                        for(var i=1; i <= currentCirclesCount; i++){
+                            var circle = document.getElementById(('circle' + i));
+
+                            if(circle!=null && typeof circle != 'undefined'){
+                                circle.parentNode.removeChild(circle);      //elimina de la pantalla el círculo
+                                delete currentCirclesMap[('circle' + i)];   //elimina de la estructura el círculo
+                            }
+                        }
+                        metricCount = 0;
+                        currentCirclesCount = 0;
+                    }
+                }
+
+                //********** Elimina todas las marcas de grupo de la evidencia actual **********
+                function deleteAllCurrentSquares(){
+                    if(currentSquaresCount > 0){
+                        for(var i=1; i <= currentSquaresCount; i++){
+                            var square = document.getElementById(('square' + i));
+
+                            if(square!=null && typeof square != 'undefined'){
+                                square.parentNode.removeChild(square);      //elimina de la pantalla la marca cuadrada
+                                delete currentSquaresMap[('square' + i)];   //elimina de la estructura la marca cuadrada
+                            }
+                        }
+                        currentSquaresCount = 0;
+                    }
+                }
+
+                //********** Oculta (NO borra) todos los círculos marcados en la evidencia actual **********
+                function hideAllCurrentCircles(){
+                    if(currentCirclesCount > 0){
+                        for(var i=1; i <= currentCirclesCount; i++){
+                            var myDiv = currentCirclesMap[('circle' + i)];
+                            myDiv.style.display = 'none';
+                        }
+                        hiddenCurrentCircles = 'S';
+                    }
+                }
+
+                //********** Muestra todos los círculos marcados en la evidencia actual **********
+                function showAllCurrentCircles(){
+                    if(currentCirclesCount > 0){
+                        for (var i=1; i <= currentCirclesCount; i++){
+                            var myDiv = currentCirclesMap[('circle' + i)];
+                            myDiv.style.display = 'inline';
+                        }
+                        hiddenCurrentCircles = 'N';
+                    }
+                }
+
+                //********** Oculta (NO borra) todas las marcas cuadradas en la evidencia actual **********
+                function hideAllCurrentSquares(){
+                    if(currentSquaresCount > 0){
+                        for(var i=1; i <= currentSquaresCount; i++){
+                            var myDiv = currentSquaresMap[('square' + i)];
+                            myDiv.style.display = 'none';
+                        }
+                        hiddenCurrentSquares = 'S';
+                    }
+                }
+
+                //********** Muestra todas las marcas cuadradas en la evidencia actual **********
+                function showAllCurrentSquares(){
+                    if(currentSquaresCount > 0){
+                        for (var i=1; i <= currentSquaresCount; i++){
+                            var myDiv = currentSquaresMap[('square' + i)];
+                            myDiv.style.display = 'inline';
+                        }
+                        hiddenCurrentSquares = 'N';
+                    }
+                }
+
+                //********** Establece valor de la métrica en cero **********
+                function setCurrentMetricToZero(){
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue('0');
+                    lblValorMetrica.smartUpdate('value', '0');
+
+                    currentMetricToZero = 'S';
+                    deleteAllCurrentCircles('N');
+                }
+
+                //********** Almacena datos de las marcas realizadas en la evidencia actual **********
+                function saveCurrentShapesData(){
+                    var circlesConcat = '';
+                    var squaresConcat = '';
+
+                    if(currentCirclesCount > 0){
+                        for(var i=1; i <= currentCirclesCount; i++){
+                            var myDiv = currentCirclesMap[('circle' + i)];
+                            circlesConcat = circlesConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                        }
+                        circlesConcat = circlesConcat.substring(1, circlesConcat.length);
+                    }
+
+                    if(currentSquaresCount > 0){
+                        for (var i=1; i <= currentSquaresCount; i++){
+                            var myDiv = currentSquaresMap[('square' + i)];
+                            squaresConcat = squaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                        }
+                        squaresConcat = squaresConcat.substring(1, squaresConcat.length);
+                    }
+
+                    var lblCircles = zk.Widget.$(jq('$lblCircles')[0]);
+                    if(typeof lblCircles != 'undefined') {
+                        lblCircles.setValue(circlesConcat);
+                        lblCircles.smartUpdate('value', circlesConcat);
+                    }
+
+                    var lblSquares = zk.Widget.$(jq('$lblSquares')[0]);
+                    if(typeof lblSquares != 'undefined') {
+                        lblSquares.setValue(squaresConcat);
+                        lblSquares.smartUpdate('value', squaresConcat);
+                    }
+                }
+
+                //********** Almacena datos de las marcas realizadas en la evidencia actual **********
+                //**********            Luego borra las figuras de la pantalla              **********
+                function saveShapesData(){
+                    saveCurrentShapesData();
+                }
+
+                //********** Elimina de la pantalla círculos pegados **********
+                function cleanCircles(){
+                    var counter = 1;
+                    while(true){
+                        //busca si existe algun círculo "pegado" en pantalla
+                        var circle = document.getElementById(('circle' + counter));
+
+                        if(circle!=null && typeof circle != 'undefined'){
+                            circle.parentNode.removeChild(circle); //elimina de la pantalla el círculo
+                            delete currentCirclesMap[('circle' + counter)]; //elimina de la estructura el círculo
+                        }
+
+                        if(counter==10){
+                            break;
+                        }
+                        counter++;
+                    }
+                }
+
+                //********** Elimina de la pantalla marcas pegadas **********
+                function cleanSquares(){
+                    var counter = 1;
+                    while(true){
+                        //busca si existe alguna marca "pegada" en pantalla
+                        var square = document.getElementById(('square' + counter));
+
+                        if(square!=null && typeof square != 'undefined'){
+                            square.parentNode.removeChild(square); //elimina de la pantalla la marca cuadrada
+                            delete currentSquaresMap[('square' + counter)]; //elimina de la estructura la marca cuadrada
+                        }
+
+                        if(counter==10){
+                            break;
+                        }
+                        counter++;
+                    }
+                }
+
+                //********** Dibuja un grupo de círculos **********
+                function drawCircles(circlesInfo){
+                    //Verifica si existen círculos "pegados" para borrarlos de la pantalla
+                    cleanCircles();
+
+                    if(circlesInfo != null && circlesInfo != 'undefined' && circlesInfo != 'null') {
+                        circlesInfo = circlesInfo.replace(/^\s+|\s+$/g, ''); //elimina espacios en blanco
+
+                        if(circlesInfo != '' && circlesInfo != '0'){                        
+                            //genera arreglo con info de cada círculo
+                            var shapeArr = circlesInfo.split("#");
+
+                            if(shapeArr!=null){
+                                selectedCircleDiv='5';
+                                for(var i=0; i < shapeArr.length; i++){
+                                    var shapeStyle  = shapeArr[i];
+                                    var shapeData   = shapeStyle.split("_");
+
+                                    var coordenadas = shapeData[0];
+                                    var size        = shapeData[1];
+
+                                    var coordsArray = coordenadas.split(":");
+                                    var sizeArray   = size.split(":");
+
+                                    var xPos        = coordsArray[0];
+                                    var yPos        = coordsArray[1];
+
+                                    var width       = sizeArray[0];
+                                    var height      = sizeArray[1];
+
+                                    xPos = xPos.substring(0, xPos.length - 2);
+                                    yPos = yPos.substring(0, yPos.length - 2);
+                                    width = width.substring(0, width.length - 2);
+                                    height = height.substring(0, height.length - 2);
+
+                                    //Invoca función para marcar la evidencia (dibujar círculo)
+                                    markEvidence(xPos, yPos, width, height);
+                                } //fin for
+                            }
+                        }
+                    }
+                }
+
+                //********** Dibuja un grupo de marcas **********
+                function drawSquares(squaresInfo){
+                    //Verifica si existen marcas "pegadas" para borrarlas de la pantalla
+                    cleanSquares();
+
+                    if(squaresInfo != null && squaresInfo != 'undefined' && squaresInfo != 'null') {
+                        squaresInfo = squaresInfo.replace(/^\s+|\s+$/g, ''); //elimina espacios en blanco
+
+                        if(squaresInfo != ''){                        
+                            //genera arreglo con info de cada marca
+                            var shapeArr = squaresInfo.split("#");
+
+                            if(shapeArr!=null){
+                                for(var i=0; i < shapeArr.length; i++){
+                                    var shapeStyle  = shapeArr[i];
+                                    var shapeData   = shapeStyle.split("_");
+
+                                    var coordenadas = shapeData[0];
+                                    var size        = shapeData[1];
+
+                                    var coordsArray = coordenadas.split(":");
+                                    var sizeArray   = size.split(":");
+
+                                    var xPos        = coordsArray[0];
+                                    var yPos        = coordsArray[1];
+
+                                    var width       = sizeArray[0];
+                                    var height      = sizeArray[1];
+
+                                    xPos = xPos.substring(0, xPos.length - 2);
+                                    yPos = yPos.substring(0, yPos.length - 2);
+                                    width = width.substring(0, width.length - 2);
+                                    height = height.substring(0, height.length - 2);
+
+                                    //Invoca función para dibujar marca
+                                    drawSquare(xPos, yPos, width, height);
+                                } //fin for
+                            }
+                        }
+                    }
+                }
+
+                //********** Cambia el color de la celda del tamaño de círculo seleccionado **********
+                function setCellsColor(selectedCell){
+                    selectedCircleDiv = selectedCell.toString();
+
+                    cell1 = zk.Widget.$(jq('$cell1')[0]);
+                    cell2 = zk.Widget.$(jq('$cell2')[0]);
+                    cell3 = zk.Widget.$(jq('$cell3')[0]);
+
+                    if(selectedCell == 1){
+                        cell1.setStyle('background-color: #A4A4A4;'); //resaltado, gris claro
+                        cell2.setStyle('background-color: #848484;');
+                        cell3.setStyle('background-color: #848484;');
+                    }else if(selectedCell == 2){
+                        cell1.setStyle('background-color: #848484;');
+                        cell2.setStyle('background-color: #A4A4A4;'); //resaltado, gris claro
+                        cell3.setStyle('background-color: #848484;');
+                    }else if(selectedCell == 3){
+                        cell1.setStyle('background-color: #848484;');
+                        cell2.setStyle('background-color: #848484;');
+                        cell3.setStyle('background-color: #A4A4A4;'); //resaltado, gris claro
+                    }
+                }
+
+                function onSelectCamara(){
+                    cambioCamara = 'S';
+                    saveShapesData();
+
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+
+                function onClickNextCamara(){
+                    cambioCamara = 'S';
+                    saveShapesData();
+
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+
+                function onClickSiguiente(){
+                    saveShapesData();
+
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+            ]]>
+        </script>
+
+        <label id="lblCircles" visible="false"/> <!-- Label utilizado para almacenar la información de los puntos creados (coordenadas, cantidad) -->
+        <label id="lblSquares" visible="false"/> <!-- Label utilizado para almacenar la información de las marcas de grupo creadas (coordenadas, cantidad) -->
+        <label id="lblCurrentTIme" visible="false"/>
+        <label id="lblNotDefined" value="${labels.eval.noDefinido}" visible="false"/>
+
+        <div align="center">
+            <grid width="200px" height="500px" style="border:0;" zclass="none">
+                <columns>
+                    <column width="200px"/>
+                </columns>
+                <rows>
+                    <row zclass="none" style="background-color:#D8D8D8">
+                        <grid width="175px" style="border:0;" zclass="none">
+                            <columns>
+                                <column width="75px"/>
+                                <column width="100px"/>
+                            </columns>
+                            <rows>
+                                <row height="30px" style="background-color:#D8D8D8" zclass="none">
+                                    <div align="right">
+                                        <label value="${labels.eval.conteo}" style="font-weight: bold; color:#084B8A;"/>
+                                    </div>
+                                    <div align="center">
+                                        <label id="lblValorMetrica" value="${labels.eval.noDefinido}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                    <row zclass="none" height="60px">
+                        <div align="center">
+                            <!-- TODO CERO -->
+                            <button id="btnTodoCero" label="${labels.eval.todoCero}" forward="onClick=onClickTodoCero" 
+                                tooltiptext="${labels.eval.todoCeroTooltip}" width="150px" height="50px">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        setCurrentMetricToZero();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                    <row zclass="none" height="60px">
+                        <div align="center">
+                            <!-- QUITAR MARCA DE GRUPO -->
+                            <button id="btnQuitarMarcaGrupo" label="${labels.eval.quitarMarcaGrupo}" width="150px" height="50px">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        deleteLastSquare();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                    <row zclass="none" height="60px">
+                        <div align="center">
+                            <!-- TODO CERO x CÁMARA -->
+                            <button id="btnTodoCeroCamara" label="${labels.eval.todoCeroCamara}" width="150px" height="50px"
+                                forward="onClick=onClickTodoCeroCamara" tooltiptext="${labels.eval.todoCeroCamaraTooltip}">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        setCurrentMetricToZero();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                    <row zclass="none" height="50px">
+                        <div align="center">
+                            <label value="${labels.eval.sizePuntos}" style="font-weight: bold; color:#084B8A;"/>
+                        </div>
+                    </row>
+                    <row zclass="none">
+                        <div align="center">
+                            <grid width="135px" style="border:0;" zclass="none">
+                                <columns>
+                                    <column width="45px"/> <column width="45px"/> <column width="45px"/>
+                                </columns>
+                                <rows>
+                                    <row height="50px" zclass="none">
+                                        <cell id="cell1" style="background-color: #848484;">
+                                            <div align="center">
+                                                <div id="divCircle1" sclass="circle" style="width:10px; height:10px;">
+                                                    <attribute w:name="onClick">
+                                                        <![CDATA[
+                                                            setCellsColor(1);
+                                                        ]]>
+                                                    </attribute>
+                                                </div>
+                                            </div>
+                                        </cell>
+                                        <cell id="cell2" style="background-color: #A4A4A4;"> <!-- predeterminado -->
+                                            <div align="center">
+                                                <div id="divCircle2" sclass="circle" style="width:15px; height:15px;">
+                                                    <attribute w:name="onClick">
+                                                        <![CDATA[
+                                                            setCellsColor(2);
+                                                        ]]>
+                                                    </attribute>
+                                                </div>
+                                            </div>
+                                        </cell>
+                                        <cell id="cell3" style="background-color: #848484;">
+                                            <div align="center">
+                                                <div id="divCircle3" sclass="circle" style="width:20px; height:20px;">
+                                                    <attribute w:name="onClick">
+                                                        <![CDATA[
+                                                            setCellsColor(3);
+                                                        ]]>
+                                                    </attribute>
+                                                </div>
+                                            </div>
+                                        </cell>
+                                    </row>
+                                </rows>
+                            </grid>
+                        </div>
+                    </row>
+                    <row zclass="none" height="90px">
+                        <div align="center">
+                            <!-- MÉTRICA EN CERO -->
+                            <button id="btnMetricaCero" label="${labels.eval.metricaCero}" forward="onClick=onClickCero" 
+                                tooltiptext="${labels.eval.metricaCeroTooltip}" width="150px" height="50px" style="font-size:35px">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        setCurrentMetricToZero();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="280px" height="75px" style="border:0;" zclass="none">
+                <columns>
+                    <column width="180px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none">
+                        <groupbox id="groupBoxMultiCamara" width="150px">
+                            <combobox id="cmbMultiCamaras" model="@{rightCountWindow$composer.lstCamaras}"
+                                readonly="true" width="135px" constraint="no empty" tooltiptext="${labels.default.multicamaraTooltip}"
+                                forward="onAfterRender=onAfterRenderMulticamara(),onSelect=onSelectCamara()">
+                                    <attribute w:name="onSelect">
+                                        <![CDATA[
+                                            onSelectCamara();
+                                        ]]>
+                                    </attribute>
+                                <comboitem self="@{each=camara}" label="@{camara.name}" value="@{camara.name}"/>
+                            </combobox>
+                        </groupbox>
+                        <button id="btnNextCamara" label="${labels.eval.nextCamara}" forward="onClick=onClickNextCamara">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickNextCamara();
+                                ]]>
+                            </attribute>
+                        </button>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="200px" style="border:0;" zclass="none">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row zclass="none">
+                        <!-- siguiente -->
+                        <button id="btnSiguiente" label="${labels.eval.siguiente}" width="85px" height="45px" forward="onClick=onClickSiguiente">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickSiguiente();
+                                ]]>
+                            </attribute>
+                        </button>
+                        <!-- enviar y finalizar -->
+                        <button id="btnEnviarFinalizar" label="${labels.eval.finalizar}" width="85px" height="45px" 
+                            forward="onClick=onClickFinalizar" disabled="true">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    saveShapesData();
+                                ]]>
+                            </attribute>
+                        </button>
+                    </row>
+                </rows>
+            </grid>
+        </div>
+    </window>
+</zk>

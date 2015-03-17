@@ -1,0 +1,159 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./centerPhotoWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte central de la pantalla de evaluación, tipo de evidencia: IMÁGEN -->
+    <window id="centerPhotoWindow" apply="${evaluationWindow$composer.leftMetricBean.rightMetricDetail.centerEvidence}">
+        <script>
+            <![CDATA[
+                var plantilla = 'N';
+                var needToConfirmCenterImg = true;
+
+                //Valida si la ventana del navegador se cierra, para alertar al usuario que debe
+                //cerrar sesión apropiadamente
+                window.onbeforeunload = confirmExit;
+                function confirmExit(){
+                    var lblConfirmClose = zk.Widget.$(jq('$lblConfirmClose')[0]);
+                    var confirmText = lblConfirmClose.getValue();
+
+                    if(needToConfirmCenterImg){
+                        return confirmText;
+                    }else{
+                        return;
+                    }
+                }
+
+                function onClickClosePopup(){
+                    popupZoom = zk.Widget.$(jq('$popupZoom')[0]);
+                    popupZoom.setVisible(false);
+
+                    showAllCurrentCircles();
+                    showAllCurrentSquares();
+                }
+
+                function onClickCenterImage(event){
+                    var xPos = event.pageX - 14;
+                    var yPos = event.pageY - 14;
+
+                    markEvidence(xPos, yPos, 20, 20); //Marca la evidencia
+                }
+
+                function onClickPlantilla(){
+                    if(plantilla=='N'){
+                        plantilla = 'S';
+                    }else if(plantilla=='S'){
+                        plantilla = 'N';
+                    }
+                    var lblPlantilla = zk.Widget.$(jq('$lblPlantilla')[0]);
+                    lblPlantilla.setValue(plantilla);
+                    lblPlantilla.smartUpdate('value', plantilla);
+                }
+
+                function onClickImageZoom(){
+                    popupZoom = zk.Widget.$(jq('$popupZoom')[0]);
+                    popupZoom.setVisible(true);
+                    popupZoom.doModal();
+
+                    var imgEvidence = zk.Widget.$(jq('$imgEvidence')[0]);
+                    var imgEvidenceZoom = zk.Widget.$(jq('$imgEvidenceZoom')[0]);
+                    imgEvidenceZoom.setSrc(imgEvidence.getSrc());
+
+                    hideAllCurrentCircles();
+                    hideAllCurrentSquares();
+                }
+
+                function rightClickSquare(event){
+                    var xPos = event.pageX - 14;
+                    var yPos = event.pageY - 14;
+
+                    drawSquare(xPos, yPos, 50, 50);
+                }
+            ]]>
+        </script>
+        
+        <label id="lblConfirmClose" visible="false"/>
+        
+        <window id="popupZoom" width="815px" height="700px" apply="com.scopix.periscope.bean.PopCenterImageEvalBean"
+            style="left: 300px; top: 50px; position: absolute;" visible="false" contentStyle="overflow:auto;">
+            <div align="right">
+                <button label="${labels.eval.cerrar}">
+                    <attribute w:name="onClick">
+                        <![CDATA[
+                            onClickClosePopup();
+                        ]]>
+                    </attribute>
+                </button>
+            </div>
+            <image id="imgEvidenceZoom" width="1250px" height="1000px"/>
+            <image id="myTransparent2" width="800px" height="640px" src="/img/transparent2.png"
+                zindex="1500" style="border:0; left: 1px; top: 27px; position: absolute;"/>
+        </window>
+
+        <label id="lblPlantilla" visible="false"/>
+        <script type="text/javascript" src="/js/dragresize.js"/> <!-- javascript para arrastrar o ajustar tamaño de marcas/puntos-->
+
+        <image id="imgPlantilla" width="640px" height="480px" visible="false" style="border:0; left: 100px; top: 20px; position: absolute;" zindex="1000"/>
+
+		<popup  zclass="z-popup-plain" style="height:0;width:0;overflow:hidden" id="editPopup2"/>
+        <div align="center" context="editPopup2">
+            <attribute w:name="onRightClick">
+                <![CDATA[
+                    rightClickSquare(event);
+                ]]>
+            </attribute>
+        	<label id="lblCenterNomMetrica" style="font-weight: bold; color:#8A0808; font-size:10pt"/>
+        
+            <!-- imágen transparente que se encontrará por encima del snapshot -->
+            <image id="myTransparent" width="640px" height="480px" zindex="1500" src="/img/transparent.png"
+                style="border:0; left: 100px; top: 20px; position: absolute;" forward="onClick=onClickUpdateMetricValue()">
+                <attribute w:name="onClick">
+                    <![CDATA[
+                        onClickCenterImage(event);
+                    ]]>
+                </attribute>
+            </image>
+            <image id="imgEvidence" zindex="999" width="640px" height="480px" style="border:0; left: 100px; top: 20px; position: absolute;"/>
+
+            <grid width="425px" style="border:0; left: 230px; top: 525px; position: absolute;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                    <column width="125px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row>
+                        <button label="${labels.eval.verLimites}" forward="onClick=onClickPlantilla" width="85px" height="45px">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickPlantilla();
+                                ]]>
+                            </attribute>
+                        </button>
+                        <button id="btnDeshacer" label="${labels.eval.deshacer}" width="85px" height="45px" forward="onClick=onClickUpdateMetricValue()">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    deleteLastPoint(); //Deshace último punto marcado
+                                ]]>
+                            </attribute>
+                        </button>
+                        <button id="btnDeshacerTodo" label="${labels.eval.deshacerTodo}" width="105px" height="45px" forward="onClick=onClickUpdateMetricValue()">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    //keepMetricValue, isChangingMetric, isDeshacer
+                                    deleteAllCurrentShapes('N','N','S'); //Deshace todas las marcas sobre la evidencia
+                                ]]>
+                            </attribute>
+                        </button>
+                        <button id="btnZoom" label="Zoom" width="85px" height="45px">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickImageZoom();
+                                ]]>
+                            </attribute>
+                        </button>
+                    </row>
+                </rows>
+            </grid>
+        </div>
+    </window>
+</zk>

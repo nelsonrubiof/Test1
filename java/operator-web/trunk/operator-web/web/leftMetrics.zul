@@ -1,0 +1,382 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./leftWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte izquierda de la pantalla de evaluación -->
+    <window id="leftWindow" apply="${evaluationWindow$composer.leftMetricBean}">
+        <style  src="/css/genericGrid.css"/>
+        <script>
+            <![CDATA[
+                var noEvalGuardar = 'N';
+                
+              	//********** En casos de métricas ordenadas por cámara **********
+              	//********** se diferenciarán un color por cámara  **********
+                function setCamMetricsBgColor(){
+                	var metricasListBox = zk.Widget.$('$metricasListBox'),
+                        iter = metricasListBox.itemIterator(),
+                        count = 1;
+                	
+                	var color1 = '#F2F2F2'; //gris
+                	var color2 = '#F6CED8'; //rojo claro
+
+                	var color = color1;
+                	var color1Active = 'true';
+
+                    while(iter.hasNext()) {
+                        var listItemWgt = iter.next();
+                        
+                        jq(listItemWgt.$n()).css('background', color);
+
+                        if(count%2==0){
+                        	if(color1Active=='true'){
+                        		color = color2;
+                        		color1Active = 'false';
+                        	}else{
+                        		color = color1;
+                        		color1Active = 'true';
+                        	}
+                        }
+                        count += 1;
+                    }
+                }
+
+                //********** Resalta la fila seleccionada **********
+                function highLightRow(selectedRow){
+                    var metricasListBox = zk.Widget.$('$metricasListBox'),
+                        iter = metricasListBox.itemIterator(),
+                        i = 0;
+
+                    while(iter.hasNext()) {
+                        var listItemWgt = iter.next();
+                        if(i == selectedRow) {
+                            jq(listItemWgt.$n()).css('background', '#D6EDFA');
+                            break;
+                        }
+                        i += 1;
+                    }
+                }
+
+                //********** Establece fondo blanco a la fila seleccionada **********
+                function setRowWhiteBg(selectedRow){
+                    var metricasListBox = zk.Widget.$('$metricasListBox'),
+                        iter = metricasListBox.itemIterator(),
+                        i = 0;
+
+                    while(iter.hasNext()) {
+                        var listItemWgt = iter.next();
+                        if(i == selectedRow) {
+                            jq(listItemWgt.$n()).css('background', '#FCF8F8');
+                            break;
+                        }
+                        i += 1;
+                    }
+                }
+
+                //********** Establece color de letra a la fila seleccionada **********
+                function setRowFontColor(selectedRow, color){
+                    var metricasListBox = zk.Widget.$('$metricasListBox');
+                    var iter = metricasListBox.itemIterator();
+                    var i = 0;
+
+                    while(iter.hasNext()) {
+                        var listItemWgt = iter.next();
+
+                        if(i == selectedRow) {
+                            var lstItemChildNum = listItemWgt.nChildren; //Obtiene componentes hijos de la fila
+
+                            for(var j=0; j < lstItemChildNum; j++){
+                                var lstCell = listItemWgt.getChildAt(j);
+                                var lstCellChildNum = lstCell.nChildren;
+
+                                for(var k=0; k < lstCellChildNum; k++){
+                                    var myLabel = lstCell.getChildAt(k);
+
+                                    if(color == 'green'){
+                                        jq(myLabel.$n()).css('color', '#088A29'); //verde
+                                    }else if(color == 'red'){
+                                        jq(myLabel.$n()).css('color', '#8A0808'); //rojo
+                                    }else if(color == 'blue'){
+                                    	jq(myLabel.$n()).css('color', '#2E2EFE'); //azul
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                }
+
+                function updateLblCurrentEvType(valor){
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    lblCurrentEvidenceType.setValue(valor);
+                    lblCurrentEvidenceType.smartUpdate('value', valor);
+                }
+
+                function onClickNoEvalGuardar(){
+                    deleteAllCurrentSquares();
+                    deleteAllCurrentCircles('S');
+
+                    popupNoEvaluar = zk.Widget.$(jq('$popupNoEvaluar')[0]);
+                    popupNoEvaluar.setVisible(false);
+
+                    noEvalGuardar = 'S';
+                }
+
+                function onClickCancelar(){
+                    showAllCurrentCircles();
+                    showAllCurrentSquares();
+
+                    popupNoEvaluar = zk.Widget.$(jq('$popupNoEvaluar')[0]);
+                    popupNoEvaluar.setVisible(false);
+
+                    noEvalGuardar = 'N';
+                }
+
+                function onCtrlKey(){
+                    //obtiene widget del btnSiguiente
+                    var btnSiguiente = zk.Widget.$(jq('$btnSiguiente')[0]);
+                    //obtiene el elemento a través del UUID generado en el DOM de la página
+                    var btnElement = document.getElementById(btnSiguiente.uuid);
+                    //se invoca el click del elemento
+                    btnElement.click();
+                }
+
+                function onClickFilaMetrica(){
+                    saveShapesData();
+
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+
+                function onClickNoEval(){
+                    hideAllCurrentCircles();
+                    hideAllCurrentSquares();
+
+                    popupNoEvaluar = zk.Widget.$(jq('$popupNoEvaluar')[0]);
+                    popupNoEvaluar.setVisible(true);
+                    popupNoEvaluar.doModal();
+
+                    lblNoEvaluar = zk.Widget.$(jq('$lblNoEvaluar')[0]);
+                    lblNoEvaluar.setValue('NO_EVAL');
+                    lblNoEvaluar.smartUpdate('value', 'NO_EVAL');
+                }
+
+                function onClickNoEvalAll(){
+                    hideAllCurrentCircles();
+                    hideAllCurrentSquares();
+
+                    popupNoEvaluar = zk.Widget.$(jq('$popupNoEvaluar')[0]);
+                    popupNoEvaluar.setVisible(true);
+                    popupNoEvaluar.doModal();
+
+                    lblNoEvaluar = zk.Widget.$(jq('$lblNoEvaluar')[0]);
+                    lblNoEvaluar.setValue('NO_EVAL_ALL');
+                    lblNoEvaluar.smartUpdate('value', 'NO_EVAL_ALL');
+                }
+                
+                function updateEvaluationLabels(successValue, failValue, pendingValue){
+                    console.log('successValue: ' + successValue);
+                    console.log('failValue: ' + failValue);
+                    console.log('pendingValue: ' + pendingValue);
+                    
+                    
+                    lblEvalExitosas = zk.Widget.$(jq('$lblEvalExitosas')[0]);
+                    lblEvalFallidas = zk.Widget.$(jq('$lblEvalFallidas')[0]);
+                    lblEvalPendientes = zk.Widget.$(jq('$lblEvalPendientes')[0]);
+                    
+                    lblEvalExitosas.setValue(successValue);
+                    lblEvalFallidas.setValue(failValue);
+                    lblEvalPendientes.setValue(pendingValue);
+                }
+            ]]>
+        </script>
+        
+        <!-- utilizado solamente para mantener una referencia del tiempo en caso de videos -->
+        <label id="lblPlayerTime" visible="false" value="-1"/>
+        <label id="lblNoEvaluar" visible="false"/>
+        <label id="lblCurrentEvidenceType" visible="false" value="-1"/>
+
+        <!-- opciones cuando no se puede evaluar -->
+        <window id="popupNoEvaluar" apply="com.scopix.periscope.bean.PopLeftMetricBean" width="240px" height="225px" 
+            visible="false" style="overflow:auto; left: 580px; top: 200px; position: absolute;">
+
+            <radiogroup id="myRadioGroup"/>
+            
+            <groupbox contentStyle="border:0;" height="25px">
+                <label value="${labels.eval.noEvaluar}" style="font-weight: bold; color:#8A0808;"/>
+            </groupbox>
+
+            <grid width="225px" style="border:0;" zclass="none">
+                <columns>
+                    <column width="225px"/>
+                </columns>
+                <rows>
+                    <row zclass="none">
+                        <radio id="radioNoClientes" label="${labels.eval.noClientes}" checked="true" radiogroup="myRadioGroup"/>
+                    </row>
+                    <row zclass="none">
+                        <radio id="radioFinalizoVideo" label="${labels.eval.finalizoVideo}" radiogroup="myRadioGroup"/>
+                    </row>
+                    <row zclass="none">
+                        <radio id="radioFueraHorario" label="${labels.eval.fueraHorario}" radiogroup="myRadioGroup"/>
+                    </row>
+                    <row zclass="none">
+                        <radio id="radioFallaCamara" label="${labels.eval.fallaCamara}" radiogroup="myRadioGroup"/>
+                    </row>
+                    <row zclass="none">
+                        <radio id="radioFallaSistema" label="${labels.eval.fallaSistema}" radiogroup="myRadioGroup" selected="true"/>
+                    </row>
+                    <row zclass="none">
+                        <radio id="radioInstrSuper" label="${labels.eval.instruccionSuper}" radiogroup="myRadioGroup"/>
+                    </row>
+                    <row zclass="none">
+                        <radio id="radioNoImagen" label="${labels.eval.noImagen}" radiogroup="myRadioGroup"/>
+                    </row>
+                </rows>
+            </grid>
+            <div align="center">
+                <grid width="200px" style="border:0;" zclass="none">
+                    <columns>
+                        <column width="100px"/>
+                        <column width="100px"/>
+                    </columns>
+                    <rows>
+                        <row zclass="none" height="25px"/>
+                        <row zclass="none">
+                            <button id="btnSaveCantDo" label="${labels.eval.guardar}" forward="onClick=onClickNoEvalGuardar">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        onClickNoEvalGuardar();
+                                    ]]>
+                                </attribute>
+                            </button>
+                            <button label="${labels.eval.cancelar}">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        onClickCancelar();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </row>
+                    </rows>
+                </grid>
+            </div>
+        </window>
+        
+        <grid width="280px" height="700px" style="border:0;">
+            <columns>
+                <column width="280px"/>
+            </columns>
+            <rows>
+                <row style="background-color:#D8D8D8" zclass="none" height="280px">
+                    <!-- lista de métricas de la evaluación (parte izquierda) -->
+                    <listbox id="metricasListBox" model="@{leftWindow$composer.metricasModel}" width="270px" height="250px"
+                        renderdefer="100" selectedItem="@{leftWindow$composer.currentMetric}" forward="onAfterRender=onAfterRenderListaMetricas()">
+                        <auxhead>
+                            <auxheader id="auxHeadMetrica" colspan="2"
+                                style="font-weight: bold; color: #084B8A; text-align: center; background-color:#CEE3F6"/>
+                        </auxhead>
+                        <listhead>
+                            <listheader width="150px" label="${labels.eval.nombre}" style="background-color:#CEE3F6"/>
+                            <listheader width="100px" label="${labels.eval.valor}" style="background-color:#CEE3F6"/>
+                        </listhead>
+                        <listitem self="@{each='data'}" forward="onClick=onClickFilaMetrica()" ctrlKeys="@s">
+                            <attribute w:name="onCtrlKey">
+                                <![CDATA[
+                                    onCtrlKey();
+                                ]]>
+                            </attribute>
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickFilaMetrica();
+                                ]]>
+                            </attribute>
+                            <listcell tooltiptext="@{data.name}">
+                                <label value="@{data.name}" tooltip="@{data.numMetrica}" style="color:#8A0808;"/>
+                            </listcell>
+                            <listcell tooltiptext="@{data.description}">
+                                <label value="@{data.description}" style="color:#8A0808;"/>
+                            </listcell>
+                        </listitem>
+                    </listbox>
+                </row>
+                <row style="background-color:#D8D8D8" zclass="none" height="30px">
+                    <div align="center">
+                        <label value="${labels.eval.obsCalidad}" style="font-weight: bold; color:#084B8A;"/>
+                    </div>
+                </row>
+                <row style="background-color:#D8D8D8" zclass="none" height="82px">
+                    <div align="center">
+                        <groupbox width="240px">
+                            <!-- observación de control de calidad -->
+                            <textbox id="txtObsCalidad" cols="25" rows="10" maxlength="250" height="82px" 
+                                     width="225px" readonly="true" style="resize:none; background-color: #FAFAFA;"/>
+                        </groupbox>
+                    </div>
+                </row>
+                <row width="200px" height="110px" style="background-color:#D8D8D8" zclass="none">
+	                <div align="center">
+	                	<grid width="200px" height="110px" style="border:0; background-color:#D8D8D8">
+	                		<columns>
+	                			<column width="160px" />
+	                			<column width="40px" />
+	                		</columns>
+	                		<rows>
+	                			<row style="background-color:#D8D8D8" height="36px">
+	                				<label value="${labels.evaluaciones.exitosas}" style="font-weight: bold; color:#088A29;"/>
+	                				<label id="lblEvalExitosas" value="0" style="font-weight: bold; color:#088A29;"/>
+	                			</row>
+	                			<row style="background-color:#D8D8D8" height="36px">
+	                				<label value="${labels.evaluaciones.fallidas}" style="font-weight: bold; color:#8A0808;"/>
+	                				<label id="lblEvalFallidas" value="0" style="font-weight: bold; color:#8A0808;"/>
+	                			</row>
+	                			<row style="background-color:#D8D8D8" height="38px">
+	                				<label value="${labels.evaluaciones.pendientes}" style="font-weight: bold; color:#084B8A;"/>
+	                				<label id="lblEvalPendientes" value="0" style="font-weight: bold; color:#084B8A;"/>
+	                			</row>
+	                		</rows>
+	                	</grid>
+	                </div>
+                </row>
+                <row style="background-color:#D8D8D8" zclass="none">
+                    <div align="center">
+                        <!-- no se puede evaluar -->
+                        <button id="btnSingleCantDo" label="${labels.eval.noEvaluar}" width="150px" height="45px">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickNoEval();
+                                ]]>
+                            </attribute>
+                        </button>
+                    </div>
+                </row>
+                <row style="background-color:#D8D8D8" zclass="none">
+                    <div align="center">
+                        <!-- no se puede evaluar todo -->
+                        <button label="${labels.eval.noEvaluarTodo}" width="150px" height="45px">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickNoEvalAll();
+                                ]]>
+                            </attribute>
+                        </button>
+                    </div>
+                </row>
+                <row style="background-color:#D8D8D8" height="90px" valign="top" zclass="none">
+                    <div align="center">
+                        <!-- enviar y continuar -->
+                        <button id="btnEnviarEval" label="${labels.eval.enviarEvaluacion}" width="150px" height="45px" 
+                            disabled="true" forward="onClick=onClickEnviarEvaluaciones">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    saveShapesData();
+                                ]]>
+                            </attribute>
+                        </button>
+                    </div>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

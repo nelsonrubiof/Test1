@@ -1,0 +1,536 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./rightTimeWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte derecha de la pantalla de evaluación, tipo de métrica: TIEMPO -->
+    <window id="rightTimeWindow" apply="${evaluationWindow$composer.leftMetricBean.rightMetricDetail}" style="background-color:#D8D8D8">
+        <script type="text/javascript" src="/js/dragresize.js"/> <!-- javascript para arrastrar o ajustar tamaño de marcas/puntos-->
+        <style  src="/css/rightTimeMetric.css"/>
+        <script>
+            <![CDATA[
+                var metricValue = '';
+                var asignaInicial = 'N';
+                var asignaFinal = 'N';
+                var hiddenCurrentCircles = 'N';         //indica si los círculos de la evidencia actual están ocultos (NO borrados)
+                var currentSquaresCount = 0;            //conteo de las marcas cuadradas de la evidencia actual
+                var currentSquaresMap = new Object();   //estructura en donde se almacenarán las marcas cuadradas de la evidencia actual
+                var cambioCamara = 'N';                 //Indica si es un cambio de cámara en una misma métrica
+
+                var urlBlackImg = '/operator-web/img/blackBack.png';
+
+                var dragresize = new DragResize('dragresize', { minWidth: 15, minHeight: 15, minLeft: 390, minTop: 82, maxLeft: 1025, maxTop: 560 });
+
+                function saveCirclesSquaresData(){}
+
+                function deleteAllCurrentCircles(isDeshacer){}
+
+                function hideAllCurrentCircles(){}
+
+                function showAllCurrentCircles(){}
+
+                function deleteMarks(){}
+
+                //********** Actualiza label del valor de métrica **********
+                function updateLblValorMetrica(){
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue(metricValue);
+                    lblValorMetrica.smartUpdate('value', metricValue);
+                }
+
+                //********** Deshacer **********
+                function deleteLastPoint() {
+                    lblValorMetrica  = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblNotDefined    = zk.Widget.$(jq('$lblNotDefined')[0]);
+                    lblTiempoFinal   = zk.Widget.$(jq('$lblTiempoFinal')[0]);
+                    lblTiempoInicial = zk.Widget.$(jq('$lblTiempoInicial')[0]);
+
+                    imgFinal = zk.Widget.$(jq('$imgFinal')[0]);
+                    imgInicial = zk.Widget.$(jq('$imgInicial')[0]);
+
+                    var notDefinedText = lblNotDefined.getValue();
+
+                    if(currentSquaresCount > 0){ //hay marcas en la evidencia actual
+                        var lastSquare = document.getElementById(('square' + currentSquaresCount));
+                        lastSquare.parentNode.removeChild(lastSquare); //elimina de la pantalla la marca
+                        delete currentSquaresMap[('square' + currentSquaresCount)]; //elimina de la estructura la marca
+
+                        currentSquaresCount = currentSquaresCount - 1;
+                    }else{
+                        lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                        lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                        var notDefinedText = lblNotDefined.getValue();
+
+                        if(noEvalGuardar == 'S'){
+                            lblValorMetrica.setValue(notDefinedText);
+                            lblValorMetrica.smartUpdate('value', notDefinedText);
+                            noEvalGuardar = 'N';
+                        }else{
+                            if(asignaInicial=='N' && asignaFinal=='N'){
+                                alert('No existen marcas por deshacer en la evidencia actual');
+                            }
+                        }
+                    }
+                    if(asignaFinal=='S'){
+                        //**** resetea tiempo final ****
+                        lblTiempoFinal.setValue(notDefinedText);
+                        lblTiempoFinal.smartUpdate('value', notDefinedText);
+
+                        imgFinal.setSrc(urlBlackImg);
+                        imgFinal.smartUpdate('src', urlBlackImg);
+                        //**** resetea tiempo final ****
+
+                        lblValorMetrica.setValue(notDefinedText);
+                        lblValorMetrica.smartUpdate('value', notDefinedText);
+                        asignaFinal = 'N';
+
+                    }else if(asignaInicial=='S'){
+                        //**** resetea tiempo inicial ****
+                        lblTiempoInicial.setValue(notDefinedText);
+                        lblTiempoInicial.smartUpdate('value', notDefinedText);
+
+                        imgInicial.setSrc(urlBlackImg);
+                        imgInicial.smartUpdate('src', urlBlackImg);
+                        //**** resetea tiempo inicial ****
+
+                        if(asignaFinal=='S'){
+                            //El valor de la métrica toma el valor del tiempo final
+                            lblValorMetrica.setValue(lblTiempoFinal.getValue());
+                            lblValorMetrica.smartUpdate('value', lblTiempoFinal.getValue());
+                        }else{
+                            lblValorMetrica.setValue(notDefinedText);
+                            lblValorMetrica.smartUpdate('value', notDefinedText);
+                        }
+
+                        asignaInicial = 'N';
+                    }
+                }
+
+                //********** Deshace todas las marcas sobre la evidencia actual **********
+                function deleteAllCurrentShapes(keepMetricValue, isChangingMetric, isDeshacer) {
+                    if(currentSquaresCount == 0){
+                        if(isChangingMetric == 'N'){
+                            lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                            lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                            var notDefinedText = lblNotDefined.getValue();
+
+                            if(noEvalGuardar == 'S'){
+                                lblValorMetrica.setValue(notDefinedText);
+                                lblValorMetrica.smartUpdate('value', notDefinedText);
+                                noEvalGuardar = 'N';
+                            }else{
+                                if(asignaInicial=='N' && asignaFinal=='N'){
+                                    alert('No existen marcas por deshacer en la evidencia actual');
+                                }
+                            }
+                        }
+                    }
+                    deleteAllCurrentSquares();
+                }
+
+                //********** Elimina todas las marcas de la evidencia actual **********
+                function deleteAllCurrentSquares(){
+                    if(currentSquaresCount > 0){
+                        for(var i=1; i <= currentSquaresCount; i++){
+                            var square = document.getElementById(('square' + i));
+                            square.parentNode.removeChild(square);                  //elimina de la pantalla la marca cuadrada
+                            delete currentSquaresMap[('square' + i)];               //elimina de la estructura la marca cuadrada
+                        }
+                        currentSquaresCount = 0;
+                    }
+                }
+
+                dragresize.isElement = function(elm){
+                    if (elm.className && elm.className.indexOf('drsElement') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize.isHandle = function(elm){
+                    if (elm.className && elm.className.indexOf('drsMoveHandle') > -1){
+                        return true;
+                    }
+                };
+
+                dragresize.ondragfocus = function() { };
+                dragresize.ondragstart = function(isResize) { };
+                dragresize.ondragmove = function(isResize) { };
+                dragresize.ondragend = function(isResize) { };
+                dragresize.ondragblur = function() { };
+
+                dragresize.apply(document);
+
+                // ****** Agrega marca de grupo ******
+                function markEvidence(xPos, yPos, width, height) {
+                    if(currentSquaresCount == 0){
+                        currentSquaresCount = currentSquaresCount + 1;
+
+                        var newdiv = document.createElement('div');
+                        newdiv.setAttribute('id', ('square' + currentSquaresCount));
+                        newdiv.setAttribute('class', 'drsElement drsMoveHandle square');
+                        newdiv.setAttribute('style', 'min-width:25px; min-height:25px; left: '+ xPos +'px; top: '+ yPos +'px; width:' + 50 + 'px; height:' + 50 + 'px;');
+                        document.body.appendChild(newdiv);
+
+                        currentSquaresMap[('square' + currentSquaresCount)] = newdiv;
+                    }
+                }
+
+                //********** Oculta (NO borra) todas las marcas cuadradas en la evidencia actual **********
+                function hideAllCurrentSquares(){
+                    if(currentSquaresCount > 0){
+                        for(var i=1; i <= currentSquaresCount; i++){
+                            var myDiv = currentSquaresMap[('square' + i)];
+                            myDiv.style.display = 'none';
+                        }
+                        hiddenCurrentSquares = 'S';
+                    }
+                }
+
+                //********** Muestra todas las marcas cuadradas en la evidencia actual **********
+                function showAllCurrentSquares(){
+                    if(currentSquaresCount > 0){
+                        for (var i=1; i <= currentSquaresCount; i++){
+                            var myDiv = currentSquaresMap[('square' + i)];
+                            myDiv.style.display = 'inline';
+                        }
+                        hiddenCurrentSquares = 'N';
+                    }
+                }
+
+                //****** Deshace todas las marcas sobre la evidencia ******
+                function deshacerTodo() {
+                    lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                    var notDefinedText = lblNotDefined.getValue();
+
+                    lblTiempoInicial = zk.Widget.$(jq('$lblTiempoInicial')[0]);
+                    lblTiempoInicial.setValue(notDefinedText);
+                    lblTiempoInicial.smartUpdate('value', notDefinedText);
+
+                    lblTiempoFinal = zk.Widget.$(jq('$lblTiempoFinal')[0]);
+                    lblTiempoFinal.setValue(notDefinedText);
+                    lblTiempoFinal.smartUpdate('value', notDefinedText);
+
+                    imgInicial = zk.Widget.$(jq('$imgInicial')[0]);
+                    imgInicial.setSrc(urlBlackImg);
+                    imgInicial.smartUpdate('src', urlBlackImg);
+
+                    imgFinal = zk.Widget.$(jq('$imgFinal')[0]);
+                    imgFinal.setSrc(urlBlackImg);
+                    imgFinal.smartUpdate('src', urlBlackImg);
+
+                    lblValorMetrica = zk.Widget.$(jq('$lblValorMetrica')[0]);
+                    lblValorMetrica.setValue(lblNotDefined.getValue());
+                    lblValorMetrica.smartUpdate('value', lblNotDefined.getValue());
+
+                    asignaInicial = 'N';
+                    asignaFinal = 'N';
+                }
+
+                //****** Valida que el tiempo final no sea menor al tiempo inicial ******
+                function validarTiempos(strTiempo1, strTiempo2){
+                    var respuesta = 'N';
+
+                    var saTiempo1 = strTiempo1.split(":");
+                    var saTiempo2 = strTiempo2.split(":");
+
+                    var mins1 = parseInt(saTiempo1[0]);
+                    var segs1 = parseInt(saTiempo1[1]);
+
+                    var mins2 = parseInt(saTiempo2[0]);
+                    var segs2 = parseInt(saTiempo2[1]);
+
+                    var tiempo1 = (mins1*60)+segs1;
+                    var tiempo2 = (mins2*60)+segs2;
+
+                    if(tiempo2 < tiempo1){
+                        alert('El tiempo final no puede ser menor al tiempo inicial');
+                        respuesta = 'S';
+                    }
+
+                    return respuesta;
+                }
+
+                //********** Almacena datos de las marcas realizadas en la evidencia actual **********
+                //**********            Luego borra las figuras de la pantalla              **********
+                function saveShapesData(){
+                    saveCurrentShapesData();
+                }
+
+                //********** Almacena datos de las marcas realizadas en la evidencia actual **********
+                function saveCurrentShapesData(){
+
+                }
+
+                function onClickInicial(){
+                    var esMenor = 'N';
+                    asignaInicial = 'S';
+
+                    lblTFinalMenor = zk.Widget.$(jq('$lblTFinalMenor')[0]);
+                    lblTiempoFinal = zk.Widget.$(jq('$lblTiempoFinal')[0]);
+                    var valorTiempoFinal = lblTiempoFinal.getValue();
+
+                    lblNotDefined = zk.Widget.$(jq('$lblNotDefined')[0]);
+                    var notDefinedText = lblNotDefined.getValue();
+
+                    //Valida si existe un tiempo final para calcular la diferencia
+                    if(valorTiempoFinal!=notDefinedText){
+                        //Valida que el tiempo final no sea menor al tiempo inicial
+                        esMenor = validarTiempos(currentTime, valorTiempoFinal);
+                    }
+
+                    if(esMenor=='N'){
+                        var squaresConcat = '';
+                        if(currentSquaresCount>0){
+                            for (var i=1; i<=currentSquaresCount; i++){
+                                var myDiv = currentSquaresMap[('square' + i)];
+                                squaresConcat = squaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                            }
+                            squaresConcat = squaresConcat.substring(1, squaresConcat.length);
+                        }
+
+                        var lblIniSquares = zk.Widget.$(jq('$lblIniSquares')[0]);
+                        lblIniSquares.setValue(squaresConcat);
+                        lblIniSquares.smartUpdate('value', squaresConcat);
+
+                        var elapsed = jwplayer().getPosition();
+                        var lblElapsed = zk.Widget.$(jq('$lblElapsed')[0]);
+
+                        lblElapsed.setValue(elapsed);
+                        lblElapsed.smartUpdate('value', elapsed);
+
+                        lblTiempoInicial = zk.Widget.$(jq('$lblTiempoInicial')[0]);
+                        lblTiempoInicial.setValue(currentTime);
+                        lblTiempoInicial.smartUpdate('value', currentTime);
+                    }
+
+                    lblTFinalMenor.setValue(esMenor);
+                    lblTFinalMenor.smartUpdate('value', esMenor);
+                }
+                
+                function drawYesSquare(xPos, yPos, width, height) {
+                    if(currentSquaresCount == 0){
+                        currentSquaresCount = currentSquaresCount + 1;
+
+                        var newdiv = document.createElement('div');
+                        newdiv.setAttribute('id', ('square' + currentSquaresCount));
+                        newdiv.setAttribute('class', 'drsElement drsMoveHandle square');
+                        newdiv.setAttribute('style', 'min-width:25px; min-height:25px; left: '+ xPos +'px; top: '+ yPos +'px; width:' + 50 + 'px; height:' + 50 + 'px;');
+                        document.body.appendChild(newdiv);
+
+                        currentSquaresMap[('square' + currentSquaresCount)] = newdiv;
+                    }
+                }
+
+                function onClickFinal(){
+                    var esMenor = 'N';
+                    asignaFinal = 'S';
+
+                    lblTFinalMenor = zk.Widget.$(jq('$lblTFinalMenor')[0]);
+                    lblTiempoInicial = zk.Widget.$(jq('$lblTiempoInicial')[0]);
+                    var valorTiempoInicial = lblTiempoInicial.getValue();
+
+                    //Valida que el tiempo final no sea menor al tiempo inicial
+                    esMenor = validarTiempos(valorTiempoInicial, currentTime);
+
+                    if(esMenor=='N'){
+                        var squaresConcat = '';
+
+                        if(currentSquaresCount>0){
+                            for (var i=1; i<=currentSquaresCount; i++){
+                                var myDiv = currentSquaresMap[('square' + i)];
+                                squaresConcat = squaresConcat + '#' + (myDiv.style.left+':'+myDiv.style.top) + '_' + (myDiv.style.width+':'+myDiv.style.height);
+                            }
+                            squaresConcat = squaresConcat.substring(1, squaresConcat.length);
+                        }
+
+                        var lblFinSquares = zk.Widget.$(jq('$lblFinSquares')[0]);
+                        lblFinSquares.setValue(squaresConcat);
+                        lblFinSquares.smartUpdate('value', squaresConcat);
+
+                        var elapsed = jwplayer().getPosition();
+                        var lblElapsed = zk.Widget.$(jq('$lblElapsed')[0]);
+
+                        lblElapsed.setValue(elapsed);
+                        lblElapsed.smartUpdate('value', elapsed);
+
+                        lblTiempoFinal = zk.Widget.$(jq('$lblTiempoFinal')[0]);
+                        lblTiempoFinal.setValue(currentTime);
+                        lblTiempoFinal.smartUpdate('value', currentTime);
+                    }
+
+                    lblTFinalMenor.setValue(esMenor);
+                    lblTFinalMenor.smartUpdate('value', esMenor);
+                }
+
+                function onClickNextCamara(){
+                    cambioCamara = 'S';
+
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+                
+                function onSelectCamara(){
+                    cambioCamara = 'S';
+                    //obtiene posición del video al momento de cambiar de cámara
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){
+                        setPlayerTime();
+                    }
+                }
+
+                function onClickSiguiente(){
+                    deleteAllCurrentSquares();
+
+                    var lblCurrentEvidenceType = zk.Widget.$(jq('$lblCurrentEvidenceType')[0]);
+                    if(lblCurrentEvidenceType.getValue() == 'VIDEO'){ //video
+                        setPlayerTime();
+                    }
+                }
+            ]]>
+        </script>
+        
+        <label id="lblNotDefined" value="${labels.eval.noDefinido}" visible="false"/>
+        <!-- label utilizado para asignarle el tiempo del video al momento de hacer pausa, para ser obtenido en el servidor -->
+        <label id="lblElapsed" visible="false"/>
+        <label id="lblCurrentTIme" visible="false"/>
+        <label id="lblIniSquares" visible="false"/> <!-- Label utilizado para almacenar la información de la marca de tiempo inicial -->
+        <label id="lblFinSquares" visible="false"/> <!-- Label utilizado para almacenar la información de la marca de tiempo final -->
+        <label id="lblTFinalMenor" value="N" visible="false"/> <!-- Label utilizado para almacenar info relacionada si el tiempo final es menor al inicial -->
+
+        <div align="center">
+            <grid width="210px" style="border:0;">
+                <columns>
+                    <column width="210px"/>
+                </columns>
+                <rows>
+                    <row style="background-color:#D8D8D8" zclass="none" height="30px">
+                        <grid width="200px" style="border:0;">
+                            <columns>
+                                <column width="100px"/>
+                                <column width="100px"/>
+                            </columns>
+                            <rows>
+                                <row style="background-color:#D8D8D8" zclass="none">
+                                    <div align="center">
+                                        <label value="${labels.eval.tiempo}" style="font-weight: bold; color:#084B8A;"/>
+                                    </div>
+                                    <div align="center">
+                                        <label id="lblValorMetrica" value="${labels.eval.noDefinido}" style="font-weight: bold; color:#8A0808;"/>
+                                    </div>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                </rows>
+            </grid>
+
+            <grid width="175px" height="400px" style="border:0;">
+                <columns>
+                    <column width="50px"/>
+                    <column width="125px"/>
+                </columns>
+                <rows>
+                    <!-- tiempo inicial -->
+                    <row style="background-color:#D8D8D8" zclass="none" height="30px">
+                        <label/>
+                        <div align="center">
+                            <label value="${labels.eval.tiempoInicial}" style="font-weight: bold;"/>
+                        </div>
+                    </row>
+                    <row style="background-color:#D8D8D8" zclass="none">
+                        <button id="btnAsignarInicial" image="/img/wait_time_arrow.png" forward="onClick=onClickInicial()" disabled="true">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickInicial();
+                                ]]>
+                            </attribute>
+                        </button>
+
+                        <image id="imgInicial" src="/img/blackBack.png" width="120px" height="90px" forward="onClick=onClickVerMarcaInicial()"/>
+                    </row>
+                    <row style="background-color:#D8D8D8" zclass="none" height="30px">
+                        <label/>
+                        <div align="center">
+                            <label id="lblTiempoInicial" value="${labels.eval.noDefinido}" style="font-weight: bold; color:#088A29;"/>
+                        </div>
+                    </row>
+                    <!-- tiempo final -->
+                    <row style="background-color:#D8D8D8" zclass="none" height="30px">
+                        <label/>
+                        <div align="center">
+                            <label value="${labels.eval.tiempoFinal}" style="font-weight: bold;"/>
+                        </div>
+                    </row>
+                    <row style="background-color:#D8D8D8" zclass="none" height="110px">
+                        <button id="btnAsignarFinal" image="/img/wait_time_arrow.png" forward="onClick=onClickFinal()" disabled="true">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickFinal();
+                                ]]>
+                            </attribute>
+                         </button>
+                        <image id="imgFinal" src="/img/blackBack.png" width="125px" height="100px" forward="onClick=onClickVerMarcaFinal()"/>
+                    </row>
+                    <row height="110px" style="background-color:#D8D8D8" valign="top" zclass="none">
+                        <label/>
+                        <div align="center">
+                            <label id="lblTiempoFinal" value="${labels.eval.noDefinido}" style="font-weight: bold; color:#088A29;"/>
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="280px" height="75px" style="border:0;">
+                <columns>
+                    <column width="175px"/>
+                    <column width="105px"/>
+                </columns>
+                <rows>
+                    <row style="background-color:#D8D8D8" height="75px" zclass="none">
+                        <div align="center">
+                            <groupbox id="groupBoxMultiCamara" width="150px">
+                                <combobox id="cmbMultiCamaras" model="@{rightTimeWindow$composer.lstCamaras}" visible="false"
+                                    readonly="true" width="135px" constraint="no empty" tooltiptext="${labels.default.multicamaraTooltip}" 
+                                    forward="onAfterRender=onAfterRenderMulticamara(),onSelect=onSelectCamara()">
+                                        <attribute w:name="onSelect">
+                                            <![CDATA[
+                                                onSelectCamara();
+                                            ]]>
+                                        </attribute>
+                                    <comboitem self="@{each=camara}" label="@{camara.name}" value="@{camara.name}"/>
+                                </combobox>
+                            </groupbox>
+                        </div>
+                        <div align="left">
+                            <button id="btnNextCamara" label="${labels.eval.nextCamara}" forward="onClick=onClickNextCamara">
+                                <attribute w:name="onClick">
+                                    <![CDATA[
+                                        onClickNextCamara();
+                                    ]]>
+                                </attribute>
+                            </button>
+                        </div>
+                    </row>
+                </rows>
+            </grid>
+            <grid width="200px" style="border:0;">
+                <columns>
+                    <column width="100px"/>
+                    <column width="100px"/>
+                </columns>
+                <rows>
+                    <row style="background-color:#D8D8D8" zclass="none">
+                        <button id="btnSiguiente" label="${labels.eval.siguiente}" forward="onClick=onClickSiguiente">
+                            <attribute w:name="onClick">
+                                <![CDATA[
+                                    onClickSiguiente();
+                                ]]>
+                            </attribute>
+                        </button>
+                        <button id="btnEnviarFinalizar" label="${labels.eval.finalizar}" forward="onClick=onClickFinalizar" disabled="true"/>
+                    </row>
+                </rows>
+            </grid>
+        </div>
+    </window>
+</zk>

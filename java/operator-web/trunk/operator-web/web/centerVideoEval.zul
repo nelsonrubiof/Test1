@@ -1,0 +1,923 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./centerVideoWindow"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <!-- parte central de la pantalla de evaluación, tipo de evidencia: VIDEO -->
+    <window id="centerVideoWindow" apply="${evaluationWindow$composer.leftMetricBean.rightMetricDetail.centerEvidence}">
+        <script>
+            <![CDATA[
+                var timeoutVar;
+                var timeoutVar2;
+                var currentTime;
+                var tiempoMarcas;
+                var plantilla = 'N';
+                var clickPause = 'N';
+                var onScrollingFlag = 'n';
+                var needToConfirmCenterVid = true;
+
+                //Valida si la ventana del navegador se cierra, para alertar al usuario que debe
+                //cerrar sesión apropiadamente
+                window.onbeforeunload = confirmExit;
+                function confirmExit(){
+                    var lblConfirmClose = zk.Widget.$(jq('$lblConfirmClose')[0]);
+                    var confirmText = lblConfirmClose.getValue();
+
+                    if(needToConfirmCenterVid){
+                        return confirmText;
+                    }else{
+                        return;
+                    }
+                }
+
+                var stopInterval = setInterval(
+                    function () {
+                        lblIsPlayerTime = zk.Widget.$(jq('$lblIsPlayerTime')[0]);
+                        
+                        if(typeof lblIsPlayerTime != 'undefined') {
+                            if(lblIsPlayerTime.getValue() == 'N'){
+                                if(typeof jwplayer() != 'undefined') {
+                                    if(jwplayer().getState()=='IDLE'){
+                                        clearTimeout(timeoutVar);
+                                        clearInterval(timeoutVar2);
+
+                                        lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+                                        if(typeof lblCurrentTime != 'undefined') {
+                                            lblCurrentTime.setValue('00:00');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                1500);
+
+                //********** Intérvalo para actualizar posición label con tiempo del video **********
+                function activateTimeInterval(){
+                    timeoutVar2 = setInterval(
+                        function () {
+                            if(typeof jwplayer() != 'undefined') {
+                                var curPos = jwplayer().getPosition();
+
+                                if(!isNaN(curPos)){
+                                    setCurrentTimeValue(curPos);
+                                }
+                            }
+                   }, 100);
+                }
+                
+                function setCurrentTimeValue(curPos){
+                    if(curPos > 0){
+                        var position;
+                        var strCurpos = ''+curPos;
+                        var index = strCurpos.indexOf(".");
+                        lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+
+                        if(index!=-1){ //tiene decimal
+                            position   = strCurpos.substring(0, index);
+
+                            var doubleMins = position / 60;
+                            var minutos    = Math.floor(doubleMins); //parte entera del decimal
+
+                            var doubleSegs = position % 60;
+                            var segundos   = Math.floor(doubleSegs); //parte entera del decimal
+
+                            var strMinutos = ''+minutos;
+                            var strSegundos = ''+segundos;
+
+                            if(minutos < 10){
+                                strMinutos = '0'+strMinutos;
+                            }
+                            if(segundos < 10){
+                                strSegundos = '0'+strSegundos;
+                            }
+
+                            if(typeof lblCurrentTime != 'undefined') {
+                                lblCurrentTime.setValue(strMinutos+':'+strSegundos);
+                            }
+                        }else{ //no tiene decimal
+                            position = curPos;
+
+                            var doubleMins = position / 60;
+                            var minutos    = Math.floor(doubleMins); //parte entera del decimal
+
+                            var doubleSegs = position % 60;
+                            var segundos   = Math.floor(doubleSegs); //parte entera del decimal
+
+                            var strMinutos = ''+minutos;
+                            var strSegundos = ''+segundos;
+
+                            if(minutos < 10){
+                                strMinutos = '0'+strMinutos;
+                            }
+                            if(segundos < 10){
+                                strSegundos = '0'+strSegundos;
+                            }
+
+                            if(typeof lblCurrentTime != 'undefined') {
+                                lblCurrentTime.setValue(strMinutos+':'+strSegundos);
+                            }
+                        }
+                    }
+                }
+
+                var oldWrap = new Object();
+
+                function storeWrap(theWrapper) {
+                    storeSize(theWrapper);
+                    storePosition(theWrapper);
+                }
+
+                function showWrap(theWrapper, theLeft, theTop, theWidth, theHeight, unitStr) {
+                    if (! unitStr) {
+                        var unitStr = 'px';
+                    }
+                    positionWrap(theWrapper, theLeft, theTop, unitStr);
+                    sizeWrap(theWrapper, theWidth, theHeight, unitStr);
+                }
+
+                function storeSize(theWrapper) {
+                    var tmp = document.getElementById(theWrapper);
+                    if (tmp) {
+                        oldWrap.width = parseInt(tmp.style.width);
+                        oldWrap.height = parseInt(tmp.style.height);
+                    }
+                }
+
+                function storePosition(theWrapper) {
+                    var tmp = document.getElementById(theWrapper);
+                    if (tmp) {
+                        oldWrap.left = parseInt(tmp.style.left);
+                        oldWrap.top = parseInt(tmp.style.top); 
+                    }
+                }
+
+                function positionWrap(theWrapper, theLeft, theTop, unitStr) {
+                    var tmp = document.getElementById(theWrapper);
+                    if (tmp) {
+                        if (! unitStr) { var unitStr = 'px'; }
+                        tmp.style.left = parseInt(theLeft)+unitStr;
+                        tmp.style.top = parseInt(theTop)+unitStr;
+                    }
+                }
+
+                function sizeWrap(theWrapper, theWidth, theHeight, unitStr) {
+                    var tmp = document.getElementById(theWrapper);
+                    if (tmp) {
+                        if (! unitStr) { var unitStr = 'px'; }
+                        tmp.style.width = parseInt(theWidth)+unitStr;
+                        tmp.style.height = parseInt(theHeight)+unitStr;
+                    }
+                }
+
+                function restoreWrap(theWrapper) {
+                    showWrap(theWrapper, 0, 0, 640, 480);
+                }
+
+                function hideWrap(theWrapper) {
+                    storeWrap(theWrapper);
+                    showWrap(theWrapper, 0, 0, 0, 0);
+                }
+
+                //********** Muestra la marca del tiempo inicial **********
+                function verMarcaTiempoInicial(){
+                
+                }
+
+                //********** Muestra todas las marcas sobre la evidencia **********
+                function verMarcas(elapsed){
+                    setCurrentTimeValue(elapsed);
+                
+                    clearTimeout(timeoutVar);
+                    clearInterval(timeoutVar2);
+
+                    //****** Oculta el reproductor ******
+                    jwplayer().seek(elapsed);
+                    jwplayer().pause(true);
+                    hideWrap('container');
+                    
+                    elapsed = elapsed + 'PA';
+                    showAllCurrentCircles(); //muestra todos los círculos de la evidencia actual
+                    showAllCurrentSquares(); //muestra todas las marcas de grupo de la evidencia actual
+                }
+                
+                //********** Inicializa el JWPlayer **********
+                function loadVideoPlayer(videoURL, spritesVttFile){
+                    jwplayer("container").setup({
+                        'id': 'container',
+                        'autostart': 'true',
+                        'width': '640',
+                        'height': '480',
+                        'stretching': 'exactfit',
+                        'controlbar': 'bottom',
+                        'icons': 'false',
+                        'controls': 'true',
+                        'usekeys': 'true',
+
+                        playlist: [{
+                            sources: [{ 
+                              file: videoURL
+                            }],
+                            tracks: [{
+                              file: spritesVttFile,
+                              kind: "thumbnails"
+                            }]
+                        }]
+                    });
+                    
+                    definePlayerOnPause();
+                }
+                
+                //********** pausa del player cuando se hace click directo sobre el mismo **********
+                function definePlayerOnPause(){
+	    			jwplayer().onPause( 
+	    				function(event){
+	    					if(clickPause == 'N'){
+		                        var btnHiddenPause = zk.Widget.$(jq('$btnHiddenPause')[0]);
+		                        var hiddenElement = document.getElementById(btnHiddenPause.uuid);
+		                        hiddenElement.click();
+	    					}
+						}
+					);
+                }
+                
+                //********** interacción teclado **********
+                document.onkeydown = checkArrowKey;
+                function checkArrowKey(e) {					
+                    e = e || window.event;
+                    //obtiene posición actual del player
+                    var playerPos = jwplayer().getPosition();
+
+                    if (e.keyCode == '37') {
+                        //tecla izquierda, retrocede 1 segundo el video
+                        jwplayer().seek(playerPos - 1);
+                    }
+                    else if (e.keyCode == '39') {
+                        //tecla derecha, avanza 1 segundo el video
+                        jwplayer().seek(playerPos + 1);
+                    }
+                }
+                
+                //********** interacción mouse **********
+                if (document.addEventListener) {
+                    document.addEventListener("mousewheel", MouseWheelHandler, false);
+                    document.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+                } else {
+                    document.attachEvent("onmousewheel", MouseWheelHandler);
+                }   
+
+                function MouseWheelHandler(e) {
+                    e = e || window.event;
+                    var delta = e.wheelDelta
+
+                    var playerPos = jwplayer().getPosition();
+                    if (delta < 0) {
+                        //scroll down, retrocede 1 segundo el video
+                        jwplayer().seek(playerPos - 1);
+                    } else {
+                        //scroll up, avanza 1 segundo el video
+                        jwplayer().seek(playerPos + 1);
+                    }
+                }
+
+                //********** Oculta círculos/marcas de grupo y muestra el reproductor **********
+                function hideShapesShowPlayer(){
+                    clickPause = 'N';
+                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+
+                    //****** Muestra el reproductor ******
+                    restoreWrap('container');
+                    jwplayer().play(true);
+
+                    if(plantilla=='S'){
+                        plantilla = 'N';
+                        var lblPlantilla = zk.Widget.$(jq('$lblPlantilla')[0]);
+                        lblPlantilla.setValue(plantilla);
+                        lblPlantilla.smartUpdate('value', plantilla);
+                    }
+                }
+                
+                function updateLblPause(){
+                    var lblPause = zk.Widget.$(jq('$lblPause')[0]);
+                    lblPause.setValue(clickPause);
+                    lblPause.smartUpdate('value', clickPause);
+                }
+                
+                //********** Oculta el reproductor **********
+                function hideAndPausePlayer(){
+                    clickPause = 'S';
+                    updateLblPause();
+
+                    jwplayer().pause(true);
+                    hideWrap('container');
+                }
+                
+                //********** Actualiza label con última posición del player (videos) **********
+                function setPlayerTime(){
+                    if(typeof jwplayer() != 'undefined') {
+                        var playerPosition = jwplayer().getPosition();
+
+                        var lblPlayerTime = zk.Widget.$(jq('$lblPlayerTime')[0]);
+                        lblPlayerTime.setValue(playerPosition);
+                        lblPlayerTime.smartUpdate('value', playerPosition);
+
+                        jwplayer().stop();
+                        clearTimeout(timeoutVar);
+                        clearInterval(timeoutVar2);
+                    }
+                }
+                
+                function updateTimeLabels(tiempoMarcas){
+                    var lblTiempoMarcas = zk.Widget.$(jq('$lblTiempoMarcas')[0]);
+                    if(typeof lblTiempoMarcas != 'undefined') {
+                        lblTiempoMarcas.setValue(tiempoMarcas);
+                        lblTiempoMarcas.smartUpdate('value', tiempoMarcas);
+                    }
+
+                    var lblTiempoMarcasInicial = zk.Widget.$(jq('$lblTiempoMarcasInicial')[0]);
+                    if(typeof lblTiempoMarcasInicial != 'undefined') {
+                        lblTiempoMarcasInicial.setValue(tiempoMarcas);
+                        lblTiempoMarcasInicial.smartUpdate('value', tiempoMarcas);
+                    }
+
+                    var lblTiempoMarcasFinal = zk.Widget.$(jq('$lblTiempoMarcasFinal')[0]);
+                    if(typeof lblTiempoMarcasFinal != 'undefined') {
+                        lblTiempoMarcasFinal.setValue(tiempoMarcas);
+                        lblTiempoMarcasFinal.smartUpdate('value', tiempoMarcas);
+                    }
+                }
+                
+                function updateLblCurrentTimeValue(valor){
+                    var lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+                    if(typeof lblCurrentTime != 'undefined') {
+                        lblCurrentTime.setValue(valor);
+                        lblCurrentTime.smartUpdate('value', valor);
+                    }
+                }
+            ]]>
+        </script>
+		<button id="btnHiddenPause" forward="onClick=onClickPauseOrPlay(), onClickEvidenceImage()" visible="false">
+			<attribute w:name="onClick">
+                 <![CDATA[
+					var elapsed = jwplayer().getPosition();
+					var lblElapsed = this.$f('lblElapsed');
+
+					clearTimeout(timeoutVar);
+					clearInterval(timeoutVar2);
+
+					clickPause = 'S';
+                    updateLblPause();
+                    hideWrap('container');
+
+					elapsed = elapsed + 'PA';
+
+					tiempoMarcas = elapsed;
+					lblElapsed.setValue(elapsed);
+					lblElapsed.smartUpdate('value', elapsed);
+
+					lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+					currentTime = lblCurrentTime.getValue();
+
+					updateTimeLabels(tiempoMarcas);
+					
+					var lblPause = zk.Widget.$(jq('$lblPause')[0]);
+                    lblPause.setValue(clickPause);
+                    lblPause.smartUpdate('value', clickPause);
+                    
+                    if(typeof hiddenCurrentCircles != 'undefined') {
+                        if(hiddenCurrentCircles == 'S'){ //Hay círculos ocultos
+                            deleteAllCurrentCircles('S');
+                            hiddenCurrentCircles = 'N';
+                        }
+                    }
+
+                    if(typeof hiddenCurrentSquares != 'undefined') {
+                        if(hiddenCurrentSquares == 'S'){ //Hay marcas ocultas
+                            deleteAllCurrentSquares();
+                            hiddenCurrentSquares = 'N';
+                        }
+                    }
+
+					//Marca la evidencia por defecto en el centro
+                    markEvidence(680, 260, 20, 20);
+                 ]]>
+             </attribute>
+		</button>
+
+        <label id="lblConfirmClose" visible="false"/>
+        <label id="lblIsPlayerTime" visible="false" value="N"/>
+        <label id="lblTiempoMarcas" visible="false"/>
+        
+        <label id="lblTiempoMarcasInicial" visible="false"/>
+        <label id="lblTiempoMarcasFinal" visible="false"/>
+        <label id="lblSpritesVttFile" visible="false"/>
+        
+        <image id="imgPlantilla" width="640px" height="480px" visible="false" style="border:0; left: 105px; top: 15px; position: absolute;" zindex="1100"/>
+
+        <window id="popupZoom" width="815px" height="700px" apply="com.scopix.periscope.bean.PopCenterVideoEvalBean"
+            style="left: 300px; top: 50px; position: absolute;" visible="false" contentStyle="overflow:auto;">
+            <div align="right">
+                <button label="${labels.eval.cerrar}">
+                    <attribute w:name="onClick">
+                        <![CDATA[
+                            popupZoom = zk.Widget.$(jq('$popupZoom')[0]);
+                            popupZoom.setVisible(false);
+                            
+                            showAllCurrentCircles();
+                            showAllCurrentSquares();
+                        ]]>
+                    </attribute>
+                </button>
+            </div>
+            <image id="imgEvidenceZoom" width="1250px" height="1000px"/>
+            <image id="myTransparent2" width="800px" height="640px" zindex="1500" src="/img/transparent2.png" 
+                style="border:0; left: 1px; top: 27px; position: absolute;"/>
+        </window>
+
+        <div align="center">
+        	<label id="lblCenterNomMetrica" style="font-weight: bold; color:#8A0808; font-size:10pt"/>
+        </div>
+
+        <!-- imágen transparente que se encontrará por encima del snapshot y del player -->
+        <image id="myTransparent" width="640px" height="480px" src="/img/transparent.png" visible="false"
+            style="border:0; left: 105px; top: 15px; position: absolute;" zindex="1500" forward="onClick=onClickEvidenceImage()">
+            <attribute w:name="onClick">
+                <![CDATA[
+                    var lblPause = zk.Widget.$(jq('$lblPause')[0]);
+                    lblPause.setValue(clickPause);
+                    lblPause.smartUpdate('value', clickPause);
+
+                    if(clickPause == 'S'){
+                        var xPos = event.pageX - 14;
+                        var yPos = event.pageY - 14;
+
+                        if(typeof hiddenCurrentCircles != 'undefined') {
+                            if(hiddenCurrentCircles == 'S'){ //Hay círculos ocultos
+                                deleteAllCurrentCircles('S');
+                                hiddenCurrentCircles = 'N';
+                            }
+                        }
+
+                        if(typeof hiddenCurrentSquares != 'undefined') {
+                            if(hiddenCurrentSquares == 'S'){ //Hay marcas ocultas
+                                deleteAllCurrentSquares();
+                                hiddenCurrentSquares = 'N';
+                            }
+                        }
+
+                        markEvidence(xPos, yPos, 20, 20); //Marca la evidencia
+                    }
+                ]]>
+            </attribute>
+        </image>
+        
+        <!-- snapshot cuando se presiona pausa, para agregar puntos o marcas de grupo -->
+        <image id="jwImage" width="640px" height="480px" zindex="999" style="border:0; left: 105px; top: 15px; position: absolute;" visible="false"/>
+
+        <!-- label utilizado para asignarle el tiempo del video al momento de hacer pausa, para ser obtenido en el servidor -->
+        <label id="lblElapsed" visible="false"/>
+        <label id="lblPause" visible="false"/>
+        <label id="lblVideoURL" visible="false"/>
+        <label id="lblPlantilla" visible="false"/>
+
+        <!-- JW Player -->
+        <groupbox contentStyle="border:0;" style="left: 100px; top: 10px; position: absolute;">
+            <html>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+                    <script type="text/javascript" src="/operator-web2/js/jwplayer/jwplayer.js" />
+                </head>
+                <body>
+                    <div id="container"/>
+                </body>
+            </html>
+        </groupbox>
+
+        <!-- grilla inferior, controles del reproductor -->
+        <grid width="725px" style="left: 60px; top: 510px; position: absolute;">
+            <columns>
+                <column width="725px"/>
+            </columns>
+            <rows>
+                <row> <!-- enviar evaluación -->
+                    <grid width="700px">
+                        <columns>
+                            <column width="700px" align="center"/>
+                        </columns>
+                        <rows>
+                            <row height="20px"> <!-- tiempo en curso del video -->
+                                <label id="lblCurrentTime" value="00:00" style="font-weight: bold;"/>
+                            </row>
+                            <row>
+                                <grid width="665px" style="border:0;">
+                                    <columns>
+                                        <column width="115px"/>
+                                        <column width="390px"/>
+                                        <column width="155px"/>
+                                    </columns>
+                                    <rows>
+                                        <row>
+                                            <grid width="115px" style="border:0;">
+                                                <columns width="115px">
+                                                    <column width="115px"/>
+                                                </columns>
+                                                <rows>
+                                                    <row>
+                                                        <button id="btnVerMarcas" label="${labels.eval.verMarcas}" forward="onClick=onClickVerMarcas()"/>
+                                                    </row>
+                                                    <row>
+                                                        <button label="${labels.eval.verLimites}" forward="onClick=onClickPlantilla">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    if(plantilla=='N'){
+                                                                        plantilla = 'S';
+                                                                    }else if(plantilla=='S'){
+                                                                        plantilla = 'N';
+                                                                    }
+                                                                    var lblPlantilla = zk.Widget.$(jq('$lblPlantilla')[0]);
+                                                                    lblPlantilla.setValue(plantilla);
+                                                                    lblPlantilla.smartUpdate('value', plantilla);
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                    </row>
+                                                </rows>
+                                            </grid>
+
+                                            <grid width="375px" style="border:0;"> <!-- grilla botones del reproductor -->
+                                                <columns>
+                                                    <column width="40px"/>
+                                                    <column width="55px"/>
+                                                    <column width="55px"/>
+                                                    <column width="55px"/>
+                                                    <column width="55px"/>
+                                                    <column width="55px"/>
+                                                    <column width="55px"/>
+                                                </columns>
+                                                <rows>
+                                                    <row>
+                                                        <label width="40px" visible="false"/>
+                                                        <!-- botón SEEK-FIRST -->
+                                                        <button width="40px" height="25px" forward="onClick=onClickPauseOrPlay()"
+                                                            image="/img/seekFirst.png" tooltiptext="${labels.eval.seekFirst}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+                                                                    
+                                                                    clearTimeout(timeoutVar);
+                                                                    clearInterval(timeoutVar2);
+
+                                                                    var lblElapsed = this.$f('lblElapsed');
+                                                                    lblElapsed.setValue('1PA');
+                                                                    lblElapsed.smartUpdate('value', '1PA');
+                                                                    
+                                                                    lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+                                                                    lblCurrentTime.setValue('00:01');
+                                                                    currentTime = '00:01';
+
+                                                                    jwplayer().seek(1);
+                                                                    hideAndPausePlayer();
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <!-- botón FAST-REVERSE -->
+                                                        <button width="40px" height="25px" image="/img/fastrev.jpg" tooltiptext="${labels.eval.fastReverse}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    clickPause = 'N';
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+
+                                                                    var position = jwplayer().getPosition();
+
+                                                                    var i = position;
+                                                                    myLoop();
+
+                                                                    function myLoop () { //create a loop function
+                                                                        timeoutVar = setTimeout(
+                                                                            function () {
+                                                                                jwplayer().seek(i);
+                                                                                i--;
+                                                                                if (i > 0) {
+                                                                                    myLoop();
+                                                                                }else{
+                                                                                    clearTimeout(timeoutVar);
+                                                                                    jwplayer().stop();
+                                                                                }
+                                                                            }, 500)
+                                                                    }
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <!-- botón PLAY -->
+                                                        <button width="40px" height="25px" image="/img/play.png" tooltiptext="${labels.eval.play}" 
+                                                            forward="onClick=onClickPlay()">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    clickPause = 'N';
+                                                                    clearTimeout(timeoutVar);
+                                                                    clearInterval(timeoutVar2);
+
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+                                                                    
+                                                                    if(plantilla=='S'){
+                                                                        plantilla = 'N';
+                                                                        var lblPlantilla = zk.Widget.$(jq('$lblPlantilla')[0]);
+                                                                        lblPlantilla.setValue(plantilla);
+                                                                        lblPlantilla.smartUpdate('value', plantilla);
+                                                                    }
+                                                                    
+                                                                    lblIsPlayerTime = zk.Widget.$(jq('$lblIsPlayerTime')[0]);
+
+                                                                    if(lblIsPlayerTime.getValue() == 'S'){
+                                                                        var lblVideoURL = zk.Widget.$(jq('$lblVideoURL')[0]);
+                                                                        var lblSpritesVttFile = zk.Widget.$(jq('$lblSpritesVttFile')[0]);
+                                                                        
+                                                                        loadVideoPlayer(lblVideoURL.getValue(), lblSpritesVttFile.getValue());
+                                                                    }else{
+                                                                        //Muestra el reproductor
+                                                                        restoreWrap('container');
+                                                                        jwplayer().play(true);
+                                                                        
+                                                                        saveCurrentShapesData();
+                                                                    }
+                                                                    activateTimeInterval();
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <!-- botón PAUSE -->
+                                                        <button id="btnPause" width="40px" height="25px" image="/img/pause.png" tooltiptext="${labels.eval.pause}"
+                                                            forward="onClick=onClickPauseOrPlay(), onClickEvidenceImage()">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    var elapsed = jwplayer().getPosition();
+                                                                    var lblElapsed = this.$f('lblElapsed');
+                                                                    
+                                                                    lblIsPlayerTime = zk.Widget.$(jq('$lblIsPlayerTime')[0]);
+
+                                                                    if(jwplayer().getState()=='IDLE' && lblIsPlayerTime.getValue() == 'S'){
+                                                                        elapsed = elapsed + 'PL';
+                                                                        clickPause = 'N';
+
+                                                                        hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                        hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+                                                                        
+                                                                        var lblVideoURL = zk.Widget.$(jq('$lblVideoURL')[0]);
+                                                                        var lblSpritesVttFile = zk.Widget.$(jq('$lblSpritesVttFile')[0]);
+                                                                        
+                                                                        loadVideoPlayer(lblVideoURL.getValue(), lblSpritesVttFile.getValue());
+                                                                    }else if(jwplayer().getState()=='PAUSED'){
+                                                                        activateTimeInterval();
+                                                                        elapsed = elapsed + 'PL';
+
+                                                                        //Muestra el reproductor
+                                                                        hideShapesShowPlayer();
+                                                                        
+                                                                        clickPause = 'N';
+                                                                    }else{
+                                                                        clearTimeout(timeoutVar);
+                                                                        clearInterval(timeoutVar2);
+                                                                        hideAndPausePlayer();
+                                                                        elapsed = elapsed + 'PA';
+                                                                        
+													                    if(typeof hiddenCurrentCircles != 'undefined') {
+													                        if(hiddenCurrentCircles == 'S'){ //Hay círculos ocultos
+													                            deleteAllCurrentCircles('S');
+													                            hiddenCurrentCircles = 'N';
+													                        }
+													                    }
+													
+													                    if(typeof hiddenCurrentSquares != 'undefined') {
+													                        if(hiddenCurrentSquares == 'S'){ //Hay marcas ocultas
+													                            deleteAllCurrentSquares();
+													                            hiddenCurrentSquares = 'N';
+													                        }
+													                    }
+                                                                        
+                                                                        //Marca la evidencia por defecto en el centro
+                    													markEvidence(680, 260, 20, 20);
+                                                                    }
+
+                                                                    tiempoMarcas = elapsed;
+                                                                    lblElapsed.setValue(elapsed);
+                                                                    lblElapsed.smartUpdate('value', elapsed);
+                                                                    
+                                                                    lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+                                                                    currentTime = lblCurrentTime.getValue();
+                                                                    
+                                                                    updateTimeLabels(tiempoMarcas);
+                                                                    
+																	var lblPause = zk.Widget.$(jq('$lblPause')[0]);
+												                    lblPause.setValue(clickPause);
+												                    lblPause.smartUpdate('value', clickPause);
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <!-- botón FAST-FORWARD -->
+                                                        <button width="40px" height="25px" image="/img/fastfwd.jpg" tooltiptext="${labels.eval.fastForward}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    clickPause = 'N';
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+
+                                                                    var duration        = jwplayer().getDuration();
+                                                                    var roundDuration   = Math.round(duration);
+                                                                    var position        = jwplayer().getPosition();
+
+                                                                    if(roundDuration > 0){
+                                                                        var i = position;
+                                                                        myLoop();
+
+                                                                        function myLoop () { //create a loop function
+                                                                            timeoutVar = setTimeout(
+                                                                                function () {
+                                                                                    jwplayer().seek(i);
+                                                                                    i++;
+                                                                                    if (i < roundDuration) {
+                                                                                        myLoop();
+                                                                                    }else{
+                                                                                        clearTimeout(timeoutVar);
+                                                                                        jwplayer().stop();
+                                                                                    }
+                                                                                }, 500)
+                                                                        }
+                                                                    }
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <!-- botón SEEK-LAST -->
+                                                        <button width="40px" height="25px" forward="onClick=onClickPauseOrPlay()" 
+                                                            image="/img/seekLast.png" tooltiptext="${labels.eval.seekLast}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+
+                                                                    clearTimeout(timeoutVar);
+                                                                    clearInterval(timeoutVar2);
+                                                                    
+                                                                    var duration = jwplayer().getDuration();
+
+                                                                    var lblElapsed = this.$f('lblElapsed');
+                                                                    lblElapsed.setValue((duration-2)+'PA');
+                                                                    lblElapsed.smartUpdate('value', (duration-2)+'PA');
+                                                                    
+                                                                    lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+
+                                                                    var doubleMins = (duration-2) / 60;
+                                                                    var minutos    = Math.floor(doubleMins); //parte entera del decimal
+
+                                                                    var doubleSegs = (duration-2) % 60;
+                                                                    var segundos   = Math.floor(doubleSegs); //parte entera del decimal
+
+                                                                    var strMinutos = ''+minutos;
+                                                                    var strSegundos = ''+segundos;
+
+                                                                    if(minutos < 10){
+                                                                        strMinutos = '0'+strMinutos;
+                                                                    }
+                                                                    if(segundos < 10){
+                                                                        strSegundos = '0'+strSegundos;
+                                                                    }
+
+                                                                    lblCurrentTime.setValue(strMinutos+':'+strSegundos);
+                                                                    currentTime = strMinutos+':'+strSegundos;
+
+                                                                    jwplayer().seek(duration-2);
+                                                                    hideAndPausePlayer();
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                    </row>
+                                                    <row>
+                                                        <label/>
+                                                        <label/>
+                                                        <label/>
+                                                        <!-- botón SEEK-MIDDLE -->
+                                                        <button width="40px" height="25px" image="/img/seekMiddle.png" forward="onClick=onClickPauseOrPlay()"
+                                                            tooltiptext="${labels.eval.seekMiddle}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    clearTimeout(timeoutVar);
+                                                                    clearInterval(timeoutVar2);
+
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+
+                                                                    var duration = jwplayer().getDuration();
+
+                                                                    if(duration > 0){
+                                                                        jwplayer().seek((duration/2));
+                                                                        hideAndPausePlayer();
+
+                                                                        var position   = (duration/2);
+                                                                        lblCurrentTime = zk.Widget.$(jq('$lblCurrentTime')[0]);
+
+                                                                        var doubleMins = position / 60;
+                                                                        var minutos    = Math.floor(doubleMins); //parte entera del decimal
+
+                                                                        var doubleSegs = position % 60;
+                                                                        var segundos   = Math.floor(doubleSegs); //parte entera del decimal
+
+                                                                        var strMinutos = ''+minutos;
+                                                                        var strSegundos = ''+segundos;
+
+                                                                        if(minutos < 10){
+                                                                            strMinutos = '0'+strMinutos;
+                                                                        }
+                                                                        if(segundos < 10){
+                                                                            strSegundos = '0'+strSegundos;
+                                                                        }
+
+                                                                        if(typeof lblCurrentTime != 'undefined') {
+                                                                            lblCurrentTime.setValue(strMinutos+':'+strSegundos);
+                                                                            currentTime = strMinutos+':'+strSegundos;
+                                                                        }
+                                                                        
+                                                                        var elapsed = position;
+                                                                        elapsed = elapsed + 'PA';
+
+                                                                        var lblElapsed = this.$f('lblElapsed');
+                                                                        lblElapsed.setValue(elapsed);
+                                                                        lblElapsed.smartUpdate('value', elapsed);
+                                                                    }
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <!-- botón FULL-SCREEN -->
+                                                        <button width="40px" height="25px" image="/img/fullscreen.gif" tooltiptext="${labels.eval.fullScreen}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    clickPause = 'N';
+                                                                    hideAllCurrentCircles(); //oculta todos los círculos de la evidencia actual
+                                                                    hideAllCurrentSquares(); //oculta todas las marcas de grupo de la evidencia actual
+                                                                    jwplayer().setFullscreen(true);
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <label/>
+                                                        <label/>
+                                                    </row>
+                                                </rows>
+                                            </grid>
+
+                                            <grid width="155px" style="border:0;">
+                                                <columns width="155px">
+                                                    <column width="85px"/>
+                                                    <column width="70px"/>
+                                                </columns>
+                                                <rows>
+                                                    <row>
+                                                        <button id="btnDeshacer" label="${labels.eval.deshacer}" forward="onClick=onClickUpdateMetricValue()">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    deleteLastPoint(); //Deshace último punto marcado
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <button id="btnZoom" label="Zoom" tooltiptext="${labels.eval.zoomSnapshot}">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    var jwImage = zk.Widget.$(jq('$jwImage')[0]);
+                                                                    
+                                                                    if(jwImage.isVisible()){
+                                                                        popupZoom = zk.Widget.$(jq('$popupZoom')[0]);
+                                                                        popupZoom.setVisible(true);
+                                                                        popupZoom.doModal();
+
+                                                                        var imgEvidenceZoom = zk.Widget.$(jq('$imgEvidenceZoom')[0]);
+                                                                        imgEvidenceZoom.setSrc(jwImage.getSrc());
+
+                                                                        hideAllCurrentCircles();
+                                                                        hideAllCurrentSquares();
+                                                                    }
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                    </row>
+                                                    <row>
+                                                        <button id="btnDeshacerTodo" label="${labels.eval.deshacerTodo}" forward="onClick=onClickUpdateMetricValue()">
+                                                            <attribute w:name="onClick">
+                                                                <![CDATA[
+                                                                    //keepMetricValue, isChangingMetric, isDeshacer
+                                                                    deleteAllCurrentShapes('N','N','S'); //Deshace todas las marcas sobre la evidencia
+                                                                ]]>
+                                                            </attribute>
+                                                        </button>
+                                                        <label/>
+                                                    </row>
+                                                </rows>
+                                            </grid>
+                                        </row>
+                                    </rows>
+                                </grid>
+                            </row>
+                        </rows>
+                    </grid>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

@@ -1,0 +1,103 @@
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit"?>
+
+<zk xmlns:w="http://www.zkoss.org/2005/zk/client">
+    <window id="evaluationWindow" width="2000px" apply="com.scopix.periscope.bean.EvaluationBean">
+        <script>
+            <![CDATA[
+                document.onkeypress=keyEvent;
+                function keyEvent(e){
+                    e = e || window.event;
+                    if (e.keyCode=='83' || e.keyCode=='115') { //83 -> 'S', 115 -> 's'
+                        //obtiene widget del btnSiguiente
+                        var btnSiguiente = zk.Widget.$(jq('$btnSiguiente')[0]);
+                        //obtiene el elemento a través del UUID generado en el DOM de la página
+                        var btnElement = document.getElementById(btnSiguiente.uuid);
+                        //se invoca el click del elemento
+                        btnElement.click();
+ 
+                    } else if (e.keyCode=='67' || e.keyCode=='99') { //67 -> 'C', 99 -> 'c'
+                        //obtiene widget del btnNextCamara
+                        var btnNextCamara = zk.Widget.$(jq('$btnNextCamara')[0]);
+                        if(btnNextCamara !=null && typeof btnNextCamara != 'undefined' && btnNextCamara.isVisible()){
+                            //obtiene el elemento a través del UUID generado en el DOM de la página
+                            var btnElement = document.getElementById(btnNextCamara.uuid);
+                            //se invoca el click del elemento
+                            btnElement.click();
+                        }else{
+                        	ceroFunctionality();
+                        }
+                    } else if (e.keyCode=='97' || e.keyCode=='65') { //65 -> 'A', 97 -> 'a' 
+                    	ceroFunctionality();
+
+                    } else if (e.keyCode=='81' || e.keyCode=='113') { //81 -> 'Q', 113 -> 'q'
+                        //abrir menú de single cant'do
+                        var btnSingleCantDo = zk.Widget.$(jq('$btnSingleCantDo')[0]);
+                        //obtiene el elemento a través del UUID generado en el DOM de la página
+                        var btnElement = document.getElementById(btnSingleCantDo.uuid);
+                        //se invoca el click del elemento
+                        btnElement.click();
+
+					} else if (e.keyCode=='87' || e.keyCode=='119') { //87 -> 'W', 119 -> 'w'
+                        //guardar selección de cant'do
+                        var btnSaveCantDo = zk.Widget.$(jq('$btnSaveCantDo')[0]);
+                        //obtiene el elemento a través del UUID generado en el DOM de la página
+                        var btnElement = document.getElementById(btnSaveCantDo.uuid);
+                        //se invoca el click del elemento
+                        btnElement.click();
+                    }
+                }
+                
+                //método para casos de definir métrica como cero
+                function ceroFunctionality(){
+                	//obtiene botón de métrica en cero (en caso de estar en pantalla)
+                	var btnMetricaCero = zk.Widget.$(jq('$btnMetricaCero')[0]);
+                	if(btnMetricaCero !=null && typeof btnMetricaCero != 'undefined') {
+                		//obtiene el elemento a través del UUID generado en el DOM de la página
+                        var btnElement = document.getElementById(btnMetricaCero.uuid);
+                        //se invoca el click del elemento
+                        btnElement.click();
+                	}
+                }
+                
+                var divpapa = document.createElement('div');
+			    divpapa.setAttribute('id', ('divpapa'));
+			    divpapa.setAttribute('style', 'display:none');
+			    document.body.appendChild(divpapa);
+                
+                function precargarImagenes(imagesURLs){
+                    var saImagesURLs = imagesURLs.split(";");
+
+                    for (var i=0; i<saImagesURLs.length; i++){
+                        var imageURL = saImagesURLs[i];
+                        if(imageURL != null && imageURL != ''){
+                            var divhijo = document.createElement('img');
+    				        divhijo.setAttribute('id', ('preloadImage_' + i));
+    				        divhijo.setAttribute('src', imageURL);
+
+    				        divpapa.appendChild(divhijo);
+                        }
+                    }
+                }
+                
+                //inicia interval para actualizar valores de evaluación
+                function activateEvaluationsValuesInterval(){
+                    intervalVar = setInterval(
+                        function () {
+                            zAu.send(new zk.Event(zk.Widget.$(this), 'onRefreshEvalValues', ''));
+                   }, 30000);
+                }
+            ]]>
+        </script>
+
+        <borderlayout id="evalBorderLayout" width="1400px" height="770px">
+            <!-- parte superior, encabezados evaluación -->
+            <north style="background-color:#D8D8D8"/>
+            <!-- parte izquierda, listado de métricas -->
+            <west width="20%" style="background-color:#D8D8D8"/>
+            <!-- parte derecha, controles tipo métrica -->
+            <east width="20%" style="background-color:#D8D8D8"/>
+            <!-- parte central, evidencia (foto o video) -->
+            <center/>
+        </borderlayout>
+    </window>
+</zk>
